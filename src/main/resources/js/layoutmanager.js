@@ -32,26 +32,32 @@ var config = {
 
 savedState = localStorage.getItem( 'layoutSavedState' );
 
-if( savedState !== null ) {
+if( savedState !== null ) 
+{
     myLayout = new GoldenLayout( JSON.parse( savedState ) );
-} else {
+} else 
+{
     myLayout = new GoldenLayout( config );
 }
 
 
 myLayout.registerComponent("Downlink", function(container, componentState) 
 {
-  container.getElement().html("<h2>" + componentState.label + "</h2>");
+  container.getElement().html("<div id=\"downlink\"></div>");
 });
 myLayout.registerComponent("Uplink", function(container, componentState) 
 {
-  container.getElement().html("<h2>" + componentState.label + "</h2>");
+  container.getElement().html("<div id=\"uplink\"></div>");
 });
 myLayout.registerComponent("EventLog", function(container, componentState) 
 {
-  container.getElement().html("<h2> Log Window </h2>");
+  container.getElement().html("<div id=\"log\"></div>");
 });
 myLayout.init();
+
+console.log("test");
+connectToWS("ws://" + location.host + "/wss");
+
 
 myLayout.on( 'stateChanged', function()
 {
