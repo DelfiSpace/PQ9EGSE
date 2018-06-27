@@ -35,52 +35,31 @@ public class JettyMultipleServer
         Server server = new Server(8080);
  
         // Establish ServletContext for all servlets
-            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-            context.setContextPath("/");
-            Path webrootPath = new File("src/main/resources").toPath().toRealPath();
-            context.setBaseResource(Resource.newResource(webrootPath.toUri()));
-            // What file(s) should be used when client requests a directory
-            //context.setWelcomeFiles(new String[] { "index.html" });
-            server.setHandler(context);
-
-            // Add a servlet (technique #1)
-            ServletHolder holderHello = context.addServlet(HelloServlet.class,"/");
-            holderHello.setInitOrder(0);
-
-            // Add a websocket to a specific path spec
-            ServletHolder holderEvents = new ServletHolder("ws-events", EventServlet.class);
-            context.addServlet(holderEvents, "/wss/*");
-        
-            // Add default servlet last (always last) (technique #2)
-            // Must be named "default", must be on path mapping "/"
-            ServletHolder holderDef = new ServletHolder("default",DefaultServlet.class);
-            holderDef.setInitParameter("dirAllowed","false");
-            context.addServlet(holderDef,"/js/*");
-            context.addServlet(holderDef,"/css/*");
-            context.addServlet(holderDef,"/html/*");
-            context.setErrorHandler(new ErrorHandler());
-            
-            
-        /*ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
- 
-        context.addServlet(new ServletHolder(new HelloServlet()),"/index.html");
-        context.addServlet(new ServletHolder(new HelloServlet("Buongiorno Mondo")),"/it/*");
-        context.addServlet(new ServletHolder(new HelloServlet("Bonjour le Monde")),"/fr/*");
- 
         Path webrootPath = new File("src/main/resources").toPath().toRealPath();
+        context.setBaseResource(Resource.newResource(webrootPath.toUri()));
+        // What file(s) should be used when client requests a directory
+        //context.setWelcomeFiles(new String[] { "index.html" });
+        server.setHandler(context);
 
-            URI webrootUri = webrootPath.toUri();
-        context.setBaseResource(Resource.newResource(webrootUri));
-        
-        //ResourceHandler resource_handler = new ResourceHandler();
-        //resource_handler.setDirectoriesListed(false);
-        //resource_handler.setResourceBase("src/main/resources");
-        
-        HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[] { context });
-        server.setHandler(handlers);
-        */
+        // Add a servlet (technique #1)
+        ServletHolder holderHello = context.addServlet(HelloServlet.class,"/");
+        holderHello.setInitOrder(0);
+
+        // Add a websocket to a specific path spec
+        ServletHolder holderEvents = new ServletHolder("ws-events", EventServlet.class);
+        context.addServlet(holderEvents, "/wss/*");
+
+        // Add default servlet last (always last) (technique #2)
+        // Must be named "default", must be on path mapping "/"
+        ServletHolder holderDef = new ServletHolder("default",DefaultServlet.class);
+        holderDef.setInitParameter("dirAllowed","false");
+        context.addServlet(holderDef,"/js/*");
+        context.addServlet(holderDef,"/css/*");
+        context.addServlet(holderDef,"/html/*");
+        context.setErrorHandler(new ErrorHandler());
+
         server.start();
         server.join();
     }

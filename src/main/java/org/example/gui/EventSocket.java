@@ -25,6 +25,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -32,21 +35,43 @@ import org.eclipse.jetty.websocket.api.WebSocketAdapter;
  */
 public class EventSocket extends WebSocketAdapter
 {
+    JSONParser parser = new JSONParser();      
+    private int counter = 0;
+    
     public EventSocket()
-    {
-     
+    {        
         final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(() -> {
-        try {
+        try {            
             if (this.isConnected())
                 {
-            System.out.println("Sending...");
-            super.getRemote().sendString((new Date()).toString()); // nothing to do
+                    if ((counter % 2) != 0)
+                    {
+                        // Sending log...
+                        JSONObject obj=new JSONObject();    
+                        obj.put("command","log");    
+                        obj.put("data",(new Date()).toString());     
+                        super.getRemote().sendString(obj.toString());
+                    }
+                    else
+                    {
+                        //System.out.println("Sending downlink...");
+                        super.getRemote().sendString("{\"command\":\"downlink\",\"data\":\"" + counter + "\"}");
+                    }
+                    if ((counter % 21) == 0)
+                    {
+                        super.getRemote().sendString("{\"command\":\"abc\",\"data\":\"" + counter + "\"}");
+                    }
+                    if ((counter % 14) == 0)
+                    {
+                        super.getRemote().sendString("ciao mamma");
+                    }
+                    counter++;
                 }
         } catch (IOException ex) {
             Logger.getLogger(EventSocket.class.getName()).log(Level.SEVERE, null, ex);
         }
-        }, 0, 1, TimeUnit.SECONDS); 
+        }, 0, 500, TimeUnit.MILLISECONDS);      
     }
     
     @Override
@@ -63,6 +88,18 @@ public class EventSocket extends WebSocketAdapter
     {
         super.onWebSocketText(message);
         System.out.println("Received TEXT message: " + message);
+        try {
+            JSONObject obj = (JSONObject)parser.parse(message);
+            String cmd = (String) obj.get("command");
+            String data = (String) obj.get("data");
+            String test = (String) obj.get("mamma");
+            System.out.println(cmd);
+            System.out.println(data);
+            System.out.println(test);
+        } catch (ParseException ex) 
+        {
+            Logger.getLogger(EventSocket.class.getName()).log(Level.SEVERE, null, ex);
+        }              
     }
     
     @Override
