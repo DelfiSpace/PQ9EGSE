@@ -86,11 +86,17 @@ public class Main
 
                     // print reception time again
                     out.write(df.format(now));
-                    try {
+                    try 
+                    {
                         PQ9 msg = new PQ9(data);
                         out.write("\n");
                         out.write(msg + "\n");
-                    } catch (PQ9Exception ex) {
+                        
+                        // reply to the message in case it is correct
+                        PQ9 reply = msg.reply(msg.getData());
+                        p.send(reply.getFrame());
+                    } catch (PQ9Exception ex) 
+                    {
                         out.write(ex.getMessage());
                     }
                     out.write("\n");
@@ -101,6 +107,7 @@ public class Main
             }
         });
         
+        // flush the console buffer once per second
         final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(() -> {
             try 

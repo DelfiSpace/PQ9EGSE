@@ -27,6 +27,13 @@ public class PQ9
 {
     private byte[] data;
     
+    /**
+     *
+     * @param destination
+     * @param source
+     * @param input
+     * @throws PQ9Exception
+     */
     public PQ9(int destination, int source, byte[] input) throws PQ9Exception
     {
         if ((destination > 255) || (destination < 0))
@@ -62,6 +69,11 @@ public class PQ9
         data[4 + data[1]] = (byte)((crc >> 8) & 0xFF);                
     }
     
+    /**
+     *
+     * @param input
+     * @throws PQ9Exception
+     */
     public PQ9(byte[] input) throws PQ9Exception
     {
         if (input.length > 260)
@@ -97,21 +109,38 @@ public class PQ9
         }
     }
     
+    /**
+     *
+     * @return
+     */
     public byte getDestination()
     {
         return data[0];
     }
     
+    /**
+     *
+     * @return
+     */
     public byte getSource()
     {
         return data[2];
     }
     
+    /**
+     *
+     * @return
+     */
     public byte getDataSize()
     {
         return data[1];
     }
     
+    /**
+     * Returns the data field of the frame as byte[].
+     * 
+     * @return data field of the frame
+     */
     public byte[] getData()
     {
         if (data[1] != 0)
@@ -123,9 +152,25 @@ public class PQ9
         return null;
     }
     
+    /**
+     *
+     * @return
+     */
     public byte[] getFrame()
     {
         return Arrays.copyOf(data, data.length);
+    }
+    
+    /**
+     * Create a PQ9 frame as a reply to the current one. Source and Destination addresses will be swapped.
+     * 
+     * @param data data field of the reply frame
+     * @return new PQ9 frame as a reply to the current one
+     * @throws org.delfispace.protocols.pq9.PQ9Exception in case of invalid parameters
+     */
+    public PQ9 reply(byte[] data) throws PQ9Exception
+    {
+        return new PQ9(getSource(), getDestination(), data);
     }
     
     @Override
