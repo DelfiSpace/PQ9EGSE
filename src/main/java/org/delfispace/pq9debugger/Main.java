@@ -60,6 +60,7 @@ public class Main
         
         // configure the seriql port parameters
         comPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
         
         // crete the HLDLC reader
         HLDLC p = new HLDLC(comPort.getInputStream(), comPort.getOutputStream());
