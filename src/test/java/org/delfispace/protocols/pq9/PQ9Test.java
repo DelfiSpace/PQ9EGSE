@@ -19,6 +19,7 @@ package org.delfispace.protocols.pq9;
 import java.io.IOException;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -60,7 +61,9 @@ public class PQ9Test
         
         PQ9 t1 = new PQ9(0x01, 0x02, new byte[]{(byte)0xAA, (byte)0xBB, (byte)0xCC});
         
-        System.out.println(t1);
+        Assert.assertArrayEquals("Error", t1.getFrame(), 
+                new byte[]{(byte)0x01, (byte)0x03, (byte)0x02, (byte)0xAA, 
+                    (byte)0xBB, (byte)0xCC, (byte)0x60, (byte)0xE8});
     }
     
     @Test
@@ -73,6 +76,8 @@ public class PQ9Test
         
         PQ9 t1 = new PQ9(0x01, 0x02, null);
         
+        
+        //Assert.assertArrayEquals("Error", t1.getData(), new byte[]{});
         System.out.println(t1);
     }
     

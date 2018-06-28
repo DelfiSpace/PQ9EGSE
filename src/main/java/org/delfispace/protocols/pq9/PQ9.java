@@ -58,15 +58,8 @@ public class PQ9
         data[2] = (byte)(source & 0xFF);
         
         short crc = crc16(data, 0, data[1] + 3);
-        System.out.println(String.format("CRC %04X", crc));
         data[3 + data[1]] = (byte)(crc & 0xFF);
-        data[4 + data[1]] = (byte)((crc >> 8) & 0xFF);
-        
-        for(int i = 0; i < data.length; i++)
-            {
-                System.out.print(String.format("%02X ", data[i]));
-            }
-            System.out.println();
+        data[4 + data[1]] = (byte)((crc >> 8) & 0xFF);                
     }
     
     public PQ9(byte[] input) throws PQ9Exception
@@ -139,8 +132,14 @@ public class PQ9
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("Destination: %02X\n", getDestination()));
-        sb.append(String.format("Source: %02X\n", getSource()));
+        sb.append("Raw: ");
+        for(int i = 0; i < data.length; i++)
+        {
+            sb.append(String.format("0x%02X ", data[i]));
+        }
+        sb.append("\n");
+        sb.append(String.format("Destination: 0x%02X\n", getDestination()));
+        sb.append(String.format("Source: 0x%02X\n", getSource()));
         sb.append("Data: ");
         if (data[1] == 0)
         {
@@ -150,11 +149,12 @@ public class PQ9
         {
             for(int i = 0; i < data[1]; i++)
             {
-                sb.append(String.format("%02X ", data[3 + i]));
+                sb.append(String.format("0x%02X ", data[3 + i]));
             }
             sb.append("\n");
         }
-        sb.append(String.format("CRC: %02X %02X\n", data[3 + data[1]], data[4 + data[1]]));
+        int realCRC = (data[3 + data[1]] & 0xFF) | ((((int)data[4 + data[1]]) << 8) & 0xFF00);
+        sb.append(String.format("CRC: 0x%04X\n", realCRC));
         return sb.toString();
     }
     

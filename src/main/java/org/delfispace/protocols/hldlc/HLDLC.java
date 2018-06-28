@@ -35,65 +35,68 @@ public class HLDLC
     private final ByteArrayOutputStream bs = new ByteArrayOutputStream();
     private boolean startFound = false;
     private boolean controlFound = false;
-        
+
     static final int HLDLC_START_FLAG = 0x7E;
     static final int HLDLC_CONTROL_FLAG = 0x7D;
     static final int HLDLC_STOP_FLAG = 0x7C;
     static final int HLDLC_ESCAPE_START_FLAG = 0x5E;
     static final int HLDLC_ESCAPE_CONTROL_FLAG = 0x5D;
     static final int HLDLC_ESCAPE_STOP_FLAG = 0x5C;
-  
-    public HLDLC (InputStream in, OutputStream out)
+
+    public HLDLC(InputStream in, OutputStream out) 
     {
         this.in = in;
         this.out = out;
     }
-    
-    public void setReceiverCallback(HLDLCReceiver clb)
+
+    public void setReceiverCallback(HLDLCReceiver clb) 
     {
-        if (callback != null)
-        {
+        if (callback != null) 
+        {            
             reader.running = false;
         }
-        
+
         callback = clb;
-        
-        if (callback != null)
+
+        if (callback != null) 
         {
-            reader = new readerThread();        
+            reader = new readerThread();
             reader.start();
         }
     }
-    
-    public byte[] read() throws IOException
+
+    public byte[] read() throws IOException 
     {
-        if (callback == null)
+        if (callback == null) 
         {
             return blockingread();
         }
         return null;
     }
-            
-    private byte[] blockingread() throws IOException
-    {
-        for (int tmprx = in.read() ;  tmprx != -1 ; tmprx = in.read())
-        {
-            byte rx = (byte)(tmprx & 0xFF);
 
-            if(rx == HLDLC_START_FLAG) 
+    private byte[] blockingread() throws IOException 
+    {
+        int tmprx = in.read();
+
+        while (tmprx != -1) 
+        {
+            byte rx = (byte) (tmprx & 0xFF);
+
+            if (rx == HLDLC_START_FLAG) 
             {
                 // clear the buffer and get ready to process a new frame
                 bs.reset();
                 startFound = true;
                 controlFound = false;
-            }
-            else if (startFound)
+            } 
+            else if (startFound) 
             {
                 // only process data if a flag was found            
-                if(rx == HLDLC_CONTROL_FLAG) 
+                if (rx == HLDLC_CONTROL_FLAG) 
                 {
                     controlFound = true;
-                } else if(controlFound) 
+                } 
+                else if (controlFound) 
                 {
                     switch (rx) 
                     {
@@ -115,34 +118,33 @@ public class HLDLC
                             break;
                     }
                     controlFound = false;
-                } else if(rx == HLDLC_STOP_FLAG) 
+                } 
+                else if (rx == HLDLC_STOP_FLAG) 
                 {
                     // stop found, return the processed byte array
                     startFound = false;
                     controlFound = false;
                     return bs.toByteArray();
-                }
+                } 
                 else 
                 {
                     // new data byte, add it to the buffer
-                    bs.write(rx); 
+                    bs.write(rx);
                 }
-            } 
-            /*else
-            {
-                // throw exception here
-                System.out.println("exception 2");
-            }*/
+            }
+
+            // read new byte
+            tmprx = in.read();
         }
-         
+
         // no full frame received yet
         return null;
     }
-    
-    public void send(byte[] data) throws IOException
+
+    public void send(byte[] data) throws IOException 
     {
         out.write(HLDLC_START_FLAG);
-        for (int i = 0; i < data.length; i++)
+        for (int i = 0; i < data.length; i++) 
         {
             byte tx = data[i];
             switch (tx) 
@@ -173,21 +175,15 @@ public class HLDLC
         public boolean running;
 
         @Override
-        public void start()
+        public void run() 
         {
-            super.start();
             running = true;
-        }
-
-        @Override
-        public void run()
-        {
             try 
             {
-                while (running)
+                while (running) 
                 {
                     byte[] d = blockingread();
-                    if (d != null)
+                    if (d != null) 
                     {
                         callback.received(d);
                     }
@@ -195,7 +191,7 @@ public class HLDLC
             } catch (IOException ex) 
             {
                 running = false;
-            }      
+            }
         }
     }
 }

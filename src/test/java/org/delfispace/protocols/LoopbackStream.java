@@ -29,6 +29,7 @@ public class LoopbackStream
 {
     private final LoopbackOutput out = new LoopbackOutput();
     private final LoopbackInput in = new LoopbackInput();
+    private Object lock = new Object();
     
     private final ArrayList<Byte> l = new ArrayList<>();
    
@@ -42,18 +43,34 @@ public class LoopbackStream
         return in;
     }
     
+    public void close() throws IOException
+    {
+        out.close();
+        in.close();        
+    }
+    
     public void join()
     {
-        /*try 
+        try 
         {
-            while (l.size() > 0)
+            int len;
+            synchronized(lock)
             {
-                    Thread.sleep(100);               
+                len = l.size();
+            }
+            while (len > 0)
+            {
+                Thread.sleep(100);  
+                         
+                synchronized(lock)
+                {   
+                    len = l.size();
+                }
             }
         } catch (InterruptedException ex) 
         {
             // nothing to do
-        }*/
+        }
     }
     class LoopbackInput extends InputStream
     {
@@ -69,9 +86,13 @@ public class LoopbackStream
         @Override
         public int read() throws IOException 
         {
-            while ((l.size() < 1))
+            int len;
+            synchronized(lock)
             {
-                
+                len = l.size();
+            }
+            while (len < 1)
+            {                
                 if (!open)
                 {
                     return -1;
@@ -79,22 +100,45 @@ public class LoopbackStream
                 
                 try 
                 {
-                    Thread.sleep(100);
+                    Thread.sleep(120);
                 } catch (InterruptedException ex) 
                 {
                     // nothing to do
                 }
+                synchronized(lock)
+                {
+                    len = l.size();
+                }
             }
-            return (int)l.remove(0) & 0xFF;
+            synchronized(lock)
+            {
+                return (int)l.remove(0) & 0xFF;
+            }
+            
         }
     }
 
     class LoopbackOutput extends OutputStream
     {
+        private boolean open = true;
+        
         @Override
         public void write(int b) throws IOException 
         {
-            l.add(l.size(), (byte)(b & 0xFF));
+            if (open)
+            {
+                synchronized(lock)
+                {
+                    l.add(l.size(), (byte)(b & 0xFF));
+                }                                
+            }
+        }
+        
+        @Override
+        public void close() throws IOException
+        {
+            open = false;
+            super.close();
         }
     }
 }

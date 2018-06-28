@@ -34,7 +34,8 @@ import org.junit.Test;
 public class HLDLCTest 
 {
     private HLDLC protocol;
-    
+    private int receivedFrames = 0;
+            
     @BeforeClass
     public static void setUpClass() 
     {
@@ -70,7 +71,7 @@ public class HLDLCTest
 
         Assert.assertArrayEquals("Error", output, data);
     }
-    
+
     @Test
     public void testBlockingReceive() throws IOException 
     {
@@ -92,7 +93,7 @@ public class HLDLCTest
         runTest(new byte[]{(byte)0x7E, (byte)0x41, (byte)0x7D, (byte)0x5C, (byte)0x7C, (byte)0x2E}, 
                 new byte[]{(byte)0x41, (byte)0x07C});        
     }
-    
+
     @Test
     public void testPartial() throws IOException
     {
@@ -112,6 +113,7 @@ public class HLDLCTest
             System.out.print(String.format("%02X ", data[i]));
         }        
         System.out.println();
+        Assert.assertArrayEquals("Error", data, new byte[] {(byte)0x01, (byte)0x02});
         
         data = protocol.read();
         for (int i = 0; i < data.length; i++)
@@ -119,7 +121,7 @@ public class HLDLCTest
             System.out.print(String.format("%02X ", data[i]));
         }        
         System.out.println();
-        //Assert.assertArrayEquals("Error", output, data);
+        Assert.assertArrayEquals("Error", data, new byte[] {(byte)0x02, (byte)0x02});
     }
     
     @Test
@@ -146,8 +148,9 @@ public class HLDLCTest
             System.out.print(String.format("%02X ", data[i]));
         }        
         System.out.println();        
-        
+                        
         data = protocol.read();
+        
         Assert.assertArrayEquals("Error", data, input);
     }
     
@@ -163,14 +166,17 @@ public class HLDLCTest
         
         protocol = new HLDLC(ls.getInputStream(), ls.getOutputStream());
         byte[] input = new byte[]{(byte)0x01, (byte)0x02, (byte)0x7E, (byte)0xFF, (byte)0xFE };
-          
+               
+        receivedFrames = 0;
         protocol.setReceiverCallback((byte[] data) -> {
             Assert.assertArrayEquals("Error", data, input);
+            receivedFrames++;
         });
         
         protocol.send(input);
         protocol.send(input);
         
         ls.join();
+        Assert.assertEquals("Error", receivedFrames, 2);
     }
 }
