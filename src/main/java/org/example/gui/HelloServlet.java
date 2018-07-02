@@ -42,10 +42,16 @@ public class HelloServlet extends HttpServlet
         }
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().println("<html>");
+        response.getWriter().println("<head></head>");
+        response.getWriter().println("<body>");
         response.getWriter().println("<script type=\"text/javascript\" src=\"/js/jquery-1.11.1.min.js\"></script>");
         response.getWriter().println("<script type=\"text/javascript\" src=\"/js/goldenlayout.min.js\"></script>");
+        response.getWriter().println("<script type=\"text/javascript\" src=\"/js/jsonrpc.js\"></script>");
         response.getWriter().println("<script type=\"text/javascript\" src=\"/js/layoutmanager.js\"></script>");
         response.getWriter().println("<link type=\"text/css\" rel=\"stylesheet\" href=\"css/goldenlayout-base.css\" />");
         response.getWriter().println("<link type=\"text/css\" rel=\"stylesheet\" href=\"/css/goldenlayout-translucent-theme.css\" />");
+        response.getWriter().println("</body>");
+        response.getWriter().println("</html>");
     }
 }

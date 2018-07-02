@@ -67,46 +67,45 @@ myLayout.registerComponent("EventLog", function(container, componentState)
 });
 myLayout.init();
 
-var jsonWebSocket = new WebSocket("ws://" + location.host + "/wss");
+var rpc = new jsonRPC("ws://" + location.host + "/wss");
 
-jsonWebSocket.onmessage = function(event) 
+rpc.onopen( function(evt)
 {
-    try 
+    updateDiv("log", myGetTime() + " Connection established.");
+});
+
+rpc.onclose( function(evt)
+{
+    updateDiv("log", myGetTime() + " Connection lost, trying to reconnect...");
+});
+
+rpc.onerror(function(error)
+{
+    updateDiv("log", myGetTime() + " Communication error: " + error);
+});
+
+rpc.onmessage( function(command, data)
+{
+    switch(command) 
     {
-        var jsonObj = JSON.parse(event.data);
+        case "log":
+            updateDiv("log", myGetTime() + data);
+            break;
 
-        if ((typeof jsonObj["command"] !== 'undefined') && (typeof jsonObj["data"] !== 'undefined') )
-        {
-            // valid JSON command received!
-            //console.log(jsonObj["command"]);
-            switch(jsonObj["command"]) 
-            {
-                case "log":
-                    updateDiv("log", myGetTime() + jsonObj["data"]);
-                    break;
+        case "downlink":
+            updateDiv("downlink", myGetTime() + data);
+            break;
 
-                case "downlink":
-                    updateDiv("downlink", myGetTime() + jsonObj["data"]);
-                    break;
-
-                default:
-                    updateDiv("log", myGetTime() + "Invalid command: " + event.data);
-            }
-        }
-    } catch (e) 
-    {
-        updateDiv("log", myGetTime() + "Invalid message: " + event.data);
+        default:
+            updateDiv("log", myGetTime() + "Invalid command: " + data);
     }
+});
 
-}
+rpc.open();
 
 function handleSend(buttonId) 
 {
-    var obj = {}
-    obj["command"] = "send";
-    obj["data"] = "message to be sent from " + buttonId;
-    var s = JSON.stringify(obj);
-    jsonWebSocket.send(s);
+    rpc.send("send", "message to be sent from " + buttonId);
 };
 
 function myGetTime()
@@ -121,7 +120,7 @@ function myGetTime()
         ("0" + d.getSeconds()).slice(-2),
         ".",
         ("0" + d.getMilliseconds()).slice(-3),
-        ": "
+        " "
     );
     return html.join("");        
 }
