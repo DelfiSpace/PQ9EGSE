@@ -55,7 +55,7 @@ public class PQ9
             data = new byte[5 + input.length];
             data[0] = (byte)(destination & 0xFF);
             data[1] = (byte)(input.length & 0xFF);
-            System.arraycopy(input, 0, data, 3, data[1]);
+            System.arraycopy(input, 0, data, 3, data[1] & 0xFF);
         }
         else
         {
@@ -176,8 +176,8 @@ public class PQ9
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Raw: ");
+        StringBuilder sb = new StringBuilder(); 
+        sb.append("Full frame: ");
         for(int i = 0; i < data.length; i++)
         {
             sb.append(String.format("0x%02X ", data[i]));
