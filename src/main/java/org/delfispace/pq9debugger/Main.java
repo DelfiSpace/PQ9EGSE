@@ -29,9 +29,16 @@ import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.delfispace.CommandWebServer.Command;
+import org.delfispace.CommandWebServer.CommandWebServer;
 import org.delfispace.protocols.pq9.PQ9;
 import org.delfispace.protocols.pq9.PQ9Exception;
 import org.delfispace.protocols.pq9.PQ9PCInterface;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -39,7 +46,11 @@ import org.delfispace.protocols.pq9.PQ9PCInterface;
  */
 public class Main 
 {
-    public static void main(String[] args) throws UnsupportedEncodingException, IOException, PQ9Exception
+    private static CommandWebServer srv;
+    private static JSONParser parser = new JSONParser(); 
+    
+    
+    public static void main(String[] args) throws UnsupportedEncodingException, IOException, PQ9Exception, Exception
     {
         int status = 1;
         
@@ -72,11 +83,12 @@ public class Main
         p.setReceiverCallback((PQ9 msg) -> {
             try 
             {
+                StringBuilder sb = new StringBuilder();
                 // print reception time
-                out.write(df.format(new Date()));
+                sb.append(df.format(new Date()));
                 // print the received frame
-                out.write("New frame received: \n");
-                out.write(msg + "\n");
+                sb.append("New frame received: \n");
+                sb.append(msg + "\n");
                     
                 // reply to the message in case it is correct
                 //PQ9 reply = msg.reply(msg.getData());
@@ -85,26 +97,49 @@ public class Main
                 //Thread.sleep(1000);
                 //PQ9 reply2 = msg.reply(new byte[25]);
                 //p.send(reply2);
-            } catch (IOException ex)
-            {
-                ex.printStackTrace();
+                srv.send(new Command("downlink", sb.toString()));
             } catch (Exception ex)
             {
                 ex.printStackTrace();
             }
         });
         
-        // flush the console buffer once per second
-        final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(() -> {
-            try 
-            {
-                out.flush();
-            } catch (IOException ex)
-            {
-                // nothing to do
+        srv = new CommandWebServer(8080);
+        srv.serReceptionHandler((Command cmd) -> {
+            System.out.println("Received command: " + cmd);
+            String data = cmd.getData();
+            JSONObject obj;
+            try {
+                obj = (JSONObject)parser.parse(data);
+                int d = Integer.parseInt((String) obj.get("dest"));
+                int s = Integer.parseInt((String) obj.get("src"));
+                
+                String[] parts = ((String) obj.get("data")).split(" ");
+                byte[] n1 = new byte[parts.length];
+                for(int n = 0; n < parts.length; n++) 
+                {
+                   n1[n] = (byte)Integer.parseInt(parts[n]);
+                }
+                PQ9 frame = new PQ9(d, s, n1);
+                p.send(frame);
+                // print reception time
+                System.out.print(df.format(new Date()));
+                // print the received frame
+                System.out.print(" New frame sent: \n");
+                System.out.print("\t" + frame.toString().replace("\n", "\n\t") + "\n");
+                
+            } catch (ParseException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (PQ9Exception ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }, 0, 1, TimeUnit.SECONDS);
+            
+            
+        });
+        
+        srv.start();
         
         // get telemetry
         /*final ScheduledExecutorService telemetry = Executors.newSingleThreadScheduledExecutor();

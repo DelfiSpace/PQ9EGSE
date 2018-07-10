@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.delfispace.pq9debugger.Command;
+import org.delfispace.CommandWebServer.Command;
 import org.delfispace.pq9debugger.clientsInterface;
 import org.delfispace.pq9debugger.cmdMultiPublisher;
 import org.delfispace.pq9debugger.cmdMultiSubscriber;
@@ -51,7 +51,7 @@ import org.json.simple.parser.ParseException;
  */
 public class EventSocket extends WebSocketAdapter
 {
-    JSONParser parser = new JSONParser();   
+    private JSONParser parser = new JSONParser();   
     private final clientsInterface cs = clientsInterface.getInstance();
     private final cmdMultiPublisher cmd = cmdMultiPublisher.getInstance();
     private final cmdMultiSubscriber sub = cmdMultiSubscriber.getInstance();
@@ -85,7 +85,7 @@ public class EventSocket extends WebSocketAdapter
         List<String[]> numbers = new ArrayList();
         numbers.add(new String[]{"dest", "Destination", "7"});
         numbers.add(new String[]{"src", "Source", "1"});
-        numbers.add(new String[]{"data", "Data", "1 1 1"});
+        numbers.add(new String[]{"data", "Data", "17 1"});
         
         Tag t = div
                 (

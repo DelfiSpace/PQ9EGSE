@@ -5,6 +5,8 @@
  */
 package org.delfispace.pq9debugger;
 
+import org.delfispace.CommandWebServer.Command;
+
 /**
  *
  * @author Stefano Speretta <s.speretta@tudelft.nl>

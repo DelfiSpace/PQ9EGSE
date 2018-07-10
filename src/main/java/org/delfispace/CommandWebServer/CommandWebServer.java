@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.example.gui;
+package org.delfispace.CommandWebServer;
 
+import org.example.gui.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -25,7 +26,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.delfispace.CommandWebServer.Command;
 import org.delfispace.pq9debugger.Subscriber;
 import org.delfispace.pq9debugger.cmdMultiPublisher;
 import org.delfispace.pq9debugger.cmdMultiSubscriber;
@@ -40,13 +40,16 @@ import org.json.simple.JSONObject;
  *
  * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
-public class JettyMultipleServer
+public class CommandWebServer
 {
     private static int counter = 0;
+    private final Server server;
+    private final cmdMultiSubscriber sub;
+    private final cmdMultiPublisher pub;
     
-    public static void main(String[] args) throws Exception
+    public CommandWebServer(int port) throws Exception
     {
-        Server server = new Server(8080);
+        server = new Server(port);
  
         // Establish ServletContext for all servlets
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -72,31 +75,22 @@ public class JettyMultipleServer
         context.addServlet(holderDef,"/html/*");
         context.setErrorHandler(new ErrorHandler());
 
-        cmdMultiPublisher cmd = cmdMultiPublisher.getInstance();
-        cmd.setSubscriber((Command cmd1) -> {
-            System.out.println("Received command: " + cmd1);
-        });
-        
-        cmdMultiSubscriber sub = cmdMultiSubscriber.getInstance();
-        final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(() -> {
-            if ((counter % 2) != 0)
-            {
-                // Sending log...
-                sub.publish(new Command("log", (new Date()).toString()));
-            }
-            else
-            {
-                sub.publish(new Command("downlink", counter + " "));
-            }
-            if ((counter % 21) == 0)
-            {
-                sub.publish(new Command("abc", counter + " "));
-            }
-            counter++;
-        }, 0, 5000, TimeUnit.MILLISECONDS); 
-        
+        pub = cmdMultiPublisher.getInstance();                
+        sub = cmdMultiSubscriber.getInstance();        
+    }
+    
+    public void start() throws Exception
+    {
         server.start();
-        server.join();
+    }
+    
+    public void send(Command cmd)
+    {
+        sub.publish(cmd);
+    }
+    
+    public void serReceptionHandler(Subscriber cmdSub)
+    {
+        pub.setSubscriber(cmdSub);
     }
 }

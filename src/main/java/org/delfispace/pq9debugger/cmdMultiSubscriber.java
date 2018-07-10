@@ -5,6 +5,7 @@
  */
 package org.delfispace.pq9debugger;
 
+import org.delfispace.CommandWebServer.Command;
 import java.util.Iterator;
 import java.util.LinkedList;
 

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.delfispace.pq9debugger;
+package org.delfispace.CommandWebServer;
 
 import org.json.simple.JSONObject;
 
@@ -40,6 +40,7 @@ public class Command
         return obj.toJSONString();
     }
     
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
