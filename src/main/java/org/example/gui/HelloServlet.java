@@ -16,6 +16,12 @@
  */
 package org.example.gui;
 
+import static j2html.TagCreator.body;
+import static j2html.TagCreator.head;
+import static j2html.TagCreator.html;
+import static j2html.TagCreator.link;
+import static j2html.TagCreator.script;
+import static j2html.TagCreator.title;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,30 +34,31 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class HelloServlet extends HttpServlet
 {
-    private String greeting="Hello World";
-    public HelloServlet(){}
-    public HelloServlet(String greeting)
-    {
-        this.greeting=greeting;
-    }
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         if (!request.getRequestURI().endsWith("/"))
         {
             response.sendRedirect(request.getContextPath() + "/");
-        }
+        }        
         response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println("<html>");
-        response.getWriter().println("<head></head>");
-        response.getWriter().println("<body>");
-        response.getWriter().println("<script type=\"text/javascript\" src=\"/js/jquery-1.11.1.min.js\"></script>");
-        response.getWriter().println("<script type=\"text/javascript\" src=\"/js/goldenlayout.min.js\"></script>");
-        response.getWriter().println("<script type=\"text/javascript\" src=\"/js/jsonrpc.js\"></script>");
-        response.getWriter().println("<script type=\"text/javascript\" src=\"/js/layoutmanager.js\"></script>");
-        response.getWriter().println("<link type=\"text/css\" rel=\"stylesheet\" href=\"css/goldenlayout-base.css\" />");
-        response.getWriter().println("<link type=\"text/css\" rel=\"stylesheet\" href=\"/css/goldenlayout-translucent-theme.css\" />");
-        response.getWriter().println("</body>");
-        response.getWriter().println("</html>");
+        response.setStatus(HttpServletResponse.SC_OK);        
+        response.getWriter().write(
+            html
+            (
+                head
+                (
+                    title("PQ9 EGSE"),
+                    link().withRel("stylesheet").withType("text/css").withHref("/css/goldenlayout-base.css"),
+                    link().withRel("stylesheet").withType("text/css").withHref("/css/goldenlayout-translucent-theme.css")
+                ),
+                body
+                (
+                    script().withSrc("/js/jquery-1.11.1.min.js").withType("text/javascript"),
+                    script().withSrc("/js/goldenlayout.min.js").withType("text/javascript"),
+                    script().withSrc("/js/jsonrpc.js").withType("text/javascript"),
+                    script().withSrc("/js/layoutmanager.js").withType("text/javascript")
+                )
+            ).render());
     }
 }
