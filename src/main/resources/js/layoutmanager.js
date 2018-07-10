@@ -96,8 +96,12 @@ rpc.onmessage( function(command, data)
             updateDiv("downlink", myGetTime() + data);
             break;
 
+        case "uplink":
+            document.getElementById("uplink").innerHTML = data;
+            break;
+
         default:
-            updateDiv("log", myGetTime() + "Invalid command: " + data);
+            updateDiv("log", myGetTime() + "Invalid command \"" + command + "\": " + data);
     }
 });
 
@@ -107,6 +111,17 @@ function handleSend(buttonId)
 {
     rpc.send("send", "message to be sent from " + buttonId);
 };
+
+function fetchData(id, elm)
+{
+    var obj = {};    
+    for(var i = 0; i < elm.length; i++)
+    {   
+        obj[elm[i]] = document.getElementById(elm[i]).value;
+    } 
+    var s = JSON.stringify(obj);
+    rpc.send(id, s);
+}
 
 function myGetTime()
 {

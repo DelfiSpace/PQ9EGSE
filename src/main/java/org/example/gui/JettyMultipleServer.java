@@ -17,12 +17,24 @@
 package org.example.gui;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.delfispace.pq9debugger.Command;
+import org.delfispace.pq9debugger.Subscriber;
+import org.delfispace.pq9debugger.cmdMultiPublisher;
+import org.delfispace.pq9debugger.cmdMultiSubscriber;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -30,6 +42,8 @@ import org.eclipse.jetty.util.resource.Resource;
  */
 public class JettyMultipleServer
 {
+    private static int counter = 0;
+    
     public static void main(String[] args) throws Exception
     {
         Server server = new Server(8080);
@@ -39,8 +53,6 @@ public class JettyMultipleServer
         context.setContextPath("/");
         Path webrootPath = new File("src/main/resources").toPath().toRealPath();
         context.setBaseResource(Resource.newResource(webrootPath.toUri()));
-        // What file(s) should be used when client requests a directory
-        //context.setWelcomeFiles(new String[] { "index.html" });
         server.setHandler(context);
 
         // Add a servlet (technique #1)
@@ -60,6 +72,30 @@ public class JettyMultipleServer
         context.addServlet(holderDef,"/html/*");
         context.setErrorHandler(new ErrorHandler());
 
+        cmdMultiPublisher cmd = cmdMultiPublisher.getInstance();
+        cmd.setSubscriber((Command cmd1) -> {
+            System.out.println("Received command: " + cmd1);
+        });
+        
+        cmdMultiSubscriber sub = cmdMultiSubscriber.getInstance();
+        final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(() -> {
+            if ((counter % 2) != 0)
+            {
+                // Sending log...
+                sub.publish(new Command("log", (new Date()).toString()));
+            }
+            else
+            {
+                sub.publish(new Command("downlink", counter + " "));
+            }
+            if ((counter % 21) == 0)
+            {
+                sub.publish(new Command("abc", counter + " "));
+            }
+            counter++;
+        }, 0, 5000, TimeUnit.MILLISECONDS); 
+        
         server.start();
         server.join();
     }

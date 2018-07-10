@@ -16,13 +16,29 @@
  */
 package org.example.gui;
 
+import static j2html.TagCreator.attrs;
+import static j2html.TagCreator.button;
+import static j2html.TagCreator.dd;
+import static j2html.TagCreator.div;
+import static j2html.TagCreator.dl;
+import static j2html.TagCreator.dt;
+import static j2html.TagCreator.each;
+import static j2html.TagCreator.fieldset;
+import static j2html.TagCreator.input;
+import static j2html.TagCreator.label;
+import static j2html.TagCreator.legend;
+import static j2html.TagCreator.link;
+import j2html.tags.ContainerTag;
+import j2html.tags.Tag;
 import java.io.IOException;
-import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.delfispace.pq9debugger.Command;
+import org.delfispace.pq9debugger.clientsInterface;
+import org.delfispace.pq9debugger.cmdMultiPublisher;
+import org.delfispace.pq9debugger.cmdMultiSubscriber;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import org.json.simple.JSONObject;
@@ -35,43 +51,29 @@ import org.json.simple.parser.ParseException;
  */
 public class EventSocket extends WebSocketAdapter
 {
-    JSONParser parser = new JSONParser();      
-    private int counter = 0;
+    JSONParser parser = new JSONParser();   
+    private final clientsInterface cs = clientsInterface.getInstance();
+    private final cmdMultiPublisher cmd = cmdMultiPublisher.getInstance();
+    private final cmdMultiSubscriber sub = cmdMultiSubscriber.getInstance();
+    private int tabIndex = 0;
+    private final StringBuilder idArray = new StringBuilder();
     
     public EventSocket()
     {        
-        final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(() -> {
-        try {            
-            if (this.isConnected())
+        sub.setSubscriber((Command command) -> 
+        {
+            try 
+            {
+                if (this.isConnected())
                 {
-                    if ((counter % 2) != 0)
-                    {
-                        // Sending log...
-                        JSONObject obj=new JSONObject();    
-                        obj.put("command","log");    
-                        obj.put("data",(new Date()).toString());     
-                        super.getRemote().sendString(obj.toString());
-                    }
-                    else
-                    {
-                        //System.out.println("Sending downlink...");
-                        super.getRemote().sendString("{\"command\":\"downlink\",\"data\":\"" + counter + "\"}");
-                    }
-                    if ((counter % 21) == 0)
-                    {
-                        super.getRemote().sendString("{\"command\":\"abc\",\"data\":\"" + counter + "\"}");
-                    }
-                    if ((counter % 14) == 0)
-                    {
-                        super.getRemote().sendString("ciao mamma");
-                    }
-                    counter++;
+                    // generate the JSON encoding...
+                    this.getRemote().sendString(command.toJSON());
                 }
-        } catch (IOException ex) {
-            Logger.getLogger(EventSocket.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        }, 0, 500, TimeUnit.MILLISECONDS);      
+            } catch (IOException ex) 
+            {
+                Logger.getLogger(EventSocket.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });                     
     }
     
     @Override
@@ -80,22 +82,34 @@ public class EventSocket extends WebSocketAdapter
         super.onWebSocketConnect(sess);
         System.out.println("Socket Connected: " + sess);
         
+        List<String[]> numbers = new ArrayList();
+        numbers.add(new String[]{"dest", "Destination", "7"});
+        numbers.add(new String[]{"src", "Source", "1"});
+        numbers.add(new String[]{"data", "Data", "1 1 1"});
         
+        Tag t = div
+                (
+                    link().withRel("stylesheet").withType("text/css").withHref("/css/uplink.css"),
+                    fieldset
+                    (                            
+                        legend("Raw Frame"),
+                        dl
+                        (
+                            each(numbers, i -> entry(i[0], i[1], i[2]))
+                        ),
+                        button("Send").attr("id", "send1").attr("onclick", "fetchData(this.id, [" + idArray.toString()+ "])").attr("tabindex", tabIndex)                            
+                    )
+                );       
+        sub.publish(new Command("uplink", t.render()));        
     }
     
     @Override
     public void onWebSocketText(String message)
     {
         super.onWebSocketText(message);
-        System.out.println("Received TEXT message: " + message);
         try {
             JSONObject obj = (JSONObject)parser.parse(message);
-            String cmd = (String) obj.get("command");
-            String data = (String) obj.get("data");
-            String test = (String) obj.get("mamma");
-            System.out.println(cmd);
-            System.out.println(data);
-            System.out.println(test);
+            this.cmd.publish(new Command((String) obj.get("command"), (String) obj.get("data")));
         } catch (ParseException ex) 
         {
             Logger.getLogger(EventSocket.class.getName()).log(Level.SEVERE, null, ex);
@@ -114,5 +128,28 @@ public class EventSocket extends WebSocketAdapter
     {
         super.onWebSocketError(cause);
         cause.printStackTrace(System.err);
+    }
+    
+    public ContainerTag entry(String id, String description, String value) 
+    {
+        tabIndex++;
+        if (idArray.length() != 0)
+        {
+            idArray.append(", ");
+        }
+        idArray.append("\'");
+        idArray.append(id);
+        idArray.append("\'");        
+        return div
+            (
+                dt
+                ( 
+                    label(description + ":").attr("for", id).attr("tabindex", tabIndex)
+                ), 
+                dd
+                (
+                    input(attrs("#" + id)).withType("text").withValue(value)
+                )
+            );
     }
 }
