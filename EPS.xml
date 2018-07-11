@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xtce:SpaceSystem xmlns:xtce="http://www.omg.org/space/xtce"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Delfi-PQ"
+                  xsi:schemaLocation="http://www.omg.org/space/xtce SpaceSystemV1.2-27Feb2014-mods.xsd"
+                  shortDescription="Defines bus frames for Delfi-PQ">
+    <xtce:Header version="1.0" validationStatus="Draft">
+        <xtce:AuthorSet>
+            <xtce:Author>Stefano Speretta, Delft University of Technology</xtce:Author>
+        </xtce:AuthorSet>
+        <xtce:NoteSet>
+            <xtce:Note>This file describes the PQ9 bus frames for Delfi-PQ.</xtce:Note>
+        </xtce:NoteSet>
+    </xtce:Header>
+    <!-- All things pertaining to telemetry fall within the TelemetryMetaData section. -->
+    <!-- Some system level parameter type definitions in this section can be used by both telemetry and commands. -->
+    <xtce:TelemetryMetaData>
+        <xtce:ParameterTypeSet>
+
+            <xtce:IntegerParameterType name="byte">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8"/>
+            </xtce:IntegerParameterType>
+            
+            <xtce:IntegerParameterType name="short">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="16"/>
+            </xtce:IntegerParameterType>
+            
+            <xtce:IntegerParameterType name="long">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="32"/>
+            </xtce:IntegerParameterType>
+        
+            <xtce:FloatParameterType name="INAvoltage">
+                <xtce:UnitSet>
+                    <xtce:Unit>V</xtce:Unit>
+                </xtce:UnitSet>
+                <xtce:IntegerDataEncoding sizeInBits="16">
+                    <xtce:DefaultCalibrator>   
+                        <xtce:MathOperationCalibrator>
+                            <xtce:ThisParameterOperand/> 
+                            <xtce:ValueOperand>0.00125</xtce:ValueOperand>   
+                            <xtce:Operator>*</xtce:Operator>    
+                        </xtce:MathOperationCalibrator>   
+                    </xtce:DefaultCalibrator> 
+                </xtce:IntegerDataEncoding>
+                <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
+            </xtce:FloatParameterType>
+            
+            <xtce:ArrayParameterType name="INAvoltageArray" arrayTypeRef="INAvoltage" numberOfDimensions="1"/>
+            <xtce:ArrayParameterType name="shortArray" arrayTypeRef="short" numberOfDimensions="1"/>
+
+					
+		</xtce:ParameterTypeSet>
+		
+        <!-- These are the parameters that can be used in containers. -->
+        <xtce:ParameterSet>
+            <!-- These are parameters that may be used in abstract telemetry or command containers to define system-level settings. -->
+
+            <xtce:Parameter name="Destination" parameterTypeRef="byte"/>
+            <xtce:Parameter name="Size" parameterTypeRef="byte"/>
+            <xtce:Parameter name="Source" parameterTypeRef="byte"/>
+            <xtce:Parameter name="b1" parameterTypeRef="byte"/>
+            <xtce:Parameter name="b2" parameterTypeRef="byte"/>
+            
+            <xtce:Parameter name="SystemID" parameterTypeRef="byte"/>
+            <xtce:Parameter name="Uptime" parameterTypeRef="long"/>
+            <xtce:Parameter name="testing4" parameterTypeRef="long"/>
+            <xtce:Parameter name="BootCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="SoftwareBootCounter" parameterTypeRef="byte"/>
+            <xtce:Parameter name="SensorsStatus" parameterTypeRef="short"/>
+            <xtce:Parameter name="SAVoltage" parameterTypeRef="INAvoltageArray"/>
+            <xtce:Parameter name="SACurrent" parameterTypeRef="shortArray"/>
+            <xtce:Parameter name="SATemp" parameterTypeRef="shortArray"/>
+            
+            <xtce:Parameter name="BusCurrent" parameterTypeRef="shortArray"/>
+            <xtce:Parameter name="BusVoltage" parameterTypeRef="INAvoltageArray"/>
+            
+			<xtce:Parameter name="BattVoltage" parameterTypeRef="short"/>
+			<xtce:Parameter name="BattCapacity" parameterTypeRef="short"/>
+			<xtce:Parameter name="BattTemperature" parameterTypeRef="short"/>
+			
+			<xtce:Parameter name="BusSwitchesStatus" parameterTypeRef="byte"/>
+			
+			<xtce:Parameter name="MCUTemp" parameterTypeRef="short"/>
+			
+			<xtce:Parameter name="IntCurrent" parameterTypeRef="short"/>
+			<xtce:Parameter name="IntVoltage" parameterTypeRef="INAvoltage"/>            
+            
+            <xtce:Parameter name="URBCurrent" parameterTypeRef="short"/>
+            <xtce:Parameter name="URBVoltage" parameterTypeRef="INAvoltage"/>
+            
+            <xtce:Parameter name="testing2" parameterTypeRef="short"/>
+            
+            <xtce:Parameter name="crc" parameterTypeRef="short"/>
+
+        </xtce:ParameterSet>
+        <xtce:ContainerSet>
+			
+            <xtce:SequenceContainer name="PQ9" abstract="true" shortDescription="PQ9 frame">
+                <xtce:EntryList>
+                    <xtce:ParameterRefEntry parameterRef="Destination"/>
+                    <xtce:ParameterRefEntry parameterRef="Size"/>
+                    <xtce:ParameterRefEntry parameterRef="Source"/>                    
+                    <xtce:ParameterRefEntry parameterRef="b1"/>
+                    <xtce:ParameterRefEntry parameterRef="b2"/>
+                </xtce:EntryList>
+            </xtce:SequenceContainer>
+
+            <xtce:SequenceContainer name="EPS_HK" shortDescription="EPS Housekeeping frame">
+                <xtce:EntryList>
+
+                    <xtce:ParameterRefEntry parameterRef="SystemID"/>
+                    <xtce:ParameterRefEntry parameterRef="Uptime"/>
+                    <xtce:ParameterRefEntry parameterRef="testing4"/>
+                    <xtce:ParameterRefEntry parameterRef="BootCounter"/>      
+                    <xtce:ParameterRefEntry parameterRef="SoftwareBootCounter"/>  
+                    
+                    <xtce:ParameterRefEntry parameterRef="SensorsStatus"/>            
+                                                
+					<xtce:ArrayParameterRefEntry parameterRef="SAVoltage">
+						<xtce:DimensionList>
+							<xtce:Size>
+								<xtce:FixedValue>4</xtce:FixedValue>
+							</xtce:Size>
+						</xtce:DimensionList>
+					</xtce:ArrayParameterRefEntry>
+					
+					<xtce:ArrayParameterRefEntry parameterRef="SACurrent">
+						<xtce:DimensionList>
+							<xtce:Size>
+								<xtce:FixedValue>4</xtce:FixedValue>
+							</xtce:Size>
+						</xtce:DimensionList>
+					</xtce:ArrayParameterRefEntry>
+					
+					<xtce:ArrayParameterRefEntry parameterRef="SATemp">
+						<xtce:DimensionList>
+							<xtce:Size>
+								<xtce:FixedValue>4</xtce:FixedValue>
+							</xtce:Size>
+						</xtce:DimensionList>
+					</xtce:ArrayParameterRefEntry>
+					
+					<xtce:ArrayParameterRefEntry parameterRef="BusCurrent">
+						<xtce:DimensionList>
+							<xtce:Size>
+								<xtce:FixedValue>4</xtce:FixedValue>
+							</xtce:Size>
+						</xtce:DimensionList>
+					</xtce:ArrayParameterRefEntry>
+					
+					<xtce:ArrayParameterRefEntry parameterRef="BusVoltage">
+						<xtce:DimensionList>
+							<xtce:Size>
+								<xtce:FixedValue>4</xtce:FixedValue>
+							</xtce:Size>
+						</xtce:DimensionList>
+					</xtce:ArrayParameterRefEntry>
+					
+					<xtce:ParameterRefEntry parameterRef="BattVoltage"/> 
+					<xtce:ParameterRefEntry parameterRef="BattCapacity"/> 
+					<xtce:ParameterRefEntry parameterRef="BattTemperature"/> 
+					
+					<xtce:ParameterRefEntry parameterRef="BusSwitchesStatus"/> 
+					
+					<xtce:ParameterRefEntry parameterRef="MCUTemp"/>
+					
+					<xtce:ParameterRefEntry parameterRef="IntCurrent"/>
+					<xtce:ParameterRefEntry parameterRef="IntVoltage"/>
+					<xtce:ParameterRefEntry parameterRef="URBCurrent"/>
+					<xtce:ParameterRefEntry parameterRef="URBVoltage"/> 
+					
+					<xtce:ParameterRefEntry parameterRef="testing2"/>
+					
+					<xtce:ParameterRefEntry parameterRef="crc"/>
+						
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                        <xtce:RestrictionCriteria>
+                            <xtce:ComparisonList>
+                                <xtce:Comparison parameterRef="Source" value="2"/>
+                            </xtce:ComparisonList>
+                        </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>            
+        </xtce:ContainerSet>
+        
+        <xtce:StreamSet>
+            <xtce:VariableFrameStream name="PQ9bus" shortDescription="PQ9 stream">
+                <xtce:ContainerRef containerRef="PQ9"/>
+                <xtce:SyncStrategy>
+                    <xtce:Flag/>
+                </xtce:SyncStrategy>
+            </xtce:VariableFrameStream>
+        </xtce:StreamSet>
+    </xtce:TelemetryMetaData>
+</xtce:SpaceSystem>
+			

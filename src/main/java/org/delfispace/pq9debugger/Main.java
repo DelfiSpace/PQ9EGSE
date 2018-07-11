@@ -17,18 +17,16 @@
 package org.delfispace.pq9debugger;
 
 import com.fazecast.jSerialComm.SerialPort;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.delfispace.CommandWebServer.Command;
@@ -36,10 +34,16 @@ import org.delfispace.CommandWebServer.CommandWebServer;
 import org.delfispace.protocols.pq9.PQ9;
 import org.delfispace.protocols.pq9.PQ9Exception;
 import org.delfispace.protocols.pq9.PQ9PCInterface;
-import org.delfispace.protocols.pq9.PQ9Receiver;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.xtce.toolkit.XTCEContainerContentEntry;
+import org.xtce.toolkit.XTCEContainerContentModel;
+import org.xtce.toolkit.XTCEContainerEntryValue;
+import org.xtce.toolkit.XTCEDatabase;
+import org.xtce.toolkit.XTCEDatabaseException;
+import org.xtce.toolkit.XTCETMStream;
+import org.xtce.toolkit.XTCEValidRange;
 
 /**
  *
@@ -49,12 +53,14 @@ public class Main
 {
     private static CommandWebServer srv;
     private static final JSONParser parser = new JSONParser(); 
-    
+    private static XTCETMStream stream;
     
     public static void main(String[] args) throws UnsupportedEncodingException, IOException, PQ9Exception, Exception
     {
-        int status = 1;
-        
+        String file = "EPS.xml";
+        XTCEDatabase db_ = new XTCEDatabase(new File(file), true, false, true);
+        stream = db_.getStream( "PQ9bus" );
+       
         if (args.length < 1)
         {
             System.out.println("Usage: java -jar PQ9Debugger comport");
@@ -69,15 +75,14 @@ public class Main
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ");
         
         SerialPort comPort = SerialPort.getCommPort(args[0]);
-        //SerialPort comPort = SerialPort.getCommPort("/dev/tty.Bluetooth-Incoming-Port");
 
         // open con port
         comPort.openPort();
         
         // configure the seriql port parameters
-        comPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+        comPort.setComPortParameters(115200, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
         comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
-        
+                                       
         // crete the HLDLC reader
         PQ9PCInterface p = new PQ9PCInterface(comPort.getInputStream(), comPort.getOutputStream());
         
@@ -93,6 +98,8 @@ public class Main
                 sb.append("New frame received: <br>");
                 sb.append("&emsp;&emsp;&emsp;&emsp;");
                 sb.append(msg.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
+                sb.append("<br>&emsp;&emsp;&emsp;&emsp;");
+                sb.append(processFrame(stream, msg.getFrame()).replace("\n", "<br>&emsp;&emsp;&emsp;&emsp;"));
                 sb.append("</font>");
                 srv.send(new Command("datalog", sb.toString()));
             } catch (Exception ex)
@@ -139,5 +146,87 @@ public class Main
         
         srv.start();
         srv.join();                            
+    }
+    
+    static String processFrame(XTCETMStream stream, byte[] data) throws XTCEDatabaseException, Exception 
+    {
+        StringBuilder sb = new StringBuilder();
+        
+        XTCEContainerContentModel model = stream.processStream( data );
+ 
+        List<XTCEContainerContentEntry> entries = model.getContentList();
+
+        for (XTCEContainerContentEntry entry : entries) 
+        {
+            sb.append(entry.getName());
+            
+            XTCEContainerEntryValue val = entry.getValue();
+
+            if (val == null) 
+            {
+                sb.append("\n");
+            } else 
+            {
+                sb.append(": " + val.getCalibratedValue() + " "
+                        + entry.getParameter().getUnits() + " ("
+                        + val.getRawValueHex()+ ")");
+
+                if (!isWithinValidRange(entry))
+                {
+                    sb.append(" INVALID!");
+                    sb.append("\n");
+                }
+                else
+                {
+                    sb.append("\n");
+                }
+            }
+        }
+        List<String> warnings = model.getWarnings();
+        Iterator<String> it = warnings.iterator();
+        while(it.hasNext())
+        {
+            sb.append("WARNING: " + it.next());
+            sb.append("\n");
+        }
+        sb.append("\n");
+        return sb.toString();
+    }
+    
+    static private boolean isWithinValidRange(XTCEContainerContentEntry entry)
+    {
+        XTCEValidRange range = entry.getParameter().getValidRange();
+        if (!range.isValidRangeApplied()) {
+            return true;
+        } else {
+            String valLow =  range.isLowValueCalibrated() ? 
+                    entry.getValue().getCalibratedValue() : 
+                    entry.getValue().getUncalibratedValue();
+
+            if (range.isLowValueInclusive()) {
+                if (Double.parseDouble(valLow) < Double.parseDouble(range.getLowValue())) {
+                    return false;
+                }
+            } else {
+                if (Double.parseDouble(valLow) <= Double.parseDouble(range.getLowValue())) {
+                    return false;
+                }
+            }
+            
+            String valHigh =  range.isHighValueCalibrated() ? 
+                    entry.getValue().getCalibratedValue() : 
+                    entry.getValue().getUncalibratedValue();
+            
+            if (range.isHighValueInclusive()) {
+                if (Double.parseDouble(valHigh) > Double.parseDouble(range.getHighValue())) {
+                    return false;
+                }
+            } else {
+                if (Double.parseDouble(valHigh) >= Double.parseDouble(range.getHighValue())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
