@@ -17,15 +17,7 @@
 package org.delfispace.CommandWebServer;
 
 import org.example.gui.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.net.URL;
 import org.delfispace.pq9debugger.Subscriber;
 import org.delfispace.pq9debugger.cmdMultiPublisher;
 import org.delfispace.pq9debugger.cmdMultiSubscriber;
@@ -34,7 +26,6 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
-import org.json.simple.JSONObject;
 
 /**
  *
@@ -42,7 +33,6 @@ import org.json.simple.JSONObject;
  */
 public class CommandWebServer
 {
-    private static int counter = 0;
     private final Server server;
     private final cmdMultiSubscriber sub;
     private final cmdMultiPublisher pub;
@@ -54,8 +44,8 @@ public class CommandWebServer
         // Establish ServletContext for all servlets
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
-        Path webrootPath = new File("src/main/resources").toPath().toRealPath();
-        context.setBaseResource(Resource.newResource(webrootPath.toUri()));
+        URL url = CommandWebServer.class.getClassLoader().getResource("webroot/");               
+        context.setBaseResource(Resource.newResource(url.toURI()));
         server.setHandler(context);
 
         // Add a servlet (technique #1)
@@ -66,8 +56,6 @@ public class CommandWebServer
         ServletHolder holderEvents = new ServletHolder("ws-events", EventServlet.class);
         context.addServlet(holderEvents, "/wss/*");
 
-        // Add default servlet last (always last) (technique #2)
-        // Must be named "default", must be on path mapping "/"
         ServletHolder holderDef = new ServletHolder("default",DefaultServlet.class);
         holderDef.setInitParameter("dirAllowed","false");
         context.addServlet(holderDef,"/js/*");
