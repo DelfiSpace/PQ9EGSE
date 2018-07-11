@@ -12,7 +12,7 @@ var config = {
       content: [
         {
           type: "component",
-          componentName: "Downlink",
+          componentName: "DataLog",
           componentState: { label: "A" }
         },
         {
@@ -34,16 +34,17 @@ savedState = localStorage.getItem( 'layoutSavedState' );
 
 if( savedState !== null ) 
 {
+// there could be an exception here, when a component 
+// has been renamed and the old name is still in saved state
     myLayout = new GoldenLayout( JSON.parse( savedState ) );
 } else 
 {
     myLayout = new GoldenLayout( config );
 }
 
-
-myLayout.registerComponent("Downlink", function(container, componentState) 
+myLayout.registerComponent("DataLog", function(container, componentState) 
 {
-  container.getElement().html("<div id=\"downlink\"></div>");
+  container.getElement().html("<div id=\"datalog\"></div>");
 });
 myLayout.registerComponent("Uplink", function(container, componentState) 
 {
@@ -92,8 +93,8 @@ rpc.onmessage( function(command, data)
             updateDiv("log", myGetTime() + data);
             break;
 
-        case "downlink":
-            updateDiv("downlink", myGetTime() + data);
+        case "datalog":
+            updateDiv("datalog", data);
             break;
 
         case "uplink":

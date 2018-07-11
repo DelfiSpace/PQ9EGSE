@@ -84,6 +84,11 @@ public class CommandWebServer
         server.start();
     }
     
+    public void join() throws InterruptedException
+    {
+        server.join();
+    }
+    
     public void send(Command cmd)
     {
         sub.publish(cmd);

@@ -82,9 +82,21 @@ public class PQ9PCInterface
         while (tmprx != -1) 
         {
             byte rx = (byte) (tmprx & 0xFF);
+            System.out.println(String.format("%02X    %d %d", rx, bs.size(), sizeFrame));
             if (rx == HLDLC_START_FLAG) 
             {
                 // clear the buffer and get ready to process a new frame
+                if (bs.size() != 0)
+                {
+                    System.out.print("Bytes have been discarded: ");
+                    byte[] d = bs.toByteArray();
+                    for (int i = 0; i < d.length; i++)
+                    {
+                        System.out.print(String.format("%02X ", d[i]));
+                    }
+                    System.out.println();
+                }
+                System.out.println("reset");
                 bs.reset();
                 startFound = true;
                 controlFound = false;
@@ -124,29 +136,42 @@ public class PQ9PCInterface
                 {
                     // new data byte, add it to the buffer
                     bs.write(rx);
+                    //System.out.println("----->     " + sizeFrame + " " + bs.size());
                     if ((sizeFrame != -1) && (sizeFrame == bs.size() - 5))
                     {
+                        //System.out.println("reached end");
                         startFound = false;
                         controlFound = false;
                         sizeFrame = -1;
                         try 
                         {
-                            return new PQ9(bs.toByteArray());                            
+                            PQ9 t = new PQ9(bs.toByteArray());   
+                            // clean the buffer if a valid frame was found
+                            bs.reset();
+                            return t;
                         } catch (PQ9Exception ex) 
                         {
                             // the frame is not valid, throw away the data and wait for a new frame
+                            System.out.println(ex.getMessage());
                             return null;
                         }                        
                     }
                 }
+                
+                // initialize the counter to catch the frame size byte and use it to 
+                // detect frame termination
+                if (bs.size() == 2)
+                {
+                    
+                    sizeFrame = rx & 0xFF;
+                }
             }
-            // initialize the counter to catch the frame size byte and use it to 
-            // detect frame termination
-            if (bs.size() == 2)
+            else
             {
-                sizeFrame = rx & 0xFF;
+                //a byte received without having received a start
+                System.out.println(String.format("Unexpected byte: %02X\n", tmprx & 0xFF));
             }
-            
+        
             // prevent the buffer from growing too much
             if (bs.size() > 256)
             {
@@ -154,6 +179,7 @@ public class PQ9PCInterface
                 startFound = false;
                 controlFound = false;
                 sizeFrame = -1;
+                System.out.println("Buffer overrun");
             }
             // read new byte
             tmprx = in.read();

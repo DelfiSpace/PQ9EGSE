@@ -80,11 +80,11 @@ public class PQ9
         {
             throw new PQ9Exception("Maximum frame size is 260 bytes.");
         }
-        
+
         // check size
         if (input[1] == input.length - 5)
         {
-               // check if the CRC is correct
+            // check if the CRC is correct
             short crc1 = (short)((((int)input[input[1] + 3] & 0xFF) | 
                     ((short)input[input[1] + 4] << 8)) & 0xFFFF) ;
             short crc2 = crc16(input, 0, input[1] + 3);
@@ -183,9 +183,9 @@ public class PQ9
             sb.append(String.format("0x%02X ", data[i]));
         }
         sb.append("\n");
-        sb.append(String.format("Destination: 0x%02X\n", getDestination()));
-        sb.append(String.format("Source: 0x%02X\n", getSource()));
-        sb.append("Data: ");
+        sb.append(String.format("\tDestination: 0x%02X\n", getDestination()));
+        sb.append(String.format("\tSource: 0x%02X\n", getSource()));
+        sb.append("\tData: ");
         if (data[1] == 0)
         {
             sb.append("\n");
@@ -199,7 +199,7 @@ public class PQ9
             sb.append("\n");
         }
         int realCRC = (data[3 + data[1]] & 0xFF) | ((((int)data[4 + data[1]]) << 8) & 0xFF00);
-        sb.append(String.format("CRC: 0x%04X\n", realCRC));
+        sb.append(String.format("\tCRC: 0x%04X\n", realCRC));
         return sb.toString();
     }
     

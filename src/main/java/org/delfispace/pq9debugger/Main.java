@@ -36,6 +36,7 @@ import org.delfispace.CommandWebServer.CommandWebServer;
 import org.delfispace.protocols.pq9.PQ9;
 import org.delfispace.protocols.pq9.PQ9Exception;
 import org.delfispace.protocols.pq9.PQ9PCInterface;
+import org.delfispace.protocols.pq9.PQ9Receiver;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -47,7 +48,7 @@ import org.json.simple.parser.ParseException;
 public class Main 
 {
     private static CommandWebServer srv;
-    private static JSONParser parser = new JSONParser(); 
+    private static final JSONParser parser = new JSONParser(); 
     
     
     public static void main(String[] args) throws UnsupportedEncodingException, IOException, PQ9Exception, Exception
@@ -68,6 +69,7 @@ public class Main
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ");
         
         SerialPort comPort = SerialPort.getCommPort(args[0]);
+        //SerialPort comPort = SerialPort.getCommPort("/dev/tty.Bluetooth-Incoming-Port");
 
         // open con port
         comPort.openPort();
@@ -81,23 +83,18 @@ public class Main
         
         // setup an asynchronous callback on frame reception
         p.setReceiverCallback((PQ9 msg) -> {
-            try 
+            try
             {
                 StringBuilder sb = new StringBuilder();
+                sb.append("<font color=\"black\">");
                 // print reception time
                 sb.append(df.format(new Date()));
                 // print the received frame
-                sb.append("New frame received: \n");
-                sb.append(msg + "\n");
-                    
-                // reply to the message in case it is correct
-                //PQ9 reply = msg.reply(msg.getData());
-                //PQ9 reply = msg.reply(new byte[]{(byte)0x7E, (byte)0x7E, (byte)0x7D, (byte)0x7D, (byte)0x7C, (byte)0x7C});
-                //p.send(reply);
-                //Thread.sleep(1000);
-                //PQ9 reply2 = msg.reply(new byte[25]);
-                //p.send(reply2);
-                srv.send(new Command("downlink", sb.toString()));
+                sb.append("New frame received: <br>");
+                sb.append("&emsp;&emsp;&emsp;&emsp;");
+                sb.append(msg.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
+                sb.append("</font>");
+                srv.send(new Command("datalog", sb.toString()));
             } catch (Exception ex)
             {
                 ex.printStackTrace();
@@ -106,7 +103,6 @@ public class Main
         
         srv = new CommandWebServer(8080);
         srv.serReceptionHandler((Command cmd) -> {
-            System.out.println("Received command: " + cmd);
             String data = cmd.getData();
             JSONObject obj;
             try {
@@ -122,200 +118,26 @@ public class Main
                 }
                 PQ9 frame = new PQ9(d, s, n1);
                 p.send(frame);
+                StringBuilder sb = new StringBuilder();
+                sb.append("<font color=\"yellow\">");
                 // print reception time
-                System.out.print(df.format(new Date()));
+                sb.append(df.format(new Date()));
                 // print the received frame
-                System.out.print(" New frame sent: \n");
-                System.out.print("\t" + frame.toString().replace("\n", "\n\t") + "\n");
-                
+                sb.append("New frame transmitted: <br>");
+                sb.append("&emsp;&emsp;&emsp;&emsp;");
+                sb.append(frame.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;")); 
+                sb.append("</font>");
+                srv.send(new Command("datalog", sb.toString()));                
             } catch (ParseException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             } catch (PQ9Exception ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            
+            }                        
         });
         
         srv.start();
-        
-        // get telemetry
-        /*final ScheduledExecutorService telemetry = Executors.newSingleThreadScheduledExecutor();
-        telemetry.scheduleAtFixedRate(() -> {
-            try 
-            {
-                PQ9 frame = new PQ9(7, 1, new byte[]{2, 1});
-                p.send(frame);
-                // print reception time
-                out.write(df.format(new Date()));
-                // print the received frame
-                out.write(" New frame sent: \n");
-                out.write(frame + "\n");
-            } catch (IOException ex)
-            {
-                // nothing to do
-            } catch (PQ9Exception ex) 
-            {
-                try 
-                {
-                    out.write("Error sending frame: " + ex.getMessage());
-                } catch (IOException ex1) 
-                {
-                    // nothing to do here
-                }
-            }
-        }, 0, 5, TimeUnit.SECONDS);
-        
-        // get telemetry        
-        final ScheduledExecutorService ping = Executors.newSingleThreadScheduledExecutor();
-        ping.scheduleAtFixedRate(() -> {
-            try 
-            {
-                PQ9 frame = new PQ9(7, 1, new byte[]{17, 1});
-                p.send(frame);
-                // print reception time
-                out.write(df.format(new Date()));
-                // print the received frame
-                out.write(" New frame sent: \n");
-                out.write(frame + "\n");
-            } catch (IOException ex)
-            {
-                // nothing to do
-            } catch (PQ9Exception ex) 
-            {
-                try 
-                {
-                    out.write("Error sending frame: " + ex.getMessage());
-                } catch (IOException ex1) 
-                {
-                    // nothing to do here
-                }
-            }
-        }, 0, 7, TimeUnit.SECONDS);
-        
-        // get telemetry
-        final ScheduledExecutorService command = Executors.newSingleThreadScheduledExecutor();
-        command.scheduleAtFixedRate(() -> {
-            try 
-            {
-                int status = 1;
-                PQ9 frame = new PQ9(7, 1, new byte[]{1, 1, 4, (byte)status});
-                p.send(frame);
-                // print reception time
-                out.write(df.format(new Date()));
-                // print the received frame
-                out.write(" New frame sent: \n");
-                out.write(frame + "\n");
-                status++;
-                status %= 2;
-            } catch (IOException ex)
-            {
-                // nothing to do
-            } catch (PQ9Exception ex) 
-            {
-                try 
-                {
-                    out.write("Error sending frame: " + ex.getMessage());
-                } catch (IOException ex1) 
-                {
-                    // nothing to do here
-                }
-            }
-        }, 0, 8, TimeUnit.SECONDS);*/
-        
-        while(true)
-        {
-            BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-            String s = bufferRead.readLine();
-            
-            switch(s)
-            {
-                case "1":
-                    System.out.println("Ping");
-                    try 
-                    {
-                        PQ9 frame = new PQ9(7, 1, new byte[]{17, 1});
-                        p.send(frame);
-                        // print reception time
-                        out.write(df.format(new Date()));
-                        // print the received frame
-                        out.write("New frame sent: \n");
-                        out.write("\t" + frame.toString().replace("\n", "\n\t") + "\n");
-                    } catch (IOException ex)
-                    {
-                        // nothing to do
-                    } catch (PQ9Exception ex) 
-                    {
-                        try 
-                        {
-                            out.write("Error sending frame: " + ex.getMessage());
-                        } catch (IOException ex1) 
-                        {
-                            // nothing to do here
-                        }
-                    }
-                    break;
-                    
-                case "2":
-                    System.out.println("TLM");
-                    try 
-                    {
-                        PQ9 frame = new PQ9(7, 1, new byte[]{3, 1});
-                        p.send(frame);
-                        // print reception time
-                        out.write(df.format(new Date()));
-                        // print the received frame
-                        out.write("New frame sent: \n");
-                        out.write("\t" + frame.toString().replace("\n", "\n\t") + "\n");
-                    } catch (IOException ex)
-                    {
-                        // nothing to do
-                    } catch (PQ9Exception ex) 
-                    {
-                        try 
-                        {
-                            out.write("Error sending frame: " + ex.getMessage());
-                        } catch (IOException ex1) 
-                        {
-                            // nothing to do here
-                        }
-                    }
-                    break;
-                
-                case "3":
-                    System.out.println("CMD");
-                    try 
-                    {
-                        
-                        PQ9 frame = new PQ9(7, 1, new byte[]{1, 1, 4, (byte)status});
-                        p.send(frame);
-                        // print reception time
-                        out.write(df.format(new Date()));
-                        // print the received frame
-                        out.write("New frame sent: \n");
-                        out.write("\t" + frame.toString().replace("\n", "\n\t") + "\n");
-                        status++;
-                        status %= 2;
-                    } catch (IOException ex)
-                    {
-                        // nothing to do
-                    } catch (PQ9Exception ex) 
-                    {
-                        try 
-                        {
-                            out.write("Error sending frame: " + ex.getMessage());
-                        } catch (IOException ex1) 
-                        {
-                            // nothing to do here
-                            ex.printStackTrace();
-                        }
-                    }
-                    break;
-                    
-            }
-            
-        }
+        srv.join();                            
     }
 }

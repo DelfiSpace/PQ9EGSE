@@ -27,7 +27,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -164,7 +163,6 @@ public class PQ9PCInterfaceTest
         LoopbackStream ls = new LoopbackStream();
         
         protocol = new PQ9PCInterface(ls.getInputStream(), ls.getOutputStream());
-        byte[] input = new byte[]{(byte)0x01, (byte)0x02, (byte)0x7E, (byte)0xFF, (byte)0xFE };
                
         receivedFrames = 0;
         protocol.setReceiverCallback((PQ9 data) -> {
@@ -176,6 +174,6 @@ public class PQ9PCInterfaceTest
         protocol.send(frame);
         
         ls.join();
-        Assert.assertEquals("Error", receivedFrames, 2);
+        Assert.assertEquals("Error", 2, receivedFrames);
     }
 }
