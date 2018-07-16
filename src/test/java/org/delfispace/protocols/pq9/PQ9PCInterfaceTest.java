@@ -89,12 +89,12 @@ public class PQ9PCInterfaceTest
             Logger.getLogger(PQ9PCInterfaceTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x00, (byte)0x02, (byte)0xEE, (byte)0xDB}, 
-                new byte[]{(byte)0x01, (byte)0x00, (byte)0x02, (byte)0xEE, (byte)0xDB});
-        runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x01, (byte)0x02, (byte)0x01, (byte)0x07, (byte)0xB3}, 
-                new byte[]{(byte)0x01, (byte)0x01, (byte)0x02, (byte)0x01, (byte)0x07, (byte)0xB3});        
-        runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x03, (byte)0x02, (byte)0x7D, (byte)0x5E, (byte)0x7D, (byte)0x5D, (byte)0x7D, (byte)0x5C, (byte)0x1D, (byte)0x4A}, 
-                new byte[]{(byte)0x01, (byte)0x03, (byte)0x02, (byte)0x7E, (byte)0x7D, (byte)0x7C, (byte)0x1D, (byte)0x4A});      
+        runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x00, (byte)0x02, (byte)0xDB, (byte)0xEE}, 
+                new byte[]{(byte)0x01, (byte)0x00, (byte)0x02, (byte)0xDB, (byte)0xEE});
+        runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x01, (byte)0x02, (byte)0x01, (byte)0xB3, (byte)0x07}, 
+                new byte[]{(byte)0x01, (byte)0x01, (byte)0x02, (byte)0x01, (byte)0xB3, (byte)0x07});        
+        runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x03, (byte)0x02, (byte)0x7D, (byte)0x5E, (byte)0x7D, (byte)0x5D, (byte)0x7D, (byte)0x5C, (byte)0x4A, (byte)0x1D}, 
+                new byte[]{(byte)0x01, (byte)0x03, (byte)0x02, (byte)0x7E, (byte)0x7D, (byte)0x7C, (byte)0x4A, (byte)0x1D});      
     }
 
     @Test
@@ -105,7 +105,9 @@ public class PQ9PCInterfaceTest
 
         System.out.println( "Test Case: " + methodName + "()" );
         
-        byte[] input = new byte[]{(byte)0x7E, (byte)0x01, (byte)0x01, (byte)0x02, (byte)0x01, (byte)0x07, (byte)0xB3, (byte)0xFF, (byte)0x7E, (byte)0x01, (byte)0x00, (byte)0x02, (byte)0xEE, (byte)0xDB};
+        byte[] input = new byte[]{(byte)0x7E, (byte)0x01, (byte)0x01, (byte)0x02, 
+            (byte)0x01, (byte)0xB3, (byte)0x07, (byte)0xFF, (byte)0x7E, (byte)0x01, 
+            (byte)0x00, (byte)0x02, (byte)0xDB, (byte)0xEE};
         
         ByteArrayInputStream is = new ByteArrayInputStream(input);
         protocol = new PQ9PCInterface(is, null);
@@ -113,11 +115,11 @@ public class PQ9PCInterfaceTest
         PQ9 f = protocol.read();
     
         System.out.println(f);
-        Assert.assertArrayEquals("Error", f.getFrame(), new byte[] {(byte)0x01, (byte)0x01, (byte)0x02, (byte)0x01, (byte)0x07, (byte)0xB3});
+        Assert.assertArrayEquals("Error", f.getFrame(), new byte[] {(byte)0x01, (byte)0x01, (byte)0x02, (byte)0x01, (byte)0xB3, (byte)0x07});
         
         f = protocol.read();       
         System.out.println(f);
-        Assert.assertArrayEquals("Error", f.getFrame(), new byte[] {(byte)0x01, (byte)0x00, (byte)0x02, (byte)0xEE, (byte)0xDB});
+        Assert.assertArrayEquals("Error", f.getFrame(), new byte[] {(byte)0x01, (byte)0x00, (byte)0x02, (byte)0xDB, (byte)0xEE});
     }
 
     @Test
@@ -134,7 +136,12 @@ public class PQ9PCInterfaceTest
         LoopbackStream ls = new LoopbackStream();
         
         protocol = new PQ9PCInterface(ls.getInputStream(), os);
-        byte[] output = new byte[]{(byte)0x7E, (byte)0x01, (byte)0x03, (byte)0x02, (byte)0x7D, (byte)0x5E, (byte)0x7D, (byte)0x5D, (byte)0x7D, (byte)0x5C, (byte)0x1D, (byte)0x4A, (byte)0x7C, (byte)0x7E, (byte)0x01, (byte)0x03, (byte)0x02, (byte)0x7D, (byte)0x5E, (byte)0x7D, (byte)0x5D, (byte)0x7D, (byte)0x5C, (byte)0x1D, (byte)0x4A, (byte)0x7C};
+        byte[] output = new byte[]{(byte)0x7E, (byte)0x01, (byte)0x03, (byte)0x02, 
+                    (byte)0x7D, (byte)0x5E, (byte)0x7D, (byte)0x5D, (byte)0x7D, 
+                    (byte)0x5C, (byte)0x4A, (byte)0x1D, (byte)0x7C, (byte)0x7E, 
+                    (byte)0x01, (byte)0x03, (byte)0x02, (byte)0x7D, (byte)0x5E, 
+                    (byte)0x7D, (byte)0x5D, (byte)0x7D, (byte)0x5C, (byte)0x4A, 
+                    (byte)0x1D, (byte)0x7C};
   
         protocol.send(frame);
         protocol.send(frame);

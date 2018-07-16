@@ -50,7 +50,7 @@ public class PQ9Test
     public void tearDown() 
     {
     }
-    
+
     @Test
     public void testCreateFrame() throws IOException, PQ9Exception 
     {
@@ -63,9 +63,9 @@ public class PQ9Test
         
         Assert.assertArrayEquals("Error", t1.getFrame(), 
                 new byte[]{(byte)0x01, (byte)0x03, (byte)0x02, (byte)0xAA, 
-                    (byte)0xBB, (byte)0xCC, (byte)0x60, (byte)0xE8});
+                    (byte)0xBB, (byte)0xCC, (byte)0xE8, (byte)0x60});
     }
-    
+
     @Test
     public void testCreateFrame4() throws IOException, PQ9Exception 
     {
@@ -80,7 +80,7 @@ public class PQ9Test
         //Assert.assertArrayEquals("Error", t1.getData(), new byte[]{});
         System.out.println(t1);
     }
-    
+
     @Test
     public void testCreateFrame2() throws IOException, PQ9Exception 
     {
@@ -90,11 +90,11 @@ public class PQ9Test
         System.out.println( "Test Case: " + methodName + "()" );
         
         PQ9 t1 = new PQ9(new byte[]{(byte)0x01, (byte)0x03, (byte)0x02, 
-            (byte)0xAA, (byte)0xBB, (byte)0xCC, (byte)0x60, (byte)0xE8});
+            (byte)0xAA, (byte)0xBB, (byte)0xCC, (byte)0xE8, (byte)0x60});
         
         System.out.println(t1);
     }
-    
+
     @Test
     public void testCreateFrame3() throws IOException, PQ9Exception 
     {
@@ -104,11 +104,11 @@ public class PQ9Test
         System.out.println( "Test Case: " + methodName + "()" );
         
         PQ9 t1 = new PQ9(new byte[]{(byte)0x01, (byte)0x00, (byte)0x02, 
-                        (byte)0xEE, (byte)0xDB});
+                        (byte)0xDB, (byte)0xEE});
         
         System.out.println(t1);
     }
-    
+
     @Test
     public void testCreateFrame5() throws IOException, PQ9Exception 
     {
@@ -118,7 +118,7 @@ public class PQ9Test
         System.out.println( "Test Case: " + methodName + "()" );
         
         PQ9 t1 = new PQ9(new byte[]{(byte)0x01, (byte)0x00, (byte)0x02, 
-                        (byte)0xEE, (byte)0xDB});
+                        (byte)0xDB, (byte)0xEE});
         
         System.out.println(t1);
     }

@@ -82,7 +82,6 @@ public class PQ9PCInterface
         while (tmprx != -1) 
         {
             byte rx = (byte) (tmprx & 0xFF);
-            System.out.println(String.format("%02X    %d %d", rx, bs.size(), sizeFrame));
             if (rx == HLDLC_START_FLAG) 
             {
                 // clear the buffer and get ready to process a new frame
@@ -96,7 +95,6 @@ public class PQ9PCInterface
                     }
                     System.out.println();
                 }
-                System.out.println("reset");
                 bs.reset();
                 startFound = true;
                 controlFound = false;

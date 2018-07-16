@@ -65,8 +65,8 @@ public class PQ9
         data[2] = (byte)(source & 0xFF);
         
         short crc = crc16(data, 0, data[1] + 3);
-        data[3 + data[1]] = (byte)(crc & 0xFF);
-        data[4 + data[1]] = (byte)((crc >> 8) & 0xFF);                
+        data[4 + data[1]] = (byte)(crc & 0xFF);
+        data[3 + data[1]] = (byte)((crc >> 8) & 0xFF);                
     }
     
     /**
@@ -85,8 +85,8 @@ public class PQ9
         if (input[1] == input.length - 5)
         {
             // check if the CRC is correct
-            short crc1 = (short)((((int)input[input[1] + 3] & 0xFF) | 
-                    ((short)input[input[1] + 4] << 8)) & 0xFFFF) ;
+            short crc1 = (short)((((int)input[input[1] + 4] & 0xFF) | 
+                    ((short)input[input[1] + 3] << 8)) & 0xFFFF) ;
             short crc2 = crc16(input, 0, input[1] + 3);
 
             if (crc1 == crc2)
