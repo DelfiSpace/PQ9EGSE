@@ -1,29 +1,38 @@
 var config = {
   settings:{
-      hasHeaders: true,        
+      hasHeaders: false,        
       showCloseIcon: false
     },
   content: [
     {
       type: "column",
       content: [
+{
+          type: "component",
+          componentName: "Header",
+          componentState: { label: "H" },
+          height: 15
+        },
         {
           type: "row",
       content: [
         {
           type: "component",
           componentName: "DataLog",
-          componentState: { label: "A" }
+          componentState: { label: "A" },
+          height: 60
         },
         {
           type: "component",
           componentName: "Uplink",
-          componentState: { label: "A" }
+          componentState: { label: "A" },
+          height: 60
         }]},
         {
           type: "component",
           componentName: "EventLog",
-          componentState: { label: "C" }
+          componentState: { label: "C" },
+          height: 25
         }
       ]
     }
@@ -42,6 +51,10 @@ if( savedState !== null )
     myLayout = new GoldenLayout( config );
 }
 
+myLayout.registerComponent("Header", function(container, componentState) 
+{
+  container.getElement().html("Header");
+});
 myLayout.registerComponent("DataLog", function(container, componentState) 
 {
   container.getElement().html("<div id=\"datalog\"></div>");
