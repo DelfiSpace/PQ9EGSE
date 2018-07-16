@@ -180,6 +180,8 @@
                         <xtce:RestrictionCriteria>
                             <xtce:ComparisonList>
                                 <xtce:Comparison parameterRef="Source" value="2"/>
+                                <xtce:Comparison parameterRef="b1" value="3"/>
+                                <xtce:Comparison parameterRef="b2" value="2"/>
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
