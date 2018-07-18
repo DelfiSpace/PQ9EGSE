@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.example.gui;
+package org.delfispace.CommandWebServer;
 
 import static j2html.TagCreator.body;
 import static j2html.TagCreator.head;
@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
-public class HelloServlet extends HttpServlet
+public class WebpageServlet extends HttpServlet
 {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException

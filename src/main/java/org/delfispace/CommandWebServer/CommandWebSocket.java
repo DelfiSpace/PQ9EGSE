@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.example.gui;
+package org.delfispace.CommandWebServer;
 
 import static j2html.TagCreator.attrs;
 import static j2html.TagCreator.button;
@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.delfispace.CommandWebServer.Command;
 import org.delfispace.pq9debugger.clientsInterface;
 import org.delfispace.pq9debugger.cmdMultiPublisher;
 import org.delfispace.pq9debugger.cmdMultiSubscriber;
@@ -51,7 +50,7 @@ import org.json.simple.parser.ParseException;
  *
  * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
-public class EventSocket extends WebSocketAdapter
+public class CommandWebSocket extends WebSocketAdapter
 {
     private final JSONParser parser = new JSONParser();   
     private final clientsInterface cs = clientsInterface.getInstance();
@@ -62,7 +61,7 @@ public class EventSocket extends WebSocketAdapter
     // idle tioemout in ms
     private final int IDLE_TIMEOUT = 5 * 60 * 1000;
     
-    public EventSocket()
+    public CommandWebSocket()
     {        
         sub.setSubscriber((Command command) -> 
         {
@@ -75,7 +74,7 @@ public class EventSocket extends WebSocketAdapter
                 }
             } catch (IOException ex) 
             {
-                Logger.getLogger(EventSocket.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CommandWebSocket.class.getName()).log(Level.SEVERE, null, ex);
             }
         });                     
     }
@@ -131,7 +130,7 @@ public class EventSocket extends WebSocketAdapter
             this.cmd.publish(new Command((String) obj.get("command"), (String) obj.get("data")));
         } catch (ParseException ex) 
         {
-            Logger.getLogger(EventSocket.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CommandWebSocket.class.getName()).log(Level.SEVERE, null, ex);
         }              
     }
     

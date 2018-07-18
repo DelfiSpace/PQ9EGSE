@@ -16,7 +16,6 @@
  */
 package org.delfispace.CommandWebServer;
 
-import org.example.gui.*;
 import java.net.URL;
 import org.delfispace.pq9debugger.Subscriber;
 import org.delfispace.pq9debugger.cmdMultiPublisher;
@@ -49,11 +48,11 @@ public class CommandWebServer
         server.setHandler(context);
 
         // Add a servlet (technique #1)
-        ServletHolder holderHello = context.addServlet(HelloServlet.class,"/");
+        ServletHolder holderHello = context.addServlet(WebpageServlet.class,"/");
         holderHello.setInitOrder(0);
 
         // Add a websocket to a specific path spec
-        ServletHolder holderEvents = new ServletHolder("ws-events", EventServlet.class);
+        ServletHolder holderEvents = new ServletHolder("ws-events", CommandWebSocketServlet.class);
         context.addServlet(holderEvents, "/wss/*");
 
         ServletHolder holderDef = new ServletHolder("default",DefaultServlet.class);
@@ -61,7 +60,7 @@ public class CommandWebServer
         context.addServlet(holderDef,"/js/*");
         context.addServlet(holderDef,"/css/*");
         context.addServlet(holderDef,"/html/*");
-        context.setErrorHandler(new ErrorHandler());
+        context.setErrorHandler(new WebSocketErrorHandler());
 
         pub = cmdMultiPublisher.getInstance();                
         sub = cmdMultiSubscriber.getInstance();        

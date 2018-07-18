@@ -16,6 +16,9 @@
  */
 package org.example.gui;
 
+import org.delfispace.CommandWebServer.WebpageServlet;
+import org.delfispace.CommandWebServer.WebSocketErrorHandler;
+import org.delfispace.CommandWebServer.CommandWebSocketServlet;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -56,11 +59,11 @@ public class JettyMultipleServer
         server.setHandler(context);
 
         // Add a servlet (technique #1)
-        ServletHolder holderHello = context.addServlet(HelloServlet.class,"/");
+        ServletHolder holderHello = context.addServlet(WebpageServlet.class,"/");
         holderHello.setInitOrder(0);
 
         // Add a websocket to a specific path spec
-        ServletHolder holderEvents = new ServletHolder("ws-events", EventServlet.class);
+        ServletHolder holderEvents = new ServletHolder("ws-events", CommandWebSocketServlet.class);
         context.addServlet(holderEvents, "/wss/*");
 
         // Add default servlet last (always last) (technique #2)
@@ -70,7 +73,7 @@ public class JettyMultipleServer
         context.addServlet(holderDef,"/js/*");
         context.addServlet(holderDef,"/css/*");
         context.addServlet(holderDef,"/html/*");
-        context.setErrorHandler(new ErrorHandler());
+        context.setErrorHandler(new WebSocketErrorHandler());
 
         cmdMultiPublisher cmd = cmdMultiPublisher.getInstance();
         cmd.setSubscriber((Command cmd1) -> {

@@ -14,23 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.example.gui;
+package org.delfispace.CommandWebServer;
 
-import org.eclipse.jetty.server.Request;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
+import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
 /**
  *
  * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
-public class ErrorHandler extends org.eclipse.jetty.server.handler.ErrorHandler
+@SuppressWarnings("serial")
+public class CommandWebSocketServlet extends WebSocketServlet
 {
-	@Override
-	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
-	{
-		response.sendRedirect(request.getContextPath() + "/");
-	}
-
+    @Override
+    public void configure(WebSocketServletFactory factory)
+    {
+        factory.register(CommandWebSocket.class);
+    }
 }
