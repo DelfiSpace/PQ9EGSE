@@ -33,7 +33,7 @@
                     <xtce:Enumeration label="Ping" value="17"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
-            
+
             <xtce:EnumeratedParameterType name="RequestType">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
@@ -42,7 +42,7 @@
                     <xtce:Enumeration label="Reply" value="2"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
-                    
+
             <xtce:EnumeratedParameterType name="bitStatus">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
@@ -51,44 +51,183 @@
                     <xtce:Enumeration label="ON" value="1"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
-                 
+
+            <xtce:EnumeratedParameterType name="sensorBitStatus">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Working" value="1"/>
+                    <xtce:Enumeration label="Error" value="0"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedParameterType>
+
             <xtce:IntegerParameterType name="byte">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8"/>
             </xtce:IntegerParameterType>
-            
+
             <xtce:IntegerParameterType name="short">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="16"/>
             </xtce:IntegerParameterType>
-            
+
             <xtce:IntegerParameterType name="long">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="32"/>
             </xtce:IntegerParameterType>
-        
+
             <xtce:FloatParameterType name="INAvoltage">
                 <xtce:UnitSet>
                     <xtce:Unit>V</xtce:Unit>
                 </xtce:UnitSet>
                 <xtce:IntegerDataEncoding sizeInBits="16">
-                    <xtce:DefaultCalibrator>   
+                    <xtce:DefaultCalibrator>
                         <xtce:MathOperationCalibrator>
-                            <xtce:ThisParameterOperand/> 
-                            <xtce:ValueOperand>0.00125</xtce:ValueOperand>   
-                            <xtce:Operator>*</xtce:Operator>    
-                        </xtce:MathOperationCalibrator>   
-                    </xtce:DefaultCalibrator> 
+                            <xtce:ThisParameterOperand/>
+                            <xtce:ValueOperand>0.00125</xtce:ValueOperand>
+                            <xtce:Operator>*</xtce:Operator>
+                        </xtce:MathOperationCalibrator>
+                    </xtce:DefaultCalibrator>
                 </xtce:IntegerDataEncoding>
                 <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
             </xtce:FloatParameterType>
-            
+
+            <xtce:FloatParameterType name="INAcurrent">
+                <xtce:UnitSet>
+                    <xtce:Unit>A</xtce:Unit>
+                </xtce:UnitSet>
+                <xtce:IntegerDataEncoding sizeInBits="16">
+                    <xtce:DefaultCalibrator>
+                        <xtce:MathOperationCalibrator>
+                            <xtce:ThisParameterOperand/>
+                            <xtce:ValueOperand>0.00009</xtce:ValueOperand>
+                            <xtce:Operator>*</xtce:Operator>
+                        </xtce:MathOperationCalibrator>
+                    </xtce:DefaultCalibrator>
+                </xtce:IntegerDataEncoding>
+                <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
+            </xtce:FloatParameterType>
+
+            <xtce:FloatParameterType name="SUBSSYSuptime">
+                <xtce:UnitSet>
+                    <xtce:Unit>S</xtce:Unit>
+                </xtce:UnitSet>
+                <xtce:IntegerDataEncoding sizeInBits="16">
+                    <xtce:DefaultCalibrator>
+                        <xtce:MathOperationCalibrator>
+                            <xtce:ThisParameterOperand/>
+                            <xtce:ValueOperand>0.001</xtce:ValueOperand>
+                            <xtce:Operator>*</xtce:Operator>
+                        </xtce:MathOperationCalibrator>
+                    </xtce:DefaultCalibrator>
+                </xtce:IntegerDataEncoding>
+                <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
+            </xtce:FloatParameterType>
+
+            <xtce:FloatParameterType name="LTCvoltage">
+                <xtce:UnitSet>
+                    <xtce:Unit>V</xtce:Unit>
+                </xtce:UnitSet>
+                <xtce:IntegerDataEncoding sizeInBits="16">
+                    <xtce:DefaultCalibrator>
+                        <xtce:MathOperationCalibrator>
+                            <xtce:ThisParameterOperand/>
+                            <xtce:ValueOperand>65535</xtce:ValueOperand>
+                            <xtce:Operator>/</xtce:Operator>
+                            <xtce:ValueOperand>6</xtce:ValueOperand>
+                            <xtce:Operator>-</xtce:Operator>
+                        </xtce:MathOperationCalibrator>
+                    </xtce:DefaultCalibrator>
+                </xtce:IntegerDataEncoding>
+                <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
+            </xtce:FloatParameterType>
+
+            <xtce:FloatParameterType name="LTCtemperature">
+                <xtce:UnitSet>
+                    <xtce:Unit>C</xtce:Unit>
+                </xtce:UnitSet>
+                <xtce:IntegerDataEncoding sizeInBits="16">
+                    <xtce:DefaultCalibrator>
+                        <xtce:MathOperationCalibrator>
+                            <xtce:ThisParameterOperand/>
+                            <xtce:ValueOperand>65535</xtce:ValueOperand>
+                            <xtce:Operator>/</xtce:Operator>
+                            <xtce:ValueOperand>600</xtce:ValueOperand>
+                            <xtce:Operator>*</xtce:Operator>
+                            <xtce:ValueOperand>272.15</xtce:ValueOperand>
+                            <xtce:Operator>-</xtce:Operator>
+                        </xtce:MathOperationCalibrator>
+                    </xtce:DefaultCalibrator>
+                </xtce:IntegerDataEncoding>
+                <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
+            </xtce:FloatParameterType>
+
+            <xtce:FloatParameterType name="LTCcapacity">
+                <xtce:UnitSet>
+                    <xtce:Unit>?</xtce:Unit>
+                </xtce:UnitSet>
+                <xtce:IntegerDataEncoding sizeInBits="16">
+                    <xtce:DefaultCalibrator>
+                        <xtce:MathOperationCalibrator>
+                            <xtce:ThisParameterOperand/>
+                            <xtce:ValueOperand>0.0265625</xtce:ValueOperand>
+                            <xtce:Operator>*</xtce:Operator>
+                        </xtce:MathOperationCalibrator>
+                    </xtce:DefaultCalibrator>
+                </xtce:IntegerDataEncoding>
+                <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
+            </xtce:FloatParameterType>
+
+            <xtce:FloatParameterType name="TMPtemperature">
+                <xtce:UnitSet>
+                    <xtce:Unit>C</xtce:Unit>
+                </xtce:UnitSet>
+                <xtce:IntegerDataEncoding sizeInBits="16">
+                    <xtce:DefaultCalibrator>
+                        <xtce:MathOperationCalibrator>
+                            <xtce:ThisParameterOperand/>
+                            <xtce:ValueOperand>0.0625</xtce:ValueOperand>
+                            <xtce:Operator>*</xtce:Operator>
+                        </xtce:MathOperationCalibrator>
+                    </xtce:DefaultCalibrator>
+                </xtce:IntegerDataEncoding>
+                <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
+            </xtce:FloatParameterType>
+
+            <xtce:FloatParameterType name="MCUtemperature">
+                <xtce:UnitSet>
+                    <xtce:Unit>C</xtce:Unit>
+                </xtce:UnitSet>
+                <xtce:IntegerDataEncoding sizeInBits="16">
+                    <xtce:DefaultCalibrator>
+                        <xtce:MathOperationCalibrator>
+                            <xtce:ThisParameterOperand/>
+                            <xtce:ValueOperand>55</xtce:ValueOperand>
+                            <xtce:Operator>*</xtce:Operator>
+                            <xtce:ValueOperand>30</xtce:ValueOperand>
+                            <xtce:Operator>+</xtce:Operator>
+                        </xtce:MathOperationCalibrator>
+                    </xtce:DefaultCalibrator>
+                </xtce:IntegerDataEncoding>
+                <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
+            </xtce:FloatParameterType>
+
+
+
+            <xtce:ArrayParameterType name="TMPtemperatureArray" arrayTypeRef="TMPtemperature" numberOfDimensions="1"/>
+
+            <xtce:ArrayParameterType name="INAcurrentArray" arrayTypeRef="INAcurrent" numberOfDimensions="1"/>
+
             <xtce:ArrayParameterType name="INAvoltageArray" arrayTypeRef="INAvoltage" numberOfDimensions="1"/>
+
             <xtce:ArrayParameterType name="shortArray" arrayTypeRef="short" numberOfDimensions="1"/>
+
             <xtce:ArrayParameterType name="bitStatusArray" arrayTypeRef="bitStatus" numberOfDimensions="1"/>
-					
+
+            <xtce:ArrayParameterType name="sensorBitStatusArray" arrayTypeRef="sensorBitStatus" numberOfDimensions="1"/>
+
         </xtce:ParameterTypeSet>
-		
+
         <!-- These are the parameters that can be used in containers. -->
         <xtce:ParameterSet>
             <!-- These are parameters that may be used in abstract telemetry or command containers to define system-level settings. -->
@@ -98,47 +237,47 @@
             <xtce:Parameter name="Source" parameterTypeRef="AddressType"/>
             <xtce:Parameter name="Service" parameterTypeRef="ServiceType"/>
             <xtce:Parameter name="Request" parameterTypeRef="RequestType"/>
-            
+
             <xtce:Parameter name="SystemID" parameterTypeRef="byte"/>
-            <xtce:Parameter name="Uptime" parameterTypeRef="long"/>
+            <xtce:Parameter name="Uptime" parameterTypeRef="SUBSSYSuptime"/>
             <xtce:Parameter name="testing4" parameterTypeRef="long"/>
             <xtce:Parameter name="BootCounter" parameterTypeRef="short"/>
             <xtce:Parameter name="SoftwareBootCounter" parameterTypeRef="byte"/>
-            <xtce:Parameter name="SensorsStatus" parameterTypeRef="short"/>
+            <xtce:Parameter name="SensorsStatus" parameterTypeRef="sensorBitStatusArray"/>
             <xtce:Parameter name="SAVoltage" parameterTypeRef="INAvoltageArray"/>
-            <xtce:Parameter name="SACurrent" parameterTypeRef="shortArray"/>
-            <xtce:Parameter name="SATemp" parameterTypeRef="shortArray"/>
-            
-            <xtce:Parameter name="BusCurrent" parameterTypeRef="shortArray"/>
+            <xtce:Parameter name="SACurrent" parameterTypeRef="INAcurrentArray"/>
+            <xtce:Parameter name="SATemp" parameterTypeRef="TMPtemperatureArray"/>
+
+            <xtce:Parameter name="BusCurrent" parameterTypeRef="INAcurrentArray"/>
             <xtce:Parameter name="BusVoltage" parameterTypeRef="INAvoltageArray"/>
-            
-            <xtce:Parameter name="BattVoltage" parameterTypeRef="short"/>
-            <xtce:Parameter name="BattCapacity" parameterTypeRef="short"/>
-            <xtce:Parameter name="BattTemperature" parameterTypeRef="short"/>
+
+            <xtce:Parameter name="BattVoltage" parameterTypeRef="LTCvoltage"/>
+            <xtce:Parameter name="BattCapacity" parameterTypeRef="LTCcapacity"/>
+            <xtce:Parameter name="BattTemperature" parameterTypeRef="LTCvoltage"/>
 
             <xtce:Parameter name="BusSwitchesSetting" parameterTypeRef="bitStatusArray"/>
             <xtce:Parameter name="BusSwitchesStatus" parameterTypeRef="bitStatusArray"/>
-			
-            <xtce:Parameter name="MCUTemp" parameterTypeRef="short"/>
-			
-            <xtce:Parameter name="IntCurrent" parameterTypeRef="short"/>
-            <xtce:Parameter name="IntVoltage" parameterTypeRef="INAvoltage"/>            
-            
-            <xtce:Parameter name="URBCurrent" parameterTypeRef="short"/>
+
+            <xtce:Parameter name="MCUTemp" parameterTypeRef="MCUtemperature"/>
+
+            <xtce:Parameter name="IntCurrent" parameterTypeRef="INAcurrent"/>
+            <xtce:Parameter name="IntVoltage" parameterTypeRef="INAvoltage"/>
+
+            <xtce:Parameter name="URBCurrent" parameterTypeRef="INAcurrent"/>
             <xtce:Parameter name="URBVoltage" parameterTypeRef="INAvoltage"/>
-            
+
             <xtce:Parameter name="testing2" parameterTypeRef="short"/>
-            
+
             <xtce:Parameter name="crc" parameterTypeRef="short"/>
 
         </xtce:ParameterSet>
         <xtce:ContainerSet>
-			
+
             <xtce:SequenceContainer name="PQ9" abstract="true" shortDescription="PQ9 frame">
                 <xtce:EntryList>
                     <xtce:ParameterRefEntry parameterRef="Destination"/>
                     <xtce:ParameterRefEntry parameterRef="Size"/>
-                    <xtce:ParameterRefEntry parameterRef="Source"/>                    
+                    <xtce:ParameterRefEntry parameterRef="Source"/>
                     <xtce:ParameterRefEntry parameterRef="Service"/>
                     <xtce:ParameterRefEntry parameterRef="Request"/>
                 </xtce:EntryList>
@@ -150,19 +289,17 @@
                     <xtce:ParameterRefEntry parameterRef="SystemID"/>
                     <xtce:ParameterRefEntry parameterRef="Uptime"/>
                     <xtce:ParameterRefEntry parameterRef="testing4"/>
-                    <xtce:ParameterRefEntry parameterRef="BootCounter"/>      
-                    <xtce:ParameterRefEntry parameterRef="SoftwareBootCounter"/>  
-                    
-                    <xtce:ParameterRefEntry parameterRef="SensorsStatus"/>            
-                                                
-                    <xtce:ArrayParameterRefEntry parameterRef="SAVoltage">
+                    <xtce:ParameterRefEntry parameterRef="BootCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="SoftwareBootCounter"/>
+
+                    <xtce:ArrayParameterRefEntry parameterRef="SensorsStatus">
                         <xtce:DimensionList>
                             <xtce:Size>
-                                <xtce:FixedValue>4</xtce:FixedValue>
+                                <xtce:FixedValue>16</xtce:FixedValue>
                             </xtce:Size>
                         </xtce:DimensionList>
                     </xtce:ArrayParameterRefEntry>
-					
+
                     <xtce:ArrayParameterRefEntry parameterRef="SACurrent">
                         <xtce:DimensionList>
                             <xtce:Size>
@@ -170,7 +307,15 @@
                             </xtce:Size>
                         </xtce:DimensionList>
                     </xtce:ArrayParameterRefEntry>
-					
+
+                    <xtce:ArrayParameterRefEntry parameterRef="SAVoltage">
+                        <xtce:DimensionList>
+                            <xtce:Size>
+                                <xtce:FixedValue>4</xtce:FixedValue>
+                            </xtce:Size>
+                        </xtce:DimensionList>
+                    </xtce:ArrayParameterRefEntry>
+
                     <xtce:ArrayParameterRefEntry parameterRef="SATemp">
                         <xtce:DimensionList>
                             <xtce:Size>
@@ -178,7 +323,7 @@
                             </xtce:Size>
                         </xtce:DimensionList>
                     </xtce:ArrayParameterRefEntry>
-					
+
                     <xtce:ArrayParameterRefEntry parameterRef="BusCurrent">
                         <xtce:DimensionList>
                             <xtce:Size>
@@ -186,7 +331,7 @@
                             </xtce:Size>
                         </xtce:DimensionList>
                     </xtce:ArrayParameterRefEntry>
-					
+
                     <xtce:ArrayParameterRefEntry parameterRef="BusVoltage">
                         <xtce:DimensionList>
                             <xtce:Size>
@@ -206,6 +351,7 @@
                             </xtce:Size>
                         </xtce:DimensionList>
                     </xtce:ArrayParameterRefEntry>
+
                     <xtce:ArrayParameterRefEntry parameterRef="BusSwitchesStatus">
                         <xtce:DimensionList>
                             <xtce:Size>
@@ -213,18 +359,18 @@
                             </xtce:Size>
                         </xtce:DimensionList>
                     </xtce:ArrayParameterRefEntry>
-					
+
                     <xtce:ParameterRefEntry parameterRef="MCUTemp"/>
-					
+
                     <xtce:ParameterRefEntry parameterRef="IntCurrent"/>
                     <xtce:ParameterRefEntry parameterRef="IntVoltage"/>
                     <xtce:ParameterRefEntry parameterRef="URBCurrent"/>
-                    <xtce:ParameterRefEntry parameterRef="URBVoltage"/> 
-					
+                    <xtce:ParameterRefEntry parameterRef="URBVoltage"/>
+
                     <xtce:ParameterRefEntry parameterRef="testing2"/>
-					
+
                     <xtce:ParameterRefEntry parameterRef="crc"/>
-						
+
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>
@@ -235,10 +381,10 @@
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
-            </xtce:SequenceContainer> 
-            
+            </xtce:SequenceContainer>
+
             <xtce:SequenceContainer name="EPS_Ping_Reply" shortDescription="EPS Ping reply">
-                <xtce:EntryList>  
+                <xtce:EntryList>
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>
@@ -249,9 +395,9 @@
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
-            </xtce:SequenceContainer>          
+            </xtce:SequenceContainer>
         </xtce:ContainerSet>
-        
+
         <xtce:StreamSet>
             <xtce:VariableFrameStream name="PQ9bus" shortDescription="PQ9 stream">
                 <xtce:ContainerRef containerRef="PQ9"/>
