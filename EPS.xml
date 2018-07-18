@@ -16,7 +16,7 @@
     <xtce:TelemetryMetaData>
         <xtce:ParameterTypeSet>
 
-            <xtce:EnumeratedParameterType name="SourceType">
+            <xtce:EnumeratedParameterType name="AddressType">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
@@ -60,11 +60,6 @@
                     <xtce:Enumeration label="Error" value="0"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
-
-            <xtce:IntegerParameterType name="nibble">
-                <xtce:UnitSet/>
-                <xtce:IntegerDataEncoding sizeInBits="4"/>
-            </xtce:IntegerParameterType>
 
             <xtce:IntegerParameterType name="byte">
                 <xtce:UnitSet/>
@@ -237,9 +232,9 @@
         <xtce:ParameterSet>
             <!-- These are parameters that may be used in abstract telemetry or command containers to define system-level settings. -->
 
-            <xtce:Parameter name="Destination" parameterTypeRef="byte"/>
+            <xtce:Parameter name="Destination" parameterTypeRef="AddressType"/>
             <xtce:Parameter name="Size" parameterTypeRef="byte"/>
-            <xtce:Parameter name="Source" parameterTypeRef="SourceType"/>
+            <xtce:Parameter name="Source" parameterTypeRef="AddressType"/>
             <xtce:Parameter name="Service" parameterTypeRef="ServiceType"/>
             <xtce:Parameter name="Request" parameterTypeRef="RequestType"/>
 
@@ -260,7 +255,7 @@
             <xtce:Parameter name="BattCapacity" parameterTypeRef="LTCcapacity"/>
             <xtce:Parameter name="BattTemperature" parameterTypeRef="LTCvoltage"/>
 
-            <xtce:Parameter name="BusSwitchesPadding" parameterTypeRef="nibble"/>
+            <xtce:Parameter name="BusSwitchesSetting" parameterTypeRef="bitStatusArray"/>
             <xtce:Parameter name="BusSwitchesStatus" parameterTypeRef="bitStatusArray"/>
 
             <xtce:Parameter name="MCUTemp" parameterTypeRef="MCUtemperature"/>
@@ -344,12 +339,19 @@
                             </xtce:Size>
                         </xtce:DimensionList>
                     </xtce:ArrayParameterRefEntry>
+					
+                    <xtce:ParameterRefEntry parameterRef="BattVoltage"/> 
+                    <xtce:ParameterRefEntry parameterRef="BattCapacity"/> 
+                    <xtce:ParameterRefEntry parameterRef="BattTemperature"/> 
+					
+                    <xtce:ArrayParameterRefEntry parameterRef="BusSwitchesSetting">
+                        <xtce:DimensionList>
+                            <xtce:Size>
+                                <xtce:FixedValue>4</xtce:FixedValue>
+                            </xtce:Size>
+                        </xtce:DimensionList>
+                    </xtce:ArrayParameterRefEntry>
 
-                    <xtce:ParameterRefEntry parameterRef="BattVoltage"/>
-                    <xtce:ParameterRefEntry parameterRef="BattCapacity"/>
-                    <xtce:ParameterRefEntry parameterRef="BattTemperature"/>
-
-                    <xtce:ParameterRefEntry parameterRef="BusSwitchesPadding"/>
                     <xtce:ArrayParameterRefEntry parameterRef="BusSwitchesStatus">
                         <xtce:DimensionList>
                             <xtce:Size>

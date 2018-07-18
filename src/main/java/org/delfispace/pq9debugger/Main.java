@@ -27,8 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.delfispace.CommandWebServer.Command;
 import org.delfispace.CommandWebServer.CommandWebServer;
 import org.delfispace.protocols.pq9.PQ9;
@@ -54,6 +52,7 @@ public class Main
     private static CommandWebServer srv;
     private static final JSONParser parser = new JSONParser(); 
     private static XTCETMStream stream;
+    private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ");
     
     public static void main(String[] args) throws UnsupportedEncodingException, IOException, PQ9Exception, Exception
     {
@@ -71,9 +70,6 @@ public class Main
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new
         FileOutputStream(java.io.FileDescriptor.out), "ASCII"), 1024);
         
-        // define the date format
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ");
-        
         SerialPort comPort = SerialPort.getCommPort(args[0]);
 
         // open con port
@@ -82,70 +78,107 @@ public class Main
         // configure the seriql port parameters
         comPort.setComPortParameters(115200, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
         comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
-                                       
+                   
         // crete the HLDLC reader
         PQ9PCInterface p = new PQ9PCInterface(comPort.getInputStream(), comPort.getOutputStream());
         
         // setup an asynchronous callback on frame reception
         p.setReceiverCallback((PQ9 msg) -> {
+            StringBuilder sb = new StringBuilder();
             try
             {
-                StringBuilder sb = new StringBuilder();
+                Date rxTime = new Date();                
                 sb.append("<font color=\"black\">");
                 // print reception time
-                sb.append(df.format(new Date()));
+                sb.append(df.format(rxTime));
                 // print the received frame
                 sb.append("New frame received: <br>");
+                sb.append("<font color=\"black\">");
                 sb.append("&emsp;&emsp;&emsp;&emsp;");
-                sb.append(msg.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
-                sb.append("<br>&emsp;&emsp;&emsp;&emsp;");
                 sb.append(processFrame(stream, msg.getFrame()).replace("\n", "<br>&emsp;&emsp;&emsp;&emsp;"));
                 sb.append("</font>");
                 srv.send(new Command("datalog", sb.toString()));
+                
+                sb.setLength(0);
+                
+            } catch (XTCEDatabaseException ex)            
+            {
+                sb.append(msg.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
+                sb.append("</font>");
+                srv.send(new Command("datalog", sb.toString()));
+                handleException(ex);
             } catch (Exception ex)
             {
-                ex.printStackTrace();
+                handleException(ex);
             }
         });
+        
+        p.setErrorHandler((error) -> { handleException(error); });
         
         srv = new CommandWebServer(8080);
         srv.serReceptionHandler((Command cmd) -> {
             String data = cmd.getData();
             JSONObject obj;
-            try {
-                obj = (JSONObject)parser.parse(data);
-                int d = Integer.parseInt((String) obj.get("dest"));
-                int s = Integer.parseInt((String) obj.get("src"));
-                
-                String[] parts = ((String) obj.get("data")).split(" ");
-                byte[] n1 = new byte[parts.length];
-                for(int n = 0; n < parts.length; n++) 
+            try 
+            {
+                switch(cmd.getCommand())
                 {
-                   n1[n] = (byte)Integer.parseInt(parts[n]);
-                }
-                PQ9 frame = new PQ9(d, s, n1);
-                p.send(frame);
-                StringBuilder sb = new StringBuilder();
-                sb.append("<font color=\"yellow\">");
-                // print reception time
-                sb.append(df.format(new Date()));
-                // print the received frame
-                sb.append("New frame transmitted: <br>");
-                sb.append("&emsp;&emsp;&emsp;&emsp;");
-                sb.append(frame.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;")); 
-                sb.append("</font>");
-                srv.send(new Command("datalog", sb.toString()));                
-            } catch (ParseException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (PQ9Exception ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    case "send1":
+                        obj = (JSONObject)parser.parse(data);
+                        int d = Integer.parseInt((String) obj.get("dest"));
+                        int s = Integer.parseInt((String) obj.get("src"));
+
+                        String[] parts = ((String) obj.get("data")).split(" ");
+                        byte[] n1 = new byte[parts.length];
+                        for(int n = 0; n < parts.length; n++) 
+                        {
+                           n1[n] = (byte)Integer.parseInt(parts[n]);
+                        }
+                        PQ9 frame = new PQ9(d, s, n1);
+                        p.send(frame);
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("<font color=\"yellow\">");
+                        // print reception time
+                        sb.append(df.format(new Date()));
+                        // print the received frame
+                        sb.append("New frame transmitted: <br>");
+                        sb.append("&emsp;&emsp;&emsp;&emsp;");
+                        sb.append(frame.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;")); 
+                        sb.append("</font>");
+                        srv.send(new Command("datalog", sb.toString()));  
+                    break;
+                    
+                    case "setSerialPort":
+                        System.out.println(cmd);
+                        break;
+                        
+                    case "ping":
+                        // ignore ping commands, they are only used 
+                        // to keep the websocket connection alive
+                        break;
+                        
+                    default:
+                        System.out.println("Unknown command: " + cmd);
+            }
+            } catch (ParseException | PQ9Exception | IOException ex) 
+            {
+                handleException(ex);
             }                        
         });
         
         srv.start();
         srv.join();                            
+    }
+    
+    private static void handleException(Throwable ex)
+    {
+        StringBuilder sb = new StringBuilder();
+        // print reception time
+        sb.append(df.format(new Date()));
+        // print the received frame
+        sb.append(" ");
+        sb.append(ex.getMessage().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
+        srv.send(new Command("log", sb.toString())); 
     }
     
     static String processFrame(XTCETMStream stream, byte[] data) throws XTCEDatabaseException, Exception 
