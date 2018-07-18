@@ -76,6 +76,11 @@ public class PQ9
      */
     public PQ9(byte[] input) throws PQ9Exception
     {
+        if (input.length < 5)
+        {
+            throw new PQ9Exception("Minimum frame size is 5 bytes.");
+        }
+        
         if (input.length > 260)
         {
             throw new PQ9Exception("Maximum frame size is 260 bytes.");
