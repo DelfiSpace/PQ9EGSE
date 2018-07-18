@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 , Nikitas Chronas, Stefano Speretta
+ * Copyright (C) 2018, Nikitas Chronas, Stefano Speretta
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ public class PQ9PCInterface
     private final InputStream in;
     private final OutputStream out;
     private PQ9Receiver callback;
+    private PQ9ErrorHandler errorHdl;
     private readerThread reader;
     private final ByteArrayOutputStream bs = new ByteArrayOutputStream();
     private boolean startFound = false;
@@ -66,6 +67,11 @@ public class PQ9PCInterface
         }
     }
 
+    public void setErrorHandler(PQ9ErrorHandler hdl) 
+    {
+        errorHdl = hdl;
+    }
+
     public PQ9 read() throws IOException 
     {
         if (callback == null) 
@@ -87,13 +93,17 @@ public class PQ9PCInterface
                 // clear the buffer and get ready to process a new frame
                 if (bs.size() != 0)
                 {
-                    System.out.print("Bytes have been discarded: ");
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Bytes have been discarded: ");
                     byte[] d = bs.toByteArray();
                     for (int i = 0; i < d.length; i++)
                     {
-                        System.out.print(String.format("%02X ", d[i]));
+                        sb.append(String.format("%02X ", d[i]));
                     }
-                    System.out.println();
+                    if (errorHdl != null)
+                    {
+                        errorHdl.error(new PQ9Exception(sb.toString()));
+                    }
                 }
                 bs.reset();
                 startFound = true;
@@ -125,7 +135,10 @@ public class PQ9PCInterface
                             startFound = false;
                             controlFound = false;
                             // throw exception here
-                            System.out.println("exception 1");
+                            if (errorHdl != null)
+                            {
+                                errorHdl.error(new PQ9Exception("exception 1"));
+                            }
                             break;
                     }
                     controlFound = false;
@@ -134,10 +147,8 @@ public class PQ9PCInterface
                 {
                     // new data byte, add it to the buffer
                     bs.write(rx);
-                    //System.out.println("----->     " + sizeFrame + " " + bs.size());
                     if ((sizeFrame != -1) && (sizeFrame == bs.size() - 5))
                     {
-                        //System.out.println("reached end");
                         startFound = false;
                         controlFound = false;
                         sizeFrame = -1;
@@ -150,7 +161,10 @@ public class PQ9PCInterface
                         } catch (PQ9Exception ex) 
                         {
                             // the frame is not valid, throw away the data and wait for a new frame
-                            System.out.println(ex.getMessage());
+                            if (errorHdl != null)
+                            {
+                                errorHdl.error(ex);
+                            }
                             return null;
                         }                        
                     }
@@ -167,7 +181,10 @@ public class PQ9PCInterface
             else
             {
                 //a byte received without having received a start
-                System.out.println(String.format("Unexpected byte: %02X\n", tmprx & 0xFF));
+                if (errorHdl != null)
+                {
+                    errorHdl.error(new PQ9Exception(String.format("Unexpected byte: %02X", tmprx & 0xFF)));
+                }
             }
         
             // prevent the buffer from growing too much
@@ -177,7 +194,10 @@ public class PQ9PCInterface
                 startFound = false;
                 controlFound = false;
                 sizeFrame = -1;
-                System.out.println("Buffer overrun");
+                if (errorHdl != null)
+                {
+                    errorHdl.error(new PQ9Exception("Buffer overrun"));
+                }
             }
             // read new byte
             tmprx = in.read();
