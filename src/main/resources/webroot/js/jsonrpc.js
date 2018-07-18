@@ -2,6 +2,8 @@ function jsonRPC(address)
 {
     // reconnect timeout in ms
     this.autoReconnectInterval = 5*1000;
+    // keep-alive timeout in ms
+    this.keepAliveInterval = 30*1000;
     // server address: stored to allow automatic reconnection
     this.endpoint = address;
     // disable error and close messages during reconnection
@@ -14,17 +16,23 @@ function jsonRPC(address)
         var that = this;
         this.myWebSocket.onopen = function(evt) 
         {
+            that.interval = setInterval(function () 
+            {
+                that.send("ping","");
+            }, that.keepAliveInterval);
             that.reconnectInProgress = false;
             that.openHandler(evt);
         };
 
         this.myWebSocket.onerror = function(evt) 
         {
+            clearInterval(that.interval);
             that.internalErrorHandler(evt);        
         };
 
         this.myWebSocket.onclose = function(evt) 
         {
+            clearInterval(that.interval);
             that.internalCloseHandler(evt);        
         };
 
