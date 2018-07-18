@@ -16,6 +16,47 @@
     <xtce:TelemetryMetaData>
         <xtce:ParameterTypeSet>
 
+            <xtce:EnumeratedParameterType name="SourceType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="OBC" value="1"/>
+                    <xtce:Enumeration label="EPS" value="2"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedParameterType>
+
+            <xtce:EnumeratedParameterType name="ServiceType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Housekeeping" value="3"/>
+                    <xtce:Enumeration label="Ping" value="17"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedParameterType>
+            
+            <xtce:EnumeratedParameterType name="RequestType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Request" value="1"/>
+                    <xtce:Enumeration label="Reply" value="2"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedParameterType>
+                    
+            <xtce:EnumeratedParameterType name="bitStatus">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="OFF" value="0"/>
+                    <xtce:Enumeration label="ON" value="1"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedParameterType>
+
+            <xtce:IntegerParameterType name="nibble">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="4"/>
+            </xtce:IntegerParameterType>
+                 
             <xtce:IntegerParameterType name="byte">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8"/>
@@ -49,9 +90,9 @@
             
             <xtce:ArrayParameterType name="INAvoltageArray" arrayTypeRef="INAvoltage" numberOfDimensions="1"/>
             <xtce:ArrayParameterType name="shortArray" arrayTypeRef="short" numberOfDimensions="1"/>
-
+            <xtce:ArrayParameterType name="bitStatusArray" arrayTypeRef="bitStatus" numberOfDimensions="1"/>
 					
-		</xtce:ParameterTypeSet>
+        </xtce:ParameterTypeSet>
 		
         <!-- These are the parameters that can be used in containers. -->
         <xtce:ParameterSet>
@@ -59,9 +100,9 @@
 
             <xtce:Parameter name="Destination" parameterTypeRef="byte"/>
             <xtce:Parameter name="Size" parameterTypeRef="byte"/>
-            <xtce:Parameter name="Source" parameterTypeRef="byte"/>
-            <xtce:Parameter name="b1" parameterTypeRef="byte"/>
-            <xtce:Parameter name="b2" parameterTypeRef="byte"/>
+            <xtce:Parameter name="Source" parameterTypeRef="SourceType"/>
+            <xtce:Parameter name="Service" parameterTypeRef="ServiceType"/>
+            <xtce:Parameter name="Request" parameterTypeRef="RequestType"/>
             
             <xtce:Parameter name="SystemID" parameterTypeRef="byte"/>
             <xtce:Parameter name="Uptime" parameterTypeRef="long"/>
@@ -76,16 +117,17 @@
             <xtce:Parameter name="BusCurrent" parameterTypeRef="shortArray"/>
             <xtce:Parameter name="BusVoltage" parameterTypeRef="INAvoltageArray"/>
             
-			<xtce:Parameter name="BattVoltage" parameterTypeRef="short"/>
-			<xtce:Parameter name="BattCapacity" parameterTypeRef="short"/>
-			<xtce:Parameter name="BattTemperature" parameterTypeRef="short"/>
+            <xtce:Parameter name="BattVoltage" parameterTypeRef="short"/>
+            <xtce:Parameter name="BattCapacity" parameterTypeRef="short"/>
+            <xtce:Parameter name="BattTemperature" parameterTypeRef="short"/>
+
+            <xtce:Parameter name="BusSwitchesPadding" parameterTypeRef="nibble"/>
+            <xtce:Parameter name="BusSwitchesStatus" parameterTypeRef="bitStatusArray"/>
 			
-			<xtce:Parameter name="BusSwitchesStatus" parameterTypeRef="byte"/>
+            <xtce:Parameter name="MCUTemp" parameterTypeRef="short"/>
 			
-			<xtce:Parameter name="MCUTemp" parameterTypeRef="short"/>
-			
-			<xtce:Parameter name="IntCurrent" parameterTypeRef="short"/>
-			<xtce:Parameter name="IntVoltage" parameterTypeRef="INAvoltage"/>            
+            <xtce:Parameter name="IntCurrent" parameterTypeRef="short"/>
+            <xtce:Parameter name="IntVoltage" parameterTypeRef="INAvoltage"/>            
             
             <xtce:Parameter name="URBCurrent" parameterTypeRef="short"/>
             <xtce:Parameter name="URBVoltage" parameterTypeRef="INAvoltage"/>
@@ -102,8 +144,8 @@
                     <xtce:ParameterRefEntry parameterRef="Destination"/>
                     <xtce:ParameterRefEntry parameterRef="Size"/>
                     <xtce:ParameterRefEntry parameterRef="Source"/>                    
-                    <xtce:ParameterRefEntry parameterRef="b1"/>
-                    <xtce:ParameterRefEntry parameterRef="b2"/>
+                    <xtce:ParameterRefEntry parameterRef="Service"/>
+                    <xtce:ParameterRefEntry parameterRef="Request"/>
                 </xtce:EntryList>
             </xtce:SequenceContainer>
 
@@ -118,74 +160,95 @@
                     
                     <xtce:ParameterRefEntry parameterRef="SensorsStatus"/>            
                                                 
-					<xtce:ArrayParameterRefEntry parameterRef="SAVoltage">
-						<xtce:DimensionList>
-							<xtce:Size>
-								<xtce:FixedValue>4</xtce:FixedValue>
-							</xtce:Size>
-						</xtce:DimensionList>
-					</xtce:ArrayParameterRefEntry>
+                    <xtce:ArrayParameterRefEntry parameterRef="SAVoltage">
+                        <xtce:DimensionList>
+                            <xtce:Size>
+                                <xtce:FixedValue>4</xtce:FixedValue>
+                            </xtce:Size>
+                        </xtce:DimensionList>
+                    </xtce:ArrayParameterRefEntry>
 					
-					<xtce:ArrayParameterRefEntry parameterRef="SACurrent">
-						<xtce:DimensionList>
-							<xtce:Size>
-								<xtce:FixedValue>4</xtce:FixedValue>
-							</xtce:Size>
-						</xtce:DimensionList>
-					</xtce:ArrayParameterRefEntry>
+                    <xtce:ArrayParameterRefEntry parameterRef="SACurrent">
+                        <xtce:DimensionList>
+                            <xtce:Size>
+                                <xtce:FixedValue>4</xtce:FixedValue>
+                            </xtce:Size>
+                        </xtce:DimensionList>
+                    </xtce:ArrayParameterRefEntry>
 					
-					<xtce:ArrayParameterRefEntry parameterRef="SATemp">
-						<xtce:DimensionList>
-							<xtce:Size>
-								<xtce:FixedValue>4</xtce:FixedValue>
-							</xtce:Size>
-						</xtce:DimensionList>
-					</xtce:ArrayParameterRefEntry>
+                    <xtce:ArrayParameterRefEntry parameterRef="SATemp">
+                        <xtce:DimensionList>
+                            <xtce:Size>
+                                <xtce:FixedValue>4</xtce:FixedValue>
+                            </xtce:Size>
+                        </xtce:DimensionList>
+                    </xtce:ArrayParameterRefEntry>
 					
-					<xtce:ArrayParameterRefEntry parameterRef="BusCurrent">
-						<xtce:DimensionList>
-							<xtce:Size>
-								<xtce:FixedValue>4</xtce:FixedValue>
-							</xtce:Size>
-						</xtce:DimensionList>
-					</xtce:ArrayParameterRefEntry>
+                    <xtce:ArrayParameterRefEntry parameterRef="BusCurrent">
+                        <xtce:DimensionList>
+                            <xtce:Size>
+                                <xtce:FixedValue>4</xtce:FixedValue>
+                            </xtce:Size>
+                        </xtce:DimensionList>
+                    </xtce:ArrayParameterRefEntry>
 					
-					<xtce:ArrayParameterRefEntry parameterRef="BusVoltage">
-						<xtce:DimensionList>
-							<xtce:Size>
-								<xtce:FixedValue>4</xtce:FixedValue>
-							</xtce:Size>
-						</xtce:DimensionList>
-					</xtce:ArrayParameterRefEntry>
+                    <xtce:ArrayParameterRefEntry parameterRef="BusVoltage">
+                        <xtce:DimensionList>
+                            <xtce:Size>
+                                <xtce:FixedValue>4</xtce:FixedValue>
+                            </xtce:Size>
+                        </xtce:DimensionList>
+                    </xtce:ArrayParameterRefEntry>
 					
-					<xtce:ParameterRefEntry parameterRef="BattVoltage"/> 
-					<xtce:ParameterRefEntry parameterRef="BattCapacity"/> 
-					<xtce:ParameterRefEntry parameterRef="BattTemperature"/> 
+                    <xtce:ParameterRefEntry parameterRef="BattVoltage"/> 
+                    <xtce:ParameterRefEntry parameterRef="BattCapacity"/> 
+                    <xtce:ParameterRefEntry parameterRef="BattTemperature"/> 
 					
-					<xtce:ParameterRefEntry parameterRef="BusSwitchesStatus"/> 
+                    <xtce:ParameterRefEntry parameterRef="BusSwitchesPadding"/>
+                    <xtce:ArrayParameterRefEntry parameterRef="BusSwitchesStatus">
+                        <xtce:DimensionList>
+                            <xtce:Size>
+                                <xtce:FixedValue>4</xtce:FixedValue>
+                            </xtce:Size>
+                        </xtce:DimensionList>
+                    </xtce:ArrayParameterRefEntry>
 					
-					<xtce:ParameterRefEntry parameterRef="MCUTemp"/>
+                    <xtce:ParameterRefEntry parameterRef="MCUTemp"/>
 					
-					<xtce:ParameterRefEntry parameterRef="IntCurrent"/>
-					<xtce:ParameterRefEntry parameterRef="IntVoltage"/>
-					<xtce:ParameterRefEntry parameterRef="URBCurrent"/>
-					<xtce:ParameterRefEntry parameterRef="URBVoltage"/> 
+                    <xtce:ParameterRefEntry parameterRef="IntCurrent"/>
+                    <xtce:ParameterRefEntry parameterRef="IntVoltage"/>
+                    <xtce:ParameterRefEntry parameterRef="URBCurrent"/>
+                    <xtce:ParameterRefEntry parameterRef="URBVoltage"/> 
 					
-					<xtce:ParameterRefEntry parameterRef="testing2"/>
+                    <xtce:ParameterRefEntry parameterRef="testing2"/>
 					
-					<xtce:ParameterRefEntry parameterRef="crc"/>
+                    <xtce:ParameterRefEntry parameterRef="crc"/>
 						
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
-                        <xtce:RestrictionCriteria>
-                            <xtce:ComparisonList>
-                                <xtce:Comparison parameterRef="Source" value="2"/>
-                                <xtce:Comparison parameterRef="b1" value="3"/>
-                                <xtce:Comparison parameterRef="b2" value="2"/>
-                            </xtce:ComparisonList>
-                        </xtce:RestrictionCriteria>
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Source" value="EPS"/>
+                            <xtce:Comparison parameterRef="Service" value="Housekeeping"/>
+                            <xtce:Comparison parameterRef="Request" value="Reply"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
-            </xtce:SequenceContainer>            
+            </xtce:SequenceContainer> 
+            
+            <xtce:SequenceContainer name="EPS_Ping_Reply" shortDescription="EPS Ping reply">
+                <xtce:EntryList>  
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Source" value="EPS"/>
+                            <xtce:Comparison parameterRef="Service" value="Ping"/>
+                            <xtce:Comparison parameterRef="Request" value="Reply"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>          
         </xtce:ContainerSet>
         
         <xtce:StreamSet>
