@@ -28,6 +28,8 @@ import static j2html.TagCreator.input;
 import static j2html.TagCreator.label;
 import static j2html.TagCreator.legend;
 import static j2html.TagCreator.link;
+import static j2html.TagCreator.option;
+import static j2html.TagCreator.select;
 import j2html.tags.ContainerTag;
 import j2html.tags.Tag;
 import java.io.IOException;
@@ -51,12 +53,14 @@ import org.json.simple.parser.ParseException;
  */
 public class EventSocket extends WebSocketAdapter
 {
-    private JSONParser parser = new JSONParser();   
+    private final JSONParser parser = new JSONParser();   
     private final clientsInterface cs = clientsInterface.getInstance();
     private final cmdMultiPublisher cmd = cmdMultiPublisher.getInstance();
     private final cmdMultiSubscriber sub = cmdMultiSubscriber.getInstance();
     private int tabIndex = 0;
     private final StringBuilder idArray = new StringBuilder();
+    // idle tioemout in ms
+    private final int IDLE_TIMEOUT = 5 * 60 * 1000;
     
     public EventSocket()
     {        
@@ -80,7 +84,9 @@ public class EventSocket extends WebSocketAdapter
     public void onWebSocketConnect(Session sess)
     {
         super.onWebSocketConnect(sess);
-        System.out.println("Socket Connected: " + sess);
+        // make sure a keep-alive timeout is enabled
+        sess.setIdleTimeout(IDLE_TIMEOUT);                
+        System.out.println("Socket Connected");
         
         List<String[]> numbers = new ArrayList();
         numbers.add(new String[]{"dest", "Destination", "7"});
@@ -88,19 +94,32 @@ public class EventSocket extends WebSocketAdapter
         numbers.add(new String[]{"data", "Data", "17 1"});
         
         Tag t = div
+        (
+            link().withRel("stylesheet").withType("text/css").withHref("/css/uplink.css"),
+            fieldset
+            (                            
+                legend("Raw Frame"),
+                dl
                 (
-                    link().withRel("stylesheet").withType("text/css").withHref("/css/uplink.css"),
-                    fieldset
-                    (                            
-                        legend("Raw Frame"),
-                        dl
-                        (
-                            each(numbers, i -> entry(i[0], i[1], i[2]))
-                        ),
-                        button("Send").attr("id", "send1").attr("onclick", "fetchData(this.id, [" + idArray.toString()+ "])").attr("tabindex", tabIndex)                            
-                    )
-                );       
-        sub.publish(new Command("uplink", t.render()));        
+                    each(numbers, i -> entry(i[0], i[1], i[2]))
+                ),
+                button("Send").attr("id", "send1").attr("onclick", "fetchData(this.id, [" + idArray.toString()+ "])").attr("tabindex", tabIndex)                            
+            )
+        );       
+        sub.publish(new Command("uplink", t.render()));   
+        
+        Tag t1 = div
+        (
+            select
+            (
+                option("A").withValue("A"),
+                option("B").withValue("B"),
+                option("C").withValue("C")
+            ).withId("serialPort"),
+            button("Select").attr("onclick", "setSerialPort();"),
+            button("Reset").attr("onclick", "resetLayout();")
+        );
+        sub.publish(new Command("header", t1.render()));
     }
     
     @Override

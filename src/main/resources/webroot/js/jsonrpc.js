@@ -3,7 +3,7 @@ function jsonRPC(address)
     // reconnect timeout in ms
     this.autoReconnectInterval = 5*1000;
     // keep-alive timeout in ms
-    this.keepAliveInterval = 30*1000;
+    this.keepAliveInterval = 3*60*1000;
     // server address: stored to allow automatic reconnection
     this.endpoint = address;
     // disable error and close messages during reconnection
