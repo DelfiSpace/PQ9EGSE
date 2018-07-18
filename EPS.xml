@@ -16,7 +16,7 @@
     <xtce:TelemetryMetaData>
         <xtce:ParameterTypeSet>
 
-            <xtce:EnumeratedParameterType name="SourceType">
+            <xtce:EnumeratedParameterType name="AddressType">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
@@ -98,9 +98,9 @@
         <xtce:ParameterSet>
             <!-- These are parameters that may be used in abstract telemetry or command containers to define system-level settings. -->
 
-            <xtce:Parameter name="Destination" parameterTypeRef="byte"/>
+            <xtce:Parameter name="Destination" parameterTypeRef="AddressType"/>
             <xtce:Parameter name="Size" parameterTypeRef="byte"/>
-            <xtce:Parameter name="Source" parameterTypeRef="SourceType"/>
+            <xtce:Parameter name="Source" parameterTypeRef="AddressType"/>
             <xtce:Parameter name="Service" parameterTypeRef="ServiceType"/>
             <xtce:Parameter name="Request" parameterTypeRef="RequestType"/>
             
@@ -261,4 +261,3 @@
         </xtce:StreamSet>
     </xtce:TelemetryMetaData>
 </xtce:SpaceSystem>
-			
