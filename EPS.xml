@@ -110,7 +110,7 @@
 
             <xtce:FloatParameterType name="SUBSSYSuptime">
                 <xtce:UnitSet>
-                    <xtce:Unit>S</xtce:Unit>
+                    <xtce:Unit>s</xtce:Unit>
                 </xtce:UnitSet>
                 <xtce:IntegerDataEncoding sizeInBits="16">
                     <xtce:DefaultCalibrator>
@@ -144,7 +144,7 @@
 
             <xtce:FloatParameterType name="LTCtemperature">
                 <xtce:UnitSet>
-                    <xtce:Unit>C</xtce:Unit>
+                    <xtce:Unit>°C</xtce:Unit>
                 </xtce:UnitSet>
                 <xtce:IntegerDataEncoding sizeInBits="16">
                     <xtce:DefaultCalibrator>
@@ -163,9 +163,7 @@
             </xtce:FloatParameterType>
 
             <xtce:FloatParameterType name="LTCcapacity">
-                <xtce:UnitSet>
-                    <xtce:Unit>?</xtce:Unit>
-                </xtce:UnitSet>
+                <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="16">
                     <xtce:DefaultCalibrator>
                         <xtce:MathOperationCalibrator>
@@ -180,7 +178,7 @@
 
             <xtce:FloatParameterType name="TMPtemperature">
                 <xtce:UnitSet>
-                    <xtce:Unit>C</xtce:Unit>
+                    <xtce:Unit>°C</xtce:Unit>
                 </xtce:UnitSet>
                 <xtce:IntegerDataEncoding sizeInBits="16">
                     <xtce:DefaultCalibrator>
@@ -196,7 +194,7 @@
 
             <xtce:FloatParameterType name="MCUtemperature">
                 <xtce:UnitSet>
-                    <xtce:Unit>C</xtce:Unit>
+                    <xtce:Unit>°C</xtce:Unit>
                 </xtce:UnitSet>
                 <xtce:IntegerDataEncoding sizeInBits="16">
                     <xtce:DefaultCalibrator>
@@ -211,8 +209,6 @@
                 </xtce:IntegerDataEncoding>
                 <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
             </xtce:FloatParameterType>
-
-
 
             <xtce:ArrayParameterType name="TMPtemperatureArray" arrayTypeRef="TMPtemperature" numberOfDimensions="1"/>
 
@@ -253,7 +249,7 @@
 
             <xtce:Parameter name="BattVoltage" parameterTypeRef="LTCvoltage"/>
             <xtce:Parameter name="BattCapacity" parameterTypeRef="LTCcapacity"/>
-            <xtce:Parameter name="BattTemperature" parameterTypeRef="LTCvoltage"/>
+            <xtce:Parameter name="BattTemperature" parameterTypeRef="LTCtemperature"/>
 
             <xtce:Parameter name="BusSwitchesSetting" parameterTypeRef="bitStatusArray"/>
             <xtce:Parameter name="BusSwitchesStatus" parameterTypeRef="bitStatusArray"/>
