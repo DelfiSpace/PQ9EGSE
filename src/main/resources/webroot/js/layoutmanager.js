@@ -1,6 +1,6 @@
 var config = {
   settings:{
-      hasHeaders: false,        
+      hasHeaders: true,        
       showCloseIcon: false
     },
   content: [
@@ -11,6 +11,7 @@ var config = {
           type: "component",
           componentName: "Header",
           componentState: { label: "H" },
+          isClosable: false,
           height: 15
         },
         {
@@ -20,18 +21,21 @@ var config = {
           type: "component",
           componentName: "DataLog",
           componentState: { label: "A" },
+          isClosable: false,
           height: 60
         },
         {
           type: "component",
           componentName: "Uplink",
           componentState: { label: "A" },
+          isClosable: false,
           height: 60
         }]},
         {
           type: "component",
           componentName: "EventLog",
           componentState: { label: "C" },
+          isClosable: false,
           height: 25
         }
       ]
@@ -53,7 +57,7 @@ if( savedState !== null )
 
 myLayout.registerComponent("Header", function(container, componentState) 
 {
-  container.getElement().html("Header");
+  container.getElement().html("<div id=\"header\"></div>");
 });
 myLayout.registerComponent("DataLog", function(container, componentState) 
 {
@@ -61,19 +65,7 @@ myLayout.registerComponent("DataLog", function(container, componentState)
 });
 myLayout.registerComponent("Uplink", function(container, componentState) 
 {
-    var html = [];
-    html.push(
-        "<div id=\"uplink\">",
-        "<button type=\"button\" id=\"send1\" onclick=\"handleSend(this.id)\">Send1</button>",
-        "<br/>",
-        "<button type=\"button\" id=\"send2\" onclick=\"handleSend(this.id)\">Send2</button>",
-        "<br/>",
-        "<button type=\"button\" id=\"send3\" onclick=\"handleSend(this.id)\">Send3</button>",
-        "<br/>",
-        "</div>"
-    );
-
-  container.getElement().html(html.join(""));
+  container.getElement().html("<div id=\"uplink\"></div>");
 });
 myLayout.registerComponent("EventLog", function(container, componentState) 
 {
@@ -112,6 +104,10 @@ rpc.onmessage( function(command, data)
 
         case "uplink":
             document.getElementById("uplink").innerHTML = data;
+            break;
+
+        case "header":
+            document.getElementById("header").innerHTML = data;
             break;
 
         default:
@@ -179,4 +175,9 @@ function resetLayout()
     // clear the saved layout state
     localStorage.removeItem('layoutSavedState');
     location.reload(true);
+}
+
+function setSerialPort()
+{
+    rpc.send("setSerialPort", document.getElementById('serialPort').value);
 }
