@@ -211,20 +211,13 @@
             </xtce:FloatParameterType>
 
             <xtce:ArrayParameterType name="TMPtemperatureArray" arrayTypeRef="TMPtemperature" numberOfDimensions="1"/>
-
             <xtce:ArrayParameterType name="INAcurrentArray" arrayTypeRef="INAcurrent" numberOfDimensions="1"/>
-
             <xtce:ArrayParameterType name="INAvoltageArray" arrayTypeRef="INAvoltage" numberOfDimensions="1"/>
-
             <xtce:ArrayParameterType name="shortArray" arrayTypeRef="short" numberOfDimensions="1"/>
-
             <xtce:ArrayParameterType name="bitStatusArray" arrayTypeRef="bitStatus" numberOfDimensions="1"/>
-
-            <xtce:ArrayParameterType name="sensorBitStatusArray" arrayTypeRef="sensorBitStatus" numberOfDimensions="1"/>
 
         </xtce:ParameterTypeSet>
 
-        <!-- These are the parameters that can be used in containers. -->
         <xtce:ParameterSet>
             <!-- These are parameters that may be used in abstract telemetry or command containers to define system-level settings. -->
 
@@ -239,7 +232,24 @@
             <xtce:Parameter name="testing4" parameterTypeRef="long"/>
             <xtce:Parameter name="BootCounter" parameterTypeRef="short"/>
             <xtce:Parameter name="SoftwareBootCounter" parameterTypeRef="byte"/>
-            <xtce:Parameter name="SensorsStatus" parameterTypeRef="sensorBitStatusArray"/>
+            
+            <xtce:Parameter name="Sensor0Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor1Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor2Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor3Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor4Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor5Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor6Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor7Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor8Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor9Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor10Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor11Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor12Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor13Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor14Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor15Status" parameterTypeRef="sensorBitStatus"/>
+            
             <xtce:Parameter name="SAVoltage" parameterTypeRef="INAvoltageArray"/>
             <xtce:Parameter name="SACurrent" parameterTypeRef="INAcurrentArray"/>
             <xtce:Parameter name="SATemp" parameterTypeRef="TMPtemperatureArray"/>
@@ -288,13 +298,22 @@
                     <xtce:ParameterRefEntry parameterRef="BootCounter"/>
                     <xtce:ParameterRefEntry parameterRef="SoftwareBootCounter"/>
 
-                    <xtce:ArrayParameterRefEntry parameterRef="SensorsStatus">
-                        <xtce:DimensionList>
-                            <xtce:Size>
-                                <xtce:FixedValue>16</xtce:FixedValue>
-                            </xtce:Size>
-                        </xtce:DimensionList>
-                    </xtce:ArrayParameterRefEntry>
+                    <xtce:ParameterRefEntry parameterRef="Sensor0Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor1Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor2Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor3Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor4Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor5Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor6Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor7Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor8Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor9Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor10Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor11Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor12Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor13Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor14Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor15Status"/>
 
                     <xtce:ArrayParameterRefEntry parameterRef="SACurrent">
                         <xtce:DimensionList>
