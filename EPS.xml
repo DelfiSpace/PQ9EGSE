@@ -398,13 +398,12 @@
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
 
-            <xtce:SequenceContainer name="EPS_Ping_Reply" shortDescription="EPS Ping reply">
+            <xtce:SequenceContainer name="Ping_Reply" shortDescription="Ping reply">
                 <xtce:EntryList>
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>
                         <xtce:ComparisonList>
-                            <xtce:Comparison parameterRef="Source" value="EPS"/>
                             <xtce:Comparison parameterRef="Service" value="Ping"/>
                             <xtce:Comparison parameterRef="Request" value="Reply"/>
                         </xtce:ComparisonList>
