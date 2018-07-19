@@ -112,7 +112,7 @@
                 <xtce:UnitSet>
                     <xtce:Unit>s</xtce:Unit>
                 </xtce:UnitSet>
-                <xtce:IntegerDataEncoding sizeInBits="16">
+                <xtce:IntegerDataEncoding sizeInBits="32">
                     <xtce:DefaultCalibrator>
                         <xtce:MathOperationCalibrator>
                             <xtce:ThisParameterOperand/>
