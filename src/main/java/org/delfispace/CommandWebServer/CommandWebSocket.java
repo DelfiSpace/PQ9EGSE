@@ -16,27 +16,17 @@
  */
 package org.delfispace.CommandWebServer;
 
-import static j2html.TagCreator.attrs;
 import static j2html.TagCreator.button;
-import static j2html.TagCreator.dd;
 import static j2html.TagCreator.div;
-import static j2html.TagCreator.dl;
-import static j2html.TagCreator.dt;
 import static j2html.TagCreator.each;
-import static j2html.TagCreator.fieldset;
-import static j2html.TagCreator.input;
-import static j2html.TagCreator.label;
-import static j2html.TagCreator.legend;
-import static j2html.TagCreator.link;
 import static j2html.TagCreator.option;
 import static j2html.TagCreator.select;
-import j2html.tags.ContainerTag;
 import j2html.tags.Tag;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.delfispace.pq9debugger.Configuration;
 import org.delfispace.pq9debugger.clientsInterface;
 import org.delfispace.pq9debugger.cmdMultiPublisher;
 import org.delfispace.pq9debugger.cmdMultiSubscriber;
@@ -45,6 +35,9 @@ import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.omg.space.xtce.MetaCommandType;
+import org.xtce.toolkit.XTCEArgument;
+import org.xtce.toolkit.XTCETelecommand;
 
 /**
  *
@@ -56,8 +49,7 @@ public class CommandWebSocket extends WebSocketAdapter
     private final clientsInterface cs = clientsInterface.getInstance();
     private final cmdMultiPublisher cmd = cmdMultiPublisher.getInstance();
     private final cmdMultiSubscriber sub = cmdMultiSubscriber.getInstance();
-    private int tabIndex = 0;
-    private final StringBuilder idArray = new StringBuilder();
+
     // idle tioemout in ms
     private final int IDLE_TIMEOUT = 5 * 60 * 1000;
     
@@ -87,35 +79,17 @@ public class CommandWebSocket extends WebSocketAdapter
         sess.setIdleTimeout(IDLE_TIMEOUT);                
         System.out.println("Socket Connected");
         
-        List<String[]> numbers = new ArrayList();
-        numbers.add(new String[]{"dest", "Destination", "7"});
-        numbers.add(new String[]{"src", "Source", "1"});
-        numbers.add(new String[]{"data", "Data", "17 1"});
+        listTelecommands();
+                           
         
-        Tag t = div
-        (
-            link().withRel("stylesheet").withType("text/css").withHref("/css/uplink.css"),
-            fieldset
-            (                            
-                legend("Raw Frame"),
-                dl
-                (
-                    each(numbers, i -> entry(i[0], i[1], i[2]))
-                ),
-                button("Send").attr("id", "send1").attr("onclick", "fetchData(this.id, [" + idArray.toString()+ "])").attr("tabindex", tabIndex)                            
-            )
-        );       
-        sub.publish(new Command("uplink", t.render()));   
+        List<String> spl = Configuration.getInstance().getSerialPorts();
         
         Tag t1 = div
         (
             select
             (
-                option("A").withValue("A"),
-                option("B").withValue("B"),
-                option("C").withValue("C")
-            ).withId("serialPort"),
-            button("Select").attr("onclick", "setSerialPort();"),
+                each(spl, p -> option(p).withValue(p).condAttr(Configuration.getInstance().getSerialPort().equals(p), "selected",  "selected"))
+            ).withId("serialPort").attr("onChange", "setSerialPort();"),
             button("Reset").attr("onclick", "resetLayout();")
         );
         sub.publish(new Command("header", t1.render()));
@@ -148,26 +122,35 @@ public class CommandWebSocket extends WebSocketAdapter
         cause.printStackTrace(System.err);
     }
     
-    public ContainerTag entry(String id, String description, String value) 
+    
+    
+    private void listTelecommands()
     {
-        tabIndex++;
-        if (idArray.length() != 0)
-        {
-            idArray.append(", ");
-        }
-        idArray.append("\'");
-        idArray.append(id);
-        idArray.append("\'");        
-        return div
-            (
-                dt
-                ( 
-                    label(description + ":").attr("for", id).attr("tabindex", tabIndex)
-                ), 
-                dd
-                (
-                    input(attrs("#" + id)).withType("text").withValue(value)
-                )
-            );
+        List<XTCETelecommand> tcs = Configuration.getInstance().getXTCEDatabase().getTelecommands();
+            
+                      
+            
+            for(XTCETelecommand tc : tcs)
+            {
+                System.out.println("-> " + tc.getMetaCommandReference().getName());
+                if (tc.getMetaCommandReference().getBaseMetaCommand() != null)
+                {
+                    List<MetaCommandType.BaseMetaCommand.ArgumentAssignmentList.ArgumentAssignment> as = tc.getMetaCommandReference().getBaseMetaCommand().getArgumentAssignmentList().getArgumentAssignment();
+                    for (MetaCommandType.BaseMetaCommand.ArgumentAssignmentList.ArgumentAssignment a : as)
+                    {
+                        System.out.println("----- " + a.getArgumentName() + " " + a.getArgumentValue());
+                    }
+                    
+                }
+                System.out.println(tc.getName());
+                List<XTCEArgument> ping = tc.getArguments();
+                //db_.processTelecommand(
+                for(XTCEArgument a : ping)
+                {
+                    System.out.println("\t" + a.getName());
+
+                }
+                
+            }
     }
 }

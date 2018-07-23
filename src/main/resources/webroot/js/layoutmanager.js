@@ -117,6 +117,9 @@ rpc.onmessage( function(command, data)
 
 rpc.open();
 
+// load the uplink tab after 1 second to ensure the socket connected
+setTimeout(function() { rpc.send("uplink", ""); }, 1000);
+
 function handleSend(buttonId) 
 {
     rpc.send("send", "message to be sent from " + buttonId);
