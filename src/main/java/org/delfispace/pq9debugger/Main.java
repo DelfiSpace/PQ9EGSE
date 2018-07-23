@@ -29,6 +29,7 @@ import static j2html.TagCreator.legend;
 import static j2html.TagCreator.link;
 import static j2html.TagCreator.textarea;
 import j2html.tags.Tag;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -306,31 +307,40 @@ public class Main implements PQ9Receiver, Subscriber
             switch(cmd.getCommand())
             {
                 case "send1":
-                    obj = (JSONObject)parser.parse(data);
-                    int d = Integer.parseInt((String) obj.get("dest"));
-                    int s = Integer.parseInt((String) obj.get("src"));
+                    try
+                    {
+                        obj = (JSONObject)parser.parse(data);
+                        int d = Integer.parseInt((String) obj.get("dest"));
+                        int s = Integer.parseInt((String) obj.get("src"));
 
-                    String[] parts = ((String) obj.get("data")).split(" ");
-                    byte[] n1 = new byte[parts.length];
-                    for(int n = 0; n < parts.length; n++) 
+                        String[] parts = ((String) obj.get("data")).split(" ");
+                        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                        for (String part : parts) 
+                        {
+                            if (part.length() != 0) 
+                            {                                
+                                bs.write((byte) (Integer.decode(part) & 0xFF));
+                            }
+                        }
+                        PQ9 frame = new PQ9(d, s, bs.toByteArray());
+                        pcInterface.send(frame);
+                        if (!loopback)
+                        {
+                            StringBuilder sb = new StringBuilder();
+                            sb.append("<font color=\"yellow\">");
+                            // print reception time
+                            sb.append(df.format(new Date()));
+                            // print the received frame
+                            sb.append("New frame transmitted: <br>");
+                            sb.append("&emsp;&emsp;&emsp;&emsp;");
+                            sb.append(frame.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;")); 
+                            sb.append("</font>");
+                            srv.send(new Command("datalog", sb.toString()));  
+                        }
+                    } catch (NumberFormatException ex)
                     {
-                       n1[n] = (byte)Integer.parseInt(parts[n]);
-                    }
-                    PQ9 frame = new PQ9(d, s, n1);
-                    pcInterface.send(frame);
-                    if (!loopback)
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("<font color=\"yellow\">");
-                        // print reception time
-                        sb.append(df.format(new Date()));
-                        // print the received frame
-                        sb.append("New frame transmitted: <br>");
-                        sb.append("&emsp;&emsp;&emsp;&emsp;");
-                        sb.append(frame.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;")); 
-                        sb.append("</font>");
-                        srv.send(new Command("datalog", sb.toString()));  
-                    }
+                        handleException(ex);
+                    } 
                 break;
 
                 case "setSerialPort":
