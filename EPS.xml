@@ -421,4 +421,80 @@
             </xtce:VariableFrameStream>
         </xtce:StreamSet>
     </xtce:TelemetryMetaData>
+    
+    <xtce:CommandMetaData>
+        <xtce:ArgumentTypeSet>
+            <xtce:EnumeratedArgumentType name="AddressType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="OBC" value="1"/>
+                    <xtce:Enumeration label="EPS" value="2"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+
+            <xtce:EnumeratedArgumentType name="ServiceType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Housekeeping" value="3"/>
+                    <xtce:Enumeration label="Ping" value="17"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+
+            <xtce:EnumeratedArgumentType name="RequestType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Request" value="1"/>
+                    <xtce:Enumeration label="Reply" value="2"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+            
+            <xtce:IntegerArgumentType name="byte">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8"/>
+            </xtce:IntegerArgumentType>
+
+        </xtce:ArgumentTypeSet>
+        <xtce:MetaCommandSet>
+            <xtce:MetaCommand abstract="true" name="PQ9">
+                <xtce:LongDescription>Base telecommand structure for all PQ9 based telecommands.</xtce:LongDescription>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="Destination" argumentTypeRef="AddressType"/> 
+                    <xtce:Argument name="Size" argumentTypeRef="byte"/> 
+                    <xtce:Argument name="Source" argumentTypeRef="AddressType"/>
+                    <xtce:Argument name="Service" argumentTypeRef="ServiceType"/>
+                    <xtce:Argument name="Request" argumentTypeRef="RequestType"/>
+                </xtce:ArgumentList>
+                <xtce:CommandContainer name="PQ9">	
+                    <xtce:EntryList>
+                        <xtce:ArgumentRefEntry argumentRef="Destination"/>
+                        <xtce:ArgumentRefEntry argumentRef="Size"/>
+                        <xtce:ArgumentRefEntry argumentRef="Source"/>
+                        <xtce:ArgumentRefEntry argumentRef="Service"/>
+                        <xtce:ArgumentRefEntry argumentRef="Request"/>
+                    </xtce:EntryList>
+                </xtce:CommandContainer>				
+            </xtce:MetaCommand>
+			
+            <xtce:MetaCommand name="PingEPS">
+                <xtce:LongDescription>Ping EPS</xtce:LongDescription>
+                <xtce:ArgumentList/>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/> 
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/> 
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Ping"/>
+                        <!--xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/-->
+                    </xtce:ArgumentAssignmentList> 
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="PingEPS">	
+                    <xtce:EntryList/>   
+                </xtce:CommandContainer>				
+            </xtce:MetaCommand>
+			
+        </xtce:MetaCommandSet>
+    </xtce:CommandMetaData>
 </xtce:SpaceSystem>
