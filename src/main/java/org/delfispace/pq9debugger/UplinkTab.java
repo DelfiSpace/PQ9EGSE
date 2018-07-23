@@ -58,7 +58,8 @@ public class UplinkTab
                         ), 
                         dd
                         (
-                            textarea("17 1").withType("text").withId("data")
+                            textarea("17 1").withType("text").withId("data").attr("title", 
+                                    "Array of integers between 0 and 255 or hex bytes separated by blanks")
                         )
                     )
                 ),
@@ -87,7 +88,7 @@ public class UplinkTab
                 ), 
                 dd
                 (
-                    input(attrs("#" + id)).withType("text").withValue(value)
+                    input(attrs("#" + id)).withType("text").withValue(value).attr("title", "Integer between 0 and 255")
                 )
             );
     }
