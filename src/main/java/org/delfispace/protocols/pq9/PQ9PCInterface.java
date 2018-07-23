@@ -60,6 +60,22 @@ public class PQ9PCInterface
         this.loopback = loopback;
     }
     
+    public void close() throws IOException
+    {
+        if (reader != null)
+        {
+            this.in.close();
+            this.out.close();
+            reader.running = false;
+            try 
+            {
+                reader.join();
+            } catch (InterruptedException ex) 
+            {
+                // ignore exception
+            }
+        }
+    }
     public void setReceiverCallback(PQ9Receiver clb) 
     {
         if (callback != null) 
@@ -92,124 +108,128 @@ public class PQ9PCInterface
 
     private PQ9 blockingread() throws IOException 
     {
-        int tmprx = in.read();
+        byte[] newData = new byte[1];
+        int tmprx = in.read(newData);
 
-        while (tmprx != -1) 
+        while (tmprx >= 0) 
         {
-            byte rx = (byte) (tmprx & 0xFF);
-            if (rx == HLDLC_START_FLAG) 
+            if (tmprx > 0)
             {
-                // clear the buffer and get ready to process a new frame
-                if (bs.size() != 0)
+                byte rx = (byte) (newData[0] & 0xFF);
+                if (rx == HLDLC_START_FLAG) 
                 {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("Bytes have been discarded: ");
-                    byte[] d = bs.toByteArray();
-                    for (int i = 0; i < d.length; i++)
+                    // clear the buffer and get ready to process a new frame
+                    if (bs.size() != 0)
                     {
-                        sb.append(String.format("%02X ", d[i]));
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("Bytes have been discarded: ");
+                        byte[] d = bs.toByteArray();
+                        for (int i = 0; i < d.length; i++)
+                        {
+                            sb.append(String.format("%02X ", d[i]));
+                        }
+                        if (errorHdl != null)
+                        {
+                            errorHdl.error(new PQ9Exception(sb.toString()));
+                        }
                     }
-                    if (errorHdl != null)
-                    {
-                        errorHdl.error(new PQ9Exception(sb.toString()));
-                    }
-                }
-                bs.reset();
-                startFound = true;
-                controlFound = false;
-                sizeFrame = -1;
-            } 
-            else if (startFound) 
-            {
-                // only process data if a flag was found            
-                if (rx == HLDLC_CONTROL_FLAG) 
-                {
-                    controlFound = true;
+                    bs.reset();
+                    startFound = true;
+                    controlFound = false;
+                    sizeFrame = -1;
                 } 
-                else if (controlFound) 
+                else if (startFound) 
                 {
-                    switch (rx) 
+                    // only process data if a flag was found            
+                    if (rx == HLDLC_CONTROL_FLAG) 
                     {
-                        case HLDLC_ESCAPE_START_FLAG:
-                            bs.write(HLDLC_START_FLAG);
-                            break;
-                        case HLDLC_ESCAPE_CONTROL_FLAG:
-                            bs.write(HLDLC_CONTROL_FLAG);
-                            break;
-                        case HLDLC_ESCAPE_STOP_FLAG:
-                            bs.write(HLDLC_STOP_FLAG);
-                            break;
-                        default:
-                            // illegal sequence, aborting
+                        controlFound = true;
+                    } 
+                    else if (controlFound) 
+                    {
+                        switch (rx) 
+                        {
+                            case HLDLC_ESCAPE_START_FLAG:
+                                bs.write(HLDLC_START_FLAG);
+                                break;
+                            case HLDLC_ESCAPE_CONTROL_FLAG:
+                                bs.write(HLDLC_CONTROL_FLAG);
+                                break;
+                            case HLDLC_ESCAPE_STOP_FLAG:
+                                bs.write(HLDLC_STOP_FLAG);
+                                break;
+                            default:
+                                // illegal sequence, aborting
+                                startFound = false;
+                                controlFound = false;
+                                // throw exception here
+                                if (errorHdl != null)
+                                {
+                                    errorHdl.error(new PQ9Exception("exception 1"));
+                                }
+                                break;
+                        }
+                        controlFound = false;
+                    } 
+                    else 
+                    {
+                        // new data byte, add it to the buffer
+                        bs.write(rx);
+                        if ((sizeFrame != -1) && (sizeFrame == bs.size() - 5))
+                        {
                             startFound = false;
                             controlFound = false;
-                            // throw exception here
-                            if (errorHdl != null)
+                            sizeFrame = -1;
+                            try 
                             {
-                                errorHdl.error(new PQ9Exception("exception 1"));
-                            }
-                            break;
+                                PQ9 t = new PQ9(bs.toByteArray());   
+                                // clean the buffer if a valid frame was found
+                                bs.reset();
+                                return t;
+                            } catch (PQ9Exception ex) 
+                            {
+                                // the frame is not valid, throw away the data and wait for a new frame
+                                if (errorHdl != null)
+                                {
+                                    errorHdl.error(ex);
+                                }
+                                return null;
+                            }                        
+                        }
                     }
-                    controlFound = false;
-                } 
-                else 
-                {
-                    // new data byte, add it to the buffer
-                    bs.write(rx);
-                    if ((sizeFrame != -1) && (sizeFrame == bs.size() - 5))
+
+                    // initialize the counter to catch the frame size byte and use it to 
+                    // detect frame termination
+                    if (bs.size() == 2)
                     {
-                        startFound = false;
-                        controlFound = false;
-                        sizeFrame = -1;
-                        try 
-                        {
-                            PQ9 t = new PQ9(bs.toByteArray());   
-                            // clean the buffer if a valid frame was found
-                            bs.reset();
-                            return t;
-                        } catch (PQ9Exception ex) 
-                        {
-                            // the frame is not valid, throw away the data and wait for a new frame
-                            if (errorHdl != null)
-                            {
-                                errorHdl.error(ex);
-                            }
-                            return null;
-                        }                        
+
+                        sizeFrame = rx & 0xFF;
                     }
                 }
-                
-                // initialize the counter to catch the frame size byte and use it to 
-                // detect frame termination
-                if (bs.size() == 2)
+                else
                 {
-                    
-                    sizeFrame = rx & 0xFF;
+                    //a byte received without having received a start
+                    if (errorHdl != null)
+                    {
+                        errorHdl.error(new PQ9Exception(String.format("Unexpected byte: %02X", tmprx & 0xFF)));
+                    }
                 }
-            }
-            else
-            {
-                //a byte received without having received a start
-                if (errorHdl != null)
+
+                // prevent the buffer from growing too much
+                if (bs.size() > 256)
                 {
-                    errorHdl.error(new PQ9Exception(String.format("Unexpected byte: %02X", tmprx & 0xFF)));
-                }
-            }
-        
-            // prevent the buffer from growing too much
-            if (bs.size() > 256)
-            {
-                bs.reset();
-                startFound = false;
-                controlFound = false;
-                sizeFrame = -1;
-                if (errorHdl != null)
-                {
-                    errorHdl.error(new PQ9Exception("Buffer overrun"));
+                    bs.reset();
+                    startFound = false;
+                    controlFound = false;
+                    sizeFrame = -1;
+                    if (errorHdl != null)
+                    {
+                        errorHdl.error(new PQ9Exception("Buffer overrun"));
+                    }
                 }
             }
             // read new byte
-            tmprx = in.read();
+            tmprx = in.read(newData);
         }
 
         // no full frame received yet
@@ -266,10 +286,11 @@ public class PQ9PCInterface
                     {
                         callback.received(d);
                     }
-                }
-            } catch (IOException ex) 
+                }            
+            } catch (IOException ex)
             {
                 running = false;
+                errorHdl.error(ex);
             }
         }
     }
