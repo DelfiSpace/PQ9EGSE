@@ -42,13 +42,12 @@ var config = {
     }
   ]
 };
+ var loadOnce = true;
 
 savedState = localStorage.getItem( 'layoutSavedState' );
 
 if( savedState !== null ) 
 {
-// there could be an exception here, when a component 
-// has been renamed and the old name is still in saved state
     myLayout = new GoldenLayout( JSON.parse( savedState ) );
 } else 
 {
@@ -77,6 +76,14 @@ var rpc = new jsonRPC("ws://" + location.host + "/wss");
 
 rpc.onopen( function(evt)
 {
+    // generate the uplink only the first time:
+    // if the connection is lost and re-attained, do not
+    // update the uplink panel
+    if (loadOnce == true)
+    {
+        rpc.send("uplink", "");
+        loadOnce = false;
+    }
     updateDiv("log", myGetTime() + " Connection established.");
 });
 
@@ -117,9 +124,6 @@ rpc.onmessage( function(command, data)
 
 rpc.open();
 
-// load the uplink tab after 1 second to ensure the socket connected
-setTimeout(function() { rpc.send("uplink", ""); }, 1000);
-
 function handleSend(buttonId) 
 {
     rpc.send("send", "message to be sent from " + buttonId);
@@ -127,13 +131,14 @@ function handleSend(buttonId)
 
 function fetchData(id, elm)
 {
-    var obj = {};    
+    var obj = {};  
+    obj['_command_'] = id;
     for(var i = 0; i < elm.length; i++)
     {   
         obj[elm[i]] = document.getElementById(elm[i]).value;
     } 
     var s = JSON.stringify(obj);
-    rpc.send(id, s);
+    rpc.send('SendCommand', s);
 }
 
 function myGetTime()
@@ -155,7 +160,13 @@ function myGetTime()
 
 function updateDiv(id, data)
 {
-    var objDiv = document.getElementById(id).parentNode;
+    // make sure the graphical elements have been created correctly, 
+    // otherwise erase the stored configuration and reload the page
+    if (document.getElementById(id) === null)
+    {
+        resetLayout();
+    }
+    var objDiv = document.getElementById(id).parentNode;    
     var delta = objDiv.offsetHeight + objDiv.scrollTop;
     var delta1 = objDiv.scrollHeight;
        
