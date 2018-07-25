@@ -34,6 +34,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -54,6 +56,8 @@ import org.xtce.toolkit.XTCEContainerEntryValue;
 import org.xtce.toolkit.XTCEDatabase;
 import org.xtce.toolkit.XTCEDatabaseException;
 import org.xtce.toolkit.XTCETMStream;
+import org.xtce.toolkit.XTCETelecommand;
+import org.xtce.toolkit.XTCETelecommandContentModel;
 import org.xtce.toolkit.XTCEValidRange;
 
 /**
@@ -300,49 +304,17 @@ public class Main implements PQ9Receiver, Subscriber
     @Override
     public void subscribe(Command cmd) 
     {
-        String data = cmd.getData();
-        JSONObject obj;
+        
         try 
         {
             switch(cmd.getCommand())
             {
-                case "send1":
-                    try
-                    {
-                        obj = (JSONObject)parser.parse(data);
-                        int d = Integer.parseInt((String) obj.get("dest"));
-                        int s = Integer.parseInt((String) obj.get("src"));
-
-                        String[] parts = ((String) obj.get("data")).split(" ");
-                        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                        for (String part : parts) 
-                        {
-                            if (part.length() != 0) 
-                            {                                
-                                bs.write((byte) (Integer.decode(part) & 0xFF));
-                            }
-                        }
-                        PQ9 frame = new PQ9(d, s, bs.toByteArray());
-                        pcInterface.send(frame);
-                        if (!loopback)
-                        {
-                            StringBuilder sb = new StringBuilder();
-                            sb.append("<font color=\"yellow\">");
-                            // print reception time
-                            sb.append(df.format(new Date()));
-                            // print the received frame
-                            sb.append("New frame transmitted: <br>");
-                            sb.append("&emsp;&emsp;&emsp;&emsp;");
-                            sb.append(frame.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;")); 
-                            sb.append("</font>");
-                            srv.send(new Command("datalog", sb.toString()));  
-                        }
-                    } catch (NumberFormatException ex)
-                    {
-                        handleException(ex);
-                    } 
+                case "SendCommand":
+                    handleSendCommand(cmd);
                 break;
 
+                //case "sendCommand":
+                  //  break;
                 case "setSerialPort":
                     connectToSerialPort(cmd.getData());
                     break;
@@ -358,9 +330,88 @@ public class Main implements PQ9Receiver, Subscriber
                 default:
                     handleException(new Exception("Unknown command: " + cmd));
         }
-        } catch (ParseException | PQ9Exception | IOException ex) 
+        } catch (ParseException | PQ9Exception | XTCEDatabaseException | IOException ex) 
         {
             handleException(ex);
-        }    
+        }            
+    }
+    private void handleSendCommand(Command cmd) throws ParseException, PQ9Exception, IOException, XTCEDatabaseException
+    {
+        try
+        {
+            PQ9 frame = null;
+            String data = cmd.getData();
+            JSONObject obj = (JSONObject)parser.parse(data);
+            switch((String)obj.get("_command_"))
+            {
+                case "SendRaw":                                        
+                    int d = Integer.parseInt((String) obj.get("dest"));
+                    int s = Integer.parseInt((String) obj.get("src"));
+
+                    String[] parts = ((String) obj.get("data")).split(" ");
+                    ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                    for (String part : parts) 
+                    {
+                        if (part.length() != 0) 
+                        {                                
+                            bs.write((byte) (Integer.decode(part) & 0xFF));
+                        }
+                    }
+                    frame = new PQ9(d, s, bs.toByteArray());
+                    break;
+                    
+                default:
+                    List<XTCETelecommand> tc = Configuration.getInstance().getXTCEDatabase().getTelecommands((String)obj.get("_command_"));
+                    
+                    if (tc.isEmpty())
+                    {
+                        throw new XTCEDatabaseException("Command not found: " + (String)obj.get("_command_"));
+                    }
+                    if (tc.size() > 1)
+                    {
+                        throw new XTCEDatabaseException((String)obj.get("_command_") + " identifies multiple commands");
+                    }
+
+                    XTCETelecommandContentModel model =
+                            Configuration.getInstance().getXTCEDatabase().processTelecommand( tc.get(0), null, false );
+                    BitSet rawBits    = model.encodeContainer();
+                    byte[] rawcmd = rawBits.toByteArray();
+                    byte[] rawcmd1 = new byte[rawcmd.length];
+                    
+                    // invert bit order
+                    for(int i = 0; i < rawcmd.length; i++)
+                    {
+                        rawcmd1[i] = 0;
+                        for(int j = 0; j < 8; j++)
+                        {
+                            if ((rawcmd[i] & (1 << j)) != 0)
+                            {
+                                rawcmd1[i] |= 1 << (7 - j);
+                            }
+                        }
+                    }
+
+                    frame = new PQ9(rawcmd1[0] & 0xFF, rawcmd1[2] & 0xFF, Arrays.copyOfRange(rawcmd1, 3, rawcmd.length));
+                    break;
+            }
+            
+            pcInterface.send(frame);
+            if (!loopback)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.append("<font color=\"yellow\">");
+                // print reception time
+                sb.append(df.format(new Date()));
+                // print the received frame
+                sb.append("New frame transmitted: <br>");
+                sb.append("&emsp;&emsp;&emsp;&emsp;");
+                sb.append(frame.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;")); 
+                sb.append("</font>");
+                srv.send(new Command("datalog", sb.toString()));  
+            }            
+        } catch (NumberFormatException ex)
+        {
+            handleException(ex);
+        } 
     }
 }

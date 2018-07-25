@@ -35,9 +35,6 @@ import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.omg.space.xtce.MetaCommandType;
-import org.xtce.toolkit.XTCEArgument;
-import org.xtce.toolkit.XTCETelecommand;
 
 /**
  *
@@ -78,10 +75,7 @@ public class CommandWebSocket extends WebSocketAdapter
         // make sure a keep-alive timeout is enabled
         sess.setIdleTimeout(IDLE_TIMEOUT);                
         System.out.println("Socket Connected");
-        
-        listTelecommands();
-                           
-        
+
         List<String> spl = Configuration.getInstance().getSerialPorts();
         
         Tag t1 = div
@@ -120,37 +114,5 @@ public class CommandWebSocket extends WebSocketAdapter
     {
         super.onWebSocketError(cause);
         cause.printStackTrace(System.err);
-    }
-    
-    
-    
-    private void listTelecommands()
-    {
-        List<XTCETelecommand> tcs = Configuration.getInstance().getXTCEDatabase().getTelecommands();
-            
-                      
-            
-            for(XTCETelecommand tc : tcs)
-            {
-                System.out.println("-> " + tc.getMetaCommandReference().getName());
-                if (tc.getMetaCommandReference().getBaseMetaCommand() != null)
-                {
-                    List<MetaCommandType.BaseMetaCommand.ArgumentAssignmentList.ArgumentAssignment> as = tc.getMetaCommandReference().getBaseMetaCommand().getArgumentAssignmentList().getArgumentAssignment();
-                    for (MetaCommandType.BaseMetaCommand.ArgumentAssignmentList.ArgumentAssignment a : as)
-                    {
-                        System.out.println("----- " + a.getArgumentName() + " " + a.getArgumentValue());
-                    }
-                    
-                }
-                System.out.println(tc.getName());
-                List<XTCEArgument> ping = tc.getArguments();
-                //db_.processTelecommand(
-                for(XTCEArgument a : ping)
-                {
-                    System.out.println("\t" + a.getName());
-
-                }
-                
-            }
     }
 }
