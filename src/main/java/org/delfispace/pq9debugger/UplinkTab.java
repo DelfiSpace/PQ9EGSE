@@ -13,6 +13,7 @@ import static j2html.TagCreator.dl;
 import static j2html.TagCreator.dt;
 import static j2html.TagCreator.each;
 import static j2html.TagCreator.fieldset;
+import static j2html.TagCreator.filter;
 import static j2html.TagCreator.input;
 import static j2html.TagCreator.label;
 import static j2html.TagCreator.legend;
@@ -22,6 +23,7 @@ import j2html.tags.ContainerTag;
 import j2html.tags.Tag;
 import java.util.ArrayList;
 import java.util.List;
+import org.xtce.toolkit.XTCETelecommand;
 
 /**
  *
@@ -40,6 +42,8 @@ public class UplinkTab
         
         tabIndex = 0;
         idArray.setLength(0);
+        
+        List<XTCETelecommand> tcs = Configuration.getInstance().getXTCEDatabase().getTelecommands();
         
         Tag t = div
         (
@@ -63,7 +67,15 @@ public class UplinkTab
                         )
                     )
                 ),
-                button("Send").attr("id", "send1").attr("onclick", "fetchData(this.id, [" + idArray.toString()+ ", 'data'])").attr("tabindex", tabIndex)                            
+                button("Send").attr("id", "SendRaw").attr("onclick", "fetchData(this.id, [" + idArray.toString()+ ", 'data'])").attr("tabindex", tabIndex).attr("title", "Raw Frame")
+            ),
+            each(filter(tcs, tc -> tc.isAbstract() != true), tc ->
+                fieldset
+                (
+                    legend(tc.getDescription()),
+                        dl(),
+                    button("Send").attr("id", tc.getName()).attr("onclick", "fetchData(this.id, \"\")").attr("tabindex", tabIndex++).attr("title", tc.getDescription())
+                )
             )
         );       
         
