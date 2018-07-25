@@ -437,6 +437,7 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
+                    <xtce:Enumeration label="Action" value="1"/>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                 </xtce:EnumerationList>
@@ -487,14 +488,57 @@
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/> 
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="Ping"/>
-                        <!--xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/-->
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                     </xtce:ArgumentAssignmentList> 
                 </xtce:BaseMetaCommand>
                 <xtce:CommandContainer name="PingEPS">	
                     <xtce:EntryList/>   
                 </xtce:CommandContainer>				
             </xtce:MetaCommand>
-			
+
+            <xtce:MetaCommand name="GetEPSTelemetry">
+                <xtce:LongDescription>Get EPS Telemetry</xtce:LongDescription>
+                <xtce:ArgumentList/>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/> 
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/> 
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Action"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                    </xtce:ArgumentAssignmentList> 
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="GetEPSTelemetry">	
+                    <xtce:EntryList/>
+                </xtce:CommandContainer>				
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="TurnBus1ON">
+                <xtce:LongDescription>Turn EPS Bus 1 ON</xtce:LongDescription>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="Param1" argumentTypeRef="byte"/>
+                    <xtce:Argument name="Param2" argumentTypeRef="byte"/>
+                </xtce:ArgumentList>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/> 
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/> 
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Housekeeping"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        <xtce:ArgumentAssignment argumentName="Param1" argumentValue="1"/>
+                        <xtce:ArgumentAssignment argumentName="Param2" argumentValue="1"/>
+                    </xtce:ArgumentAssignmentList> 
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="TurnBus1ON">	
+                    <xtce:EntryList>
+                        <xtce:ArgumentRefEntry argumentRef="Param1"/>
+                        <xtce:ArgumentRefEntry argumentRef="Param2"/>
+                    </xtce:EntryList>   
+                </xtce:CommandContainer>				
+            </xtce:MetaCommand>
+            
         </xtce:MetaCommandSet>
     </xtce:CommandMetaData>
 </xtce:SpaceSystem>
