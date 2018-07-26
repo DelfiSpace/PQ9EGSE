@@ -437,8 +437,9 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
-                    <xtce:Enumeration label="Action" value="1"/>
+                    <xtce:Enumeration label="GetSetParam" value="1"/>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
+                    <xtce:Enumeration label="Reset" value="9"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
@@ -449,6 +450,21 @@
                 <xtce:EnumerationList>
                     <xtce:Enumeration label="Request" value="1"/>
                     <xtce:Enumeration label="Reply" value="2"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+            
+            <xtce:EnumeratedArgumentType name="EPSParameterType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Bus1Ith" value="1" shortDescription="Bus 1 Current Threshold"/>
+                    <xtce:Enumeration label="Bus2Ith" value="2" shortDescription="Bus 2 Current Threshold"/>
+                    <xtce:Enumeration label="Bus3Ith" value="3" shortDescription="Bus 3 Current Threshold"/>
+                    <xtce:Enumeration label="Bus4Ith" value="4" shortDescription="Bus 4 Current Threshold"/>
+                    <xtce:Enumeration label="Bus1Sw"  value="5" shortDescription="Bus 1 Switch"/>
+                    <xtce:Enumeration label="Bus2Sw"  value="6" shortDescription="Bus 2 Switch"/>
+                    <xtce:Enumeration label="Bus3Sw"  value="7" shortDescription="Bus 3 Switch"/>
+                    <xtce:Enumeration label="Bus4Sw"  value="8" shortDescription="Bus 4 Switch"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
             
@@ -494,6 +510,22 @@
                     <xtce:EntryList/>   
                 </xtce:CommandContainer>				
             </xtce:MetaCommand>
+            
+            <xtce:MetaCommand name="Reset">
+                <xtce:LongDescription>Reset Subsystem</xtce:LongDescription>
+                <xtce:ArgumentList/>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/> 
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Reset"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                    </xtce:ArgumentAssignmentList> 
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="Reset">	
+                    <xtce:EntryList/>   
+                </xtce:CommandContainer>				
+            </xtce:MetaCommand>
 
             <xtce:MetaCommand name="GetTelemetry">
                 <xtce:LongDescription>Get Telemetry</xtce:LongDescription>
@@ -511,10 +543,10 @@
                 </xtce:CommandContainer>				
             </xtce:MetaCommand>
 
-            <xtce:MetaCommand name="TurnBus1ON">
-                <xtce:LongDescription>Turn EPS Bus 1 ON</xtce:LongDescription>
+            <xtce:MetaCommand name="EPSSetParam">
+                <xtce:LongDescription>Set EPS parameter</xtce:LongDescription>
                 <xtce:ArgumentList>
-                    <xtce:Argument name="Param1" argumentTypeRef="byte"/>
+                    <xtce:Argument name="Param1" argumentTypeRef="EPSParameterType"/>
                     <xtce:Argument name="Param2" argumentTypeRef="byte"/>
                 </xtce:ArgumentList>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
@@ -522,14 +554,35 @@
                         <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/> 
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/> 
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Action"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>   
                     </xtce:ArgumentAssignmentList> 
                 </xtce:BaseMetaCommand>
-                <xtce:CommandContainer name="TurnBus1ON">	
+                <xtce:CommandContainer name="EPSSetParam">	
                     <xtce:EntryList>
                         <xtce:ArgumentRefEntry argumentRef="Param1"/>
                         <xtce:ArgumentRefEntry argumentRef="Param2"/>
+                    </xtce:EntryList>   
+                </xtce:CommandContainer>				
+            </xtce:MetaCommand>
+            
+            <xtce:MetaCommand name="EPSGetParam">
+                <xtce:LongDescription>Get EPS parameter</xtce:LongDescription>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="Param1" argumentTypeRef="EPSParameterType"/>
+                </xtce:ArgumentList>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/> 
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/> 
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Reply"/>   
+                    </xtce:ArgumentAssignmentList> 
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="EPSGetParam">	
+                    <xtce:EntryList>
+                        <xtce:ArgumentRefEntry argumentRef="Param1"/>
                     </xtce:EntryList>   
                 </xtce:CommandContainer>				
             </xtce:MetaCommand>
