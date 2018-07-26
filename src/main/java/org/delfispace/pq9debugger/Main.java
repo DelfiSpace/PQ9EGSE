@@ -17,18 +17,6 @@
 package org.delfispace.pq9debugger;
 
 import com.fazecast.jSerialComm.SerialPort;
-import static j2html.TagCreator.button;
-import static j2html.TagCreator.dd;
-import static j2html.TagCreator.div;
-import static j2html.TagCreator.dl;
-import static j2html.TagCreator.dt;
-import static j2html.TagCreator.each;
-import static j2html.TagCreator.fieldset;
-import static j2html.TagCreator.label;
-import static j2html.TagCreator.legend;
-import static j2html.TagCreator.link;
-import static j2html.TagCreator.textarea;
-import j2html.tags.Tag;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -85,6 +73,7 @@ public class Main implements PQ9Receiver, Subscriber
         } catch (Exception ex) 
         {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(1);
         }
     }
     
