@@ -376,7 +376,7 @@ public class Main implements PQ9Receiver, Subscriber
                     for (Object key : obj.keySet()) 
                     {
                         String keyStr = (((String)key).split(":"))[1];
-                        Object keyvalue = obj.get((String)key);              
+                        Object keyvalue = obj.get((String)key);
                         XTCEArgument a = tc.get(0).getArgument(keyStr);
                         XTCEContainerEntryValue valueObj =
                                         new XTCEContainerEntryValue( a,

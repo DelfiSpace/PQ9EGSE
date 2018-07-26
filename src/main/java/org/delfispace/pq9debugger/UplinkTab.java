@@ -92,7 +92,7 @@ public class UplinkTab
                             dd
                             (
                                 iffElse(arg.getEnumerations().isEmpty(), 
-                                    input(attrs("#" + tc.getName() + "_" + arg.getName())).withType("text").
+                                    input(attrs("#" + tc.getName() + ":" + arg.getName())).withType("text").
                                             withValue(arg.getInitialValue()).attr("title", 
                                             arg.getDescription()),
                                     select 
