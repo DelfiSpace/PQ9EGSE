@@ -50,6 +50,7 @@ import org.delfispace.protocols.pq9.PQ9Receiver;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.xtce.toolkit.XTCEArgument;
 import org.xtce.toolkit.XTCEContainerContentEntry;
 import org.xtce.toolkit.XTCEContainerContentModel;
 import org.xtce.toolkit.XTCEContainerEntryValue;
@@ -313,8 +314,6 @@ public class Main implements PQ9Receiver, Subscriber
                     handleSendCommand(cmd);
                 break;
 
-                //case "sendCommand":
-                  //  break;
                 case "setSerialPort":
                     connectToSerialPort(cmd.getData());
                     break;
@@ -362,6 +361,7 @@ public class Main implements PQ9Receiver, Subscriber
                     
                 default:
                     List<XTCETelecommand> tc = Configuration.getInstance().getXTCEDatabase().getTelecommands((String)obj.get("_command_"));
+                    List<XTCEContainerEntryValue> values = new ArrayList<>();
                     
                     if (tc.isEmpty())
                     {
@@ -371,27 +371,37 @@ public class Main implements PQ9Receiver, Subscriber
                     {
                         throw new XTCEDatabaseException((String)obj.get("_command_") + " identifies multiple commands");
                     }
+                    obj.remove("_command_");
 
-                    XTCETelecommandContentModel model =
-                            Configuration.getInstance().getXTCEDatabase().processTelecommand( tc.get(0), null, false );
-                    BitSet rawBits    = model.encodeContainer();
-                    byte[] rawcmd = rawBits.toByteArray();
-                    byte[] rawcmd1 = new byte[rawcmd.length];
-                    
-                    // invert bit order
-                    for(int i = 0; i < rawcmd.length; i++)
+                    for (Object key : obj.keySet()) 
                     {
-                        rawcmd1[i] = 0;
-                        for(int j = 0; j < 8; j++)
-                        {
-                            if ((rawcmd[i] & (1 << j)) != 0)
-                            {
-                                rawcmd1[i] |= 1 << (7 - j);
-                            }
-                        }
+                        String[] tmp = ((String)key).split(":");
+                        String keyStr = tmp[1];
+                        Object keyvalue = obj.get((String)key);
+                        System.out.println((String)key + " " + keyvalue);
+                        XTCEArgument a = tc.get(0).getArgument(keyStr);
+                        XTCEContainerEntryValue valueObj =
+                                        new XTCEContainerEntryValue( a,
+                                                     (String)keyvalue,
+                                                     "==",
+                                                     "Calibrated" );
+                        values.add(valueObj);
                     }
+                    XTCETelecommandContentModel model =
+                            Configuration.getInstance().getXTCEDatabase().processTelecommand( tc.get(0), values, false );
 
-                    frame = new PQ9(rawcmd1[0] & 0xFF, rawcmd1[2] & 0xFF, Arrays.copyOfRange(rawcmd1, 3, rawcmd.length));
+                    BitSet rawBits    = model.encodeContainer();
+                    long   sizeInBits = model.getTotalSize();
+                    byte[] rawcmd = new byte[(int)Math.ceil((float)sizeInBits / 8)];
+                    for(int h = 0; h < rawcmd.length; h++)
+                    {
+                        rawcmd[h] = 0;
+                        for(int k = 0; k < 8; k++)
+                        {
+                            rawcmd[h] |= (byte)((rawBits.get(k + h * 8) ? 1 : 0) << (7 - k));
+                        }
+                    }                    
+                    frame = new PQ9(rawcmd[0] & 0xFF, rawcmd[2] & 0xFF, Arrays.copyOfRange(rawcmd, 3, rawcmd.length));
                     break;
             }
             
@@ -409,7 +419,7 @@ public class Main implements PQ9Receiver, Subscriber
                 sb.append("</font>");
                 srv.send(new Command("datalog", sb.toString()));  
             }            
-        } catch (NumberFormatException ex)
+        } catch (Exception ex)
         {
             handleException(ex);
         } 
