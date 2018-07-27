@@ -22,6 +22,10 @@
                 <xtce:EnumerationList>
                     <xtce:Enumeration label="OBC" value="1"/>
                     <xtce:Enumeration label="EPS" value="2"/>
+                    <xtce:Enumeration label="ADB" value="3"/>
+                    <xtce:Enumeration label="COMMS" value="4"/>
+                    <xtce:Enumeration label="ADCS" value="5"/>
+                    <xtce:Enumeration label="OBC2" value="7"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
 
@@ -49,6 +53,15 @@
                 <xtce:EnumerationList>
                     <xtce:Enumeration label="OFF" value="0"/>
                     <xtce:Enumeration label="ON" value="1"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedParameterType>
+
+            <xtce:EnumeratedParameterType name="DEPStatus">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="OFF" value="1"/>
+                    <xtce:Enumeration label="ON" value="0"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
 
@@ -215,6 +228,7 @@
             <xtce:ArrayParameterType name="INAvoltageArray" arrayTypeRef="INAvoltage" numberOfDimensions="1"/>
             <xtce:ArrayParameterType name="shortArray" arrayTypeRef="short" numberOfDimensions="1"/>
             <xtce:ArrayParameterType name="bitStatusArray" arrayTypeRef="bitStatus" numberOfDimensions="1"/>
+            <xtce:ArrayParameterType name="DEPStatusArray" arrayTypeRef="DEPStatus" numberOfDimensions="1"/>
 
         </xtce:ParameterTypeSet>
 
@@ -232,7 +246,7 @@
             <xtce:Parameter name="testing4" parameterTypeRef="long"/>
             <xtce:Parameter name="BootCounter" parameterTypeRef="short"/>
             <xtce:Parameter name="SoftwareBootCounter" parameterTypeRef="byte"/>
-            
+
             <xtce:Parameter name="Sensor0Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor1Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor2Status" parameterTypeRef="sensorBitStatus"/>
@@ -249,7 +263,49 @@
             <xtce:Parameter name="Sensor13Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor14Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor15Status" parameterTypeRef="sensorBitStatus"/>
-            
+
+            <xtce:Parameter name="EPS_B1_INA_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_B2_INA_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_B3_INA_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_B4_INA_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_DC_INA_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_UR_INA_Status" parameterTypeRef="sensorBitStatus"/>
+
+            <xtce:Parameter name="EPS_SA1_INA_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_SA2_INA_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_SA3_INA_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_SA4_INA_Status" parameterTypeRef="sensorBitStatus"/>
+
+            <xtce:Parameter name="EPS_SA1_TMP_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_SA2_TMP_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_SA3_TMP_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_SA4_TMP_Status" parameterTypeRef="sensorBitStatus"/>
+
+            <xtce:Parameter name="EPS_LTC_Status" parameterTypeRef="sensorBitStatus"/>
+
+            <xtce:Parameter name="ADB_TMP_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="ADB_INA_Status" parameterTypeRef="sensorBitStatus"/>
+
+            <xtce:Parameter name="OBC_TMP_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="OBC_INA_Status" parameterTypeRef="sensorBitStatus"/>
+
+            <xtce:Parameter name="ADCS_TMP_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="ADCS_INA1_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="ADCS_INA2_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="ADCS_INA3_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="ADCS_INA4_Status" parameterTypeRef="sensorBitStatus"/>
+
+            <xtce:Parameter name="COMMS_TMP_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="COMMS_ADC1_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="COMMS_ADC2_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="COMMS_ADC3_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="COMMS_ADC4_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="COMMS_ADC5_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="COMMS_ADC6_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="COMMS_ADC7_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="COMMS_ADC8_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="COMMS_ADC9_Status" parameterTypeRef="sensorBitStatus"/>
+
             <xtce:Parameter name="SAVoltage" parameterTypeRef="INAvoltageArray"/>
             <xtce:Parameter name="SACurrent" parameterTypeRef="INAcurrentArray"/>
             <xtce:Parameter name="SATemp" parameterTypeRef="TMPtemperatureArray"/>
@@ -272,6 +328,30 @@
             <xtce:Parameter name="URBCurrent" parameterTypeRef="INAcurrent"/>
             <xtce:Parameter name="URBVoltage" parameterTypeRef="INAvoltage"/>
 
+            <xtce:Parameter name="ADBCurrent" parameterTypeRef="INAcurrent"/>
+            <xtce:Parameter name="ADBVoltage" parameterTypeRef="INAvoltage"/>
+            <xtce:Parameter name="ADBTemperature" parameterTypeRef="TMPtemperature"/>
+            <xtce:Parameter name="DEPSwitchesSetting" parameterTypeRef="bitStatusArray"/>
+            <xtce:Parameter name="DEPSwitchesStatus" parameterTypeRef="DEPStatusArray"/>
+
+            <xtce:Parameter name="COMMSTemperature" parameterTypeRef="TMPtemperature"/>
+            <xtce:Parameter name="ADCreading" parameterTypeRef="short"/>
+
+            <xtce:Parameter name="OBCCurrent" parameterTypeRef="INAcurrent"/>
+            <xtce:Parameter name="OBCVoltage" parameterTypeRef="INAvoltage"/>
+
+            <xtce:Parameter name="ADCSCurrent1" parameterTypeRef="INAcurrent"/>
+            <xtce:Parameter name="ADCSCurrent2" parameterTypeRef="INAcurrent"/>
+            <xtce:Parameter name="ADCSCurrent3" parameterTypeRef="INAcurrent"/>
+            <xtce:Parameter name="ADCSCurrent4" parameterTypeRef="INAcurrent"/>
+
+            <xtce:Parameter name="ADCSVoltage1" parameterTypeRef="INAvoltage"/>
+            <xtce:Parameter name="ADCSVoltage2" parameterTypeRef="INAvoltage"/>
+            <xtce:Parameter name="ADCSVoltage3" parameterTypeRef="INAvoltage"/>
+            <xtce:Parameter name="ADCSVoltage4" parameterTypeRef="INAvoltage"/>
+
+            <xtce:Parameter name="ADCSTemperature" parameterTypeRef="TMPtemperature"/>
+
             <xtce:Parameter name="testing2" parameterTypeRef="short"/>
 
             <xtce:Parameter name="crc" parameterTypeRef="short"/>
@@ -289,7 +369,7 @@
                 </xtce:EntryList>
             </xtce:SequenceContainer>
 
-            <xtce:SequenceContainer name="EPS_HK" shortDescription="EPS Housekeeping frame">
+            <xtce:SequenceContainer name="OBC_HK" shortDescription="OBC Housekeeping frame">
                 <xtce:EntryList>
 
                     <xtce:ParameterRefEntry parameterRef="SystemID"/>
@@ -304,16 +384,52 @@
                     <xtce:ParameterRefEntry parameterRef="Sensor3Status"/>
                     <xtce:ParameterRefEntry parameterRef="Sensor4Status"/>
                     <xtce:ParameterRefEntry parameterRef="Sensor5Status"/>
-                    <xtce:ParameterRefEntry parameterRef="Sensor6Status"/>
-                    <xtce:ParameterRefEntry parameterRef="Sensor7Status"/>
-                    <xtce:ParameterRefEntry parameterRef="Sensor8Status"/>
-                    <xtce:ParameterRefEntry parameterRef="Sensor9Status"/>
-                    <xtce:ParameterRefEntry parameterRef="Sensor10Status"/>
-                    <xtce:ParameterRefEntry parameterRef="Sensor11Status"/>
-                    <xtce:ParameterRefEntry parameterRef="Sensor12Status"/>
-                    <xtce:ParameterRefEntry parameterRef="Sensor13Status"/>
-                    <xtce:ParameterRefEntry parameterRef="Sensor14Status"/>
+
+                    <xtce:ParameterRefEntry parameterRef="OBC_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="OBC_TMP_Status"/>
+
+                    <xtce:ParameterRefEntry parameterRef="OBCCurrent"/>
+                    <xtce:ParameterRefEntry parameterRef="OBCVoltage"/>
+
+                    <xtce:ParameterRefEntry parameterRef="testing2"/>
+
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Source" value="OBC2"/>
+                            <xtce:Comparison parameterRef="Service" value="Housekeeping"/>
+                            <xtce:Comparison parameterRef="Request" value="Reply"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+
+            <xtce:SequenceContainer name="EPS_HK" shortDescription="EPS Housekeeping frame">
+                <xtce:EntryList>
+
+                    <xtce:ParameterRefEntry parameterRef="SystemID"/>
+                    <xtce:ParameterRefEntry parameterRef="Uptime"/>
+                    <xtce:ParameterRefEntry parameterRef="testing4"/>
+                    <xtce:ParameterRefEntry parameterRef="BootCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="SoftwareBootCounter"/>
+
                     <xtce:ParameterRefEntry parameterRef="Sensor15Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_LTC_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_SA4_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_SA3_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_SA2_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_SA1_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_UR_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_DC_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_B4_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_B3_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_B2_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_B1_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_SA4_TMP_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_SA3_TMP_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_SA2_TMP_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_SA1_TMP_Status"/>
 
                     <xtce:ArrayParameterRefEntry parameterRef="SACurrent">
                         <xtce:DimensionList>
@@ -354,11 +470,11 @@
                             </xtce:Size>
                         </xtce:DimensionList>
                     </xtce:ArrayParameterRefEntry>
-					
-                    <xtce:ParameterRefEntry parameterRef="BattVoltage"/> 
-                    <xtce:ParameterRefEntry parameterRef="BattCapacity"/> 
-                    <xtce:ParameterRefEntry parameterRef="BattTemperature"/> 
-					
+
+                    <xtce:ParameterRefEntry parameterRef="BattVoltage"/>
+                    <xtce:ParameterRefEntry parameterRef="BattCapacity"/>
+                    <xtce:ParameterRefEntry parameterRef="BattTemperature"/>
+
                     <xtce:ArrayParameterRefEntry parameterRef="BusSwitchesSetting">
                         <xtce:DimensionList>
                             <xtce:Size>
@@ -398,6 +514,170 @@
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
 
+            <xtce:SequenceContainer name="ADB_HK" shortDescription="ADB Housekeeping frame">
+                <xtce:EntryList>
+
+                    <xtce:ParameterRefEntry parameterRef="SystemID"/>
+                    <xtce:ParameterRefEntry parameterRef="Uptime"/>
+                    <xtce:ParameterRefEntry parameterRef="testing4"/>
+
+                    <xtce:ParameterRefEntry parameterRef="Sensor0Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor1Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor2Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor3Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor4Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor5Status"/>
+
+                    <xtce:ParameterRefEntry parameterRef="ADB_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="ADB_TMP_Status"/>
+
+                    <xtce:ParameterRefEntry parameterRef="ADBCurrent"/>
+                    <xtce:ParameterRefEntry parameterRef="ADBVoltage"/>
+                    <xtce:ParameterRefEntry parameterRef="ADBTemperature"/>
+
+                    <xtce:ArrayParameterRefEntry parameterRef="DEPSwitchesSetting">
+                        <xtce:DimensionList>
+                            <xtce:Size>
+                                <xtce:FixedValue>4</xtce:FixedValue>
+                            </xtce:Size>
+                        </xtce:DimensionList>
+                    </xtce:ArrayParameterRefEntry>
+
+                    <xtce:ArrayParameterRefEntry parameterRef="DEPSwitchesSetting">
+                        <xtce:DimensionList>
+                            <xtce:Size>
+                                <xtce:FixedValue>4</xtce:FixedValue>
+                            </xtce:Size>
+                        </xtce:DimensionList>
+                    </xtce:ArrayParameterRefEntry>
+
+                    <xtce:ArrayParameterRefEntry parameterRef="DEPSwitchesSetting">
+                        <xtce:DimensionList>
+                            <xtce:Size>
+                                <xtce:FixedValue>4</xtce:FixedValue>
+                            </xtce:Size>
+                        </xtce:DimensionList>
+                    </xtce:ArrayParameterRefEntry>
+
+                    <xtce:ArrayParameterRefEntry parameterRef="DEPSwitchesStatus">
+                        <xtce:DimensionList>
+                            <xtce:Size>
+                                <xtce:FixedValue>4</xtce:FixedValue>
+                            </xtce:Size>
+                        </xtce:DimensionList>
+                    </xtce:ArrayParameterRefEntry>
+
+                    <xtce:ParameterRefEntry parameterRef="MCUTemp"/>
+                    <xtce:ParameterRefEntry parameterRef="testing2"/>
+
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Source" value="ADB"/>
+                            <xtce:Comparison parameterRef="Service" value="Housekeeping"/>
+                            <xtce:Comparison parameterRef="Request" value="Reply"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+
+            <xtce:SequenceContainer name="COMMS_HK" shortDescription="COMMS Housekeeping frame">
+                <xtce:EntryList>
+
+                    <xtce:ParameterRefEntry parameterRef="SystemID"/>
+                    <xtce:ParameterRefEntry parameterRef="Uptime"/>
+                    <xtce:ParameterRefEntry parameterRef="testing4"/>
+
+                    <xtce:ParameterRefEntry parameterRef="Sensor0Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor1Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor2Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor3Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor4Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor5Status"/>
+                    <xtce:ParameterRefEntry parameterRef="COMMS_ADC9_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="COMMS_ADC8_Status"/>
+
+                    <xtce:ParameterRefEntry parameterRef="COMMS_ADC7_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="COMMS_ADC6_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="COMMS_ADC5_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="COMMS_ADC4_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="COMMS_ADC3_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="COMMS_ADC2_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="COMMS_ADC1_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="COMMS_TMP_Status"/>
+
+                    <xtce:ParameterRefEntry parameterRef="COMMSTemperature"/>
+
+                    <xtce:ParameterRefEntry parameterRef="ADCreading"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCreading"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCreading"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCreading"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCreading"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCreading"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCreading"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCreading"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCreading"/>
+
+                    <xtce:ParameterRefEntry parameterRef="testing2"/>
+
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Source" value="COMMS"/>
+                            <xtce:Comparison parameterRef="Service" value="Housekeeping"/>
+                            <xtce:Comparison parameterRef="Request" value="Reply"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+
+            <xtce:SequenceContainer name="ADCS_HK" shortDescription="ADCS Housekeeping frame">
+                <xtce:EntryList>
+
+                    <xtce:ParameterRefEntry parameterRef="SystemID"/>
+                    <xtce:ParameterRefEntry parameterRef="Uptime"/>
+                    <xtce:ParameterRefEntry parameterRef="testing4"/>
+                    <xtce:ParameterRefEntry parameterRef="BootCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="SoftwareBootCounter"/>
+
+                    <xtce:ParameterRefEntry parameterRef="Sensor0Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor1Status"/>
+                    <xtce:ParameterRefEntry parameterRef="Sensor2Status"/>
+
+                    <xtce:ParameterRefEntry parameterRef="ADCS_INA1_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCS_INA2_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCS_INA3_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCS_INA4_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCS_TMP_Status"/>
+
+                    <xtce:ParameterRefEntry parameterRef="ADCSTemperature"/>
+
+                    <xtce:ParameterRefEntry parameterRef="ADCSCurrent1"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCSCurrent2"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCSCurrent3"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCSCurrent4"/>
+
+                    <xtce:ParameterRefEntry parameterRef="ADCSVoltage1"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCSVoltage2"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCSVoltage3"/>
+                    <xtce:ParameterRefEntry parameterRef="ADCSVoltage4"/>
+
+                    <xtce:ParameterRefEntry parameterRef="testing2"/>
+
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Source" value="ADCS"/>
+                            <xtce:Comparison parameterRef="Service" value="Housekeeping"/>
+                            <xtce:Comparison parameterRef="Request" value="Reply"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+
             <xtce:SequenceContainer name="Ping_Reply" shortDescription="Ping reply">
                 <xtce:EntryList>
                 </xtce:EntryList>
@@ -421,7 +701,7 @@
             </xtce:VariableFrameStream>
         </xtce:StreamSet>
     </xtce:TelemetryMetaData>
-    
+
     <xtce:CommandMetaData>
         <xtce:ArgumentTypeSet>
             <xtce:EnumeratedArgumentType name="AddressType">
@@ -452,7 +732,7 @@
                     <xtce:Enumeration label="Reply" value="2"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
-            
+
             <xtce:EnumeratedArgumentType name="EPSParameterType">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
@@ -467,7 +747,7 @@
                     <xtce:Enumeration label="Bus4Sw"  value="8" shortDescription="Bus 4 Switch"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
-            
+
             <xtce:IntegerArgumentType name="byte" shortDescription="Unsigned value between 0 and 255">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8"/>
@@ -478,13 +758,13 @@
             <xtce:MetaCommand abstract="true" name="PQ9">
                 <xtce:LongDescription>Base telecommand structure for all PQ9 based telecommands.</xtce:LongDescription>
                 <xtce:ArgumentList>
-                    <xtce:Argument name="Destination" argumentTypeRef="AddressType"/> 
-                    <xtce:Argument name="Size" argumentTypeRef="byte"/> 
+                    <xtce:Argument name="Destination" argumentTypeRef="AddressType"/>
+                    <xtce:Argument name="Size" argumentTypeRef="byte"/>
                     <xtce:Argument name="Source" argumentTypeRef="AddressType"/>
                     <xtce:Argument name="Service" argumentTypeRef="ServiceType"/>
                     <xtce:Argument name="Request" argumentTypeRef="RequestType"/>
                 </xtce:ArgumentList>
-                <xtce:CommandContainer name="PQ9">	
+                <xtce:CommandContainer name="PQ9">
                     <xtce:EntryList>
                         <xtce:ArgumentRefEntry argumentRef="Destination"/>
                         <xtce:ArgumentRefEntry argumentRef="Size"/>
@@ -492,55 +772,55 @@
                         <xtce:ArgumentRefEntry argumentRef="Service"/>
                         <xtce:ArgumentRefEntry argumentRef="Request"/>
                     </xtce:EntryList>
-                </xtce:CommandContainer>				
+                </xtce:CommandContainer>
             </xtce:MetaCommand>
-			
+
             <xtce:MetaCommand name="Ping">
                 <xtce:LongDescription>Ping Subsystem</xtce:LongDescription>
                 <xtce:ArgumentList/>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
-                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/> 
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="Ping"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
-                    </xtce:ArgumentAssignmentList> 
+                    </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
-                <xtce:CommandContainer name="Ping">	
-                    <xtce:EntryList/>   
-                </xtce:CommandContainer>				
+                <xtce:CommandContainer name="Ping">
+                    <xtce:EntryList/>
+                </xtce:CommandContainer>
             </xtce:MetaCommand>
-            
+
             <xtce:MetaCommand name="Reset">
                 <xtce:LongDescription>Reset Subsystem</xtce:LongDescription>
                 <xtce:ArgumentList/>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
-                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/> 
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="Reset"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
-                    </xtce:ArgumentAssignmentList> 
+                    </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
-                <xtce:CommandContainer name="Reset">	
-                    <xtce:EntryList/>   
-                </xtce:CommandContainer>				
+                <xtce:CommandContainer name="Reset">
+                    <xtce:EntryList/>
+                </xtce:CommandContainer>
             </xtce:MetaCommand>
 
             <xtce:MetaCommand name="GetTelemetry">
                 <xtce:LongDescription>Get Telemetry</xtce:LongDescription>
                 <xtce:ArgumentList/>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
-                    <xtce:ArgumentAssignmentList> 
-                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/> 
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="Housekeeping"/>
-                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>    
-                    </xtce:ArgumentAssignmentList> 
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                    </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
-                <xtce:CommandContainer name="GetTelemetry">	
+                <xtce:CommandContainer name="GetTelemetry">
                     <xtce:EntryList/>
-                </xtce:CommandContainer>				
+                </xtce:CommandContainer>
             </xtce:MetaCommand>
 
             <xtce:MetaCommand name="EPSSetParam">
@@ -551,21 +831,21 @@
                 </xtce:ArgumentList>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
-                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/> 
-                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/> 
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
-                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>   
-                    </xtce:ArgumentAssignmentList> 
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                    </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
-                <xtce:CommandContainer name="EPSSetParam">	
+                <xtce:CommandContainer name="EPSSetParam">
                     <xtce:EntryList>
                         <xtce:ArgumentRefEntry argumentRef="Param1"/>
                         <xtce:ArgumentRefEntry argumentRef="Param2"/>
-                    </xtce:EntryList>   
-                </xtce:CommandContainer>				
+                    </xtce:EntryList>
+                </xtce:CommandContainer>
             </xtce:MetaCommand>
-            
+
             <xtce:MetaCommand name="EPSGetParam">
                 <xtce:LongDescription>Get EPS parameter</xtce:LongDescription>
                 <xtce:ArgumentList>
@@ -573,20 +853,20 @@
                 </xtce:ArgumentList>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
-                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/> 
-                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/> 
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
-                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Reply"/>   
-                    </xtce:ArgumentAssignmentList> 
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Reply"/>
+                    </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
-                <xtce:CommandContainer name="EPSGetParam">	
+                <xtce:CommandContainer name="EPSGetParam">
                     <xtce:EntryList>
                         <xtce:ArgumentRefEntry argumentRef="Param1"/>
-                    </xtce:EntryList>   
-                </xtce:CommandContainer>				
+                    </xtce:EntryList>
+                </xtce:CommandContainer>
             </xtce:MetaCommand>
-            
+
         </xtce:MetaCommandSet>
     </xtce:CommandMetaData>
 </xtce:SpaceSystem>
