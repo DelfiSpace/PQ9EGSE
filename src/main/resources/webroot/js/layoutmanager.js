@@ -7,7 +7,7 @@ var config = {
     {
       type: "column",
       content: [
-{
+        {   
           type: "component",
           componentName: "Header",
           componentState: { label: "H" },
@@ -84,17 +84,17 @@ rpc.onopen( function(evt)
         rpc.send("uplink", "");
         loadOnce = false;
     }
-    updateDiv("log", myGetTime() + " Connection established.");
+    appendToDiv("log", myGetTime() + " Connection established.");
 });
 
 rpc.onclose( function(evt)
 {
-    updateDiv("log", myGetTime() + " Connection lost, trying to reconnect...");
+    appendToDiv("log", myGetTime() + " Connection lost, trying to reconnect...");
 });
 
 rpc.onerror(function(error)
 {
-    updateDiv("log", myGetTime() + " Communication error: " + error);
+    appendToDiv("log", myGetTime() + " Communication error: " + error);
 });
 
 rpc.onmessage( function(command, data)
@@ -102,23 +102,23 @@ rpc.onmessage( function(command, data)
     switch(command) 
     {
         case "log":
-            updateDiv("log", myGetTime() + data);
+            appendToDiv("log", myGetTime() + data);
             break;
 
         case "datalog":
-            updateDiv("datalog", data);
+            appendToDiv("datalog", data);
             break;
 
         case "uplink":
-            document.getElementById("uplink").innerHTML = data;
+            setDiv("uplink", data);
             break;
 
         case "header":
-            document.getElementById("header").innerHTML = data;
+            setDiv("header", data);
             break;
 
         default:
-            updateDiv("log", myGetTime() + "Invalid command \"" + command + "\": " + data);
+            appendToDiv("log", myGetTime() + "Invalid command \"" + command + "\": " + data);
     }
 });
 
@@ -158,7 +158,7 @@ function myGetTime()
     return html.join("");        
 }
 
-function updateDiv(id, data)
+function appendToDiv(id, data)
 {
     // make sure the graphical elements have been created correctly, 
     // otherwise erase the stored configuration and reload the page
@@ -176,6 +176,17 @@ function updateDiv(id, data)
     {
         document.getElementById(id).scrollIntoView(false);
     }
+}
+
+function setDiv(id, data)
+{
+    // make sure the graphical elements have been created correctly, 
+    // otherwise erase the stored configuration and reload the page
+    if (document.getElementById(id) === null)
+    {
+        resetLayout();
+    }
+    document.getElementById(id).innerHTML = data;
 }
 
 myLayout.on( 'stateChanged', function()
