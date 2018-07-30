@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.delfispace.pq9debugger.Configuration;
-import org.delfispace.pq9debugger.clientsInterface;
 import org.delfispace.pq9debugger.cmdMultiPublisher;
 import org.delfispace.pq9debugger.cmdMultiSubscriber;
 import org.eclipse.jetty.websocket.api.Session;
@@ -43,7 +42,6 @@ import org.json.simple.parser.ParseException;
 public class CommandWebSocket extends WebSocketAdapter
 {
     private final JSONParser parser = new JSONParser();   
-    private final clientsInterface cs = clientsInterface.getInstance();
     private final cmdMultiPublisher cmd = cmdMultiPublisher.getInstance();
     private final cmdMultiSubscriber sub = cmdMultiSubscriber.getInstance();
 
