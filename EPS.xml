@@ -34,6 +34,7 @@
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
+                    <xtce:Enumeration label="Ackownledgment" value="4"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
@@ -44,6 +45,7 @@
                 <xtce:EnumerationList>
                     <xtce:Enumeration label="Request" value="1"/>
                     <xtce:Enumeration label="Reply" value="2"/>
+                    <xtce:Enumeration label="ACKErrorReply" value="4"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
 
@@ -690,6 +692,32 @@
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
+
+            <xtce:SequenceContainer name="ACK_OK_Reply" shortDescription="Ackownledgment OK reply">
+                <xtce:EntryList>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Service" value="Ackownledgment"/>
+                            <xtce:Comparison parameterRef="Request" value="Reply"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+
+            <xtce:SequenceContainer name="ACK_ERROR_Reply" shortDescription="Ackownledgment ERROR reply">
+                <xtce:EntryList>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Service" value="Ackownledgment"/>
+                            <xtce:Comparison parameterRef="Request" value="ACKErrorReply"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
         </xtce:ContainerSet>
 
         <xtce:StreamSet>
@@ -723,6 +751,7 @@
                 <xtce:EnumerationList>
                     <xtce:Enumeration label="GetSetParam" value="1"/>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
+                    <xtce:Enumeration label="Verification" value="4"/>
                     <xtce:Enumeration label="Reset" value="9"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                 </xtce:EnumerationList>
@@ -734,6 +763,8 @@
                 <xtce:EnumerationList>
                     <xtce:Enumeration label="Request" value="1"/>
                     <xtce:Enumeration label="Reply" value="2"/>
+                    <xtce:Enumeration label="Set" value="3"/>
+                    <xtce:Enumeration label="ACK_error" value="4"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
@@ -752,9 +783,62 @@
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
+            <xtce:EnumeratedArgumentType name="EPSBusParameterType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Bus1Sw"  value="43" shortDescription="Bus 1 Switch"/>
+                    <xtce:Enumeration label="Bus2Sw"  value="44" shortDescription="Bus 2 Switch"/>
+                    <xtce:Enumeration label="Bus3Sw"  value="45" shortDescription="Bus 3 Switch"/>
+                    <xtce:Enumeration label="Bus4Sw"  value="46" shortDescription="Bus 4 Switch"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+
+            <xtce:EnumeratedArgumentType name="ADBParameterType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="DEPSW"  value="49" shortDescription="Dep Switch"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+
+            <xtce:EnumeratedArgumentType name="ADBDEPType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="DEP1Sw"  value="1" shortDescription="Dep 1 Switch"/>
+                    <xtce:Enumeration label="DEP2Sw"  value="2" shortDescription="Dep 2 Switch"/>
+                    <xtce:Enumeration label="DEP3Sw"  value="3" shortDescription="Dep 3 Switch"/>
+                    <xtce:Enumeration label="DEP4Sw"  value="4" shortDescription="Dep 4 Switch"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+
+            <xtce:EnumeratedArgumentType name="ADBFeedbackParameterType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Feedbackoff" value="0" shortDescription="Feedback off"/>
+                    <xtce:Enumeration label="Feedbackon"  value="1" shortDescription="Feedback on"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+
+            <xtce:EnumeratedArgumentType name="EPSBusSwitchParameterType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="BUSSwOff" value="0" shortDescription="Bus Switch off"/>
+                    <xtce:Enumeration label="BUSSwOn"  value="1" shortDescription="Bus Switch on"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+
             <xtce:IntegerArgumentType name="byte" shortDescription="Unsigned value between 0 and 255">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8"/>
+            </xtce:IntegerArgumentType>
+
+            <xtce:IntegerArgumentType name="short">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="16"/>
             </xtce:IntegerArgumentType>
 
         </xtce:ArgumentTypeSet>
@@ -867,6 +951,56 @@
                 <xtce:CommandContainer name="EPSGetParam">
                     <xtce:EntryList>
                         <xtce:ArgumentRefEntry argumentRef="Param1"/>
+                    </xtce:EntryList>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="EPSBusSW">
+                <xtce:LongDescription>Control EPS power bus</xtce:LongDescription>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="EPSParam" argumentTypeRef="EPSBusParameterType"/>
+                    <xtce:Argument name="state" argumentTypeRef="EPSBusSwitchParameterType"/>
+                </xtce:ArgumentList>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="EPSBusSW">
+                    <xtce:EntryList>
+                        <xtce:ArgumentRefEntry argumentRef="EPSParam"/>
+                        <xtce:ArgumentRefEntry argumentRef="state"/>
+                    </xtce:EntryList>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="ADBburnParam">
+                <xtce:LongDescription>ADB DEP switch</xtce:LongDescription>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="ADBParam" argumentTypeRef="ADBParameterType"/>
+                    <xtce:Argument name="Switch" argumentTypeRef="ADBDEPType"/>
+                    <xtce:Argument name="Feedback" argumentTypeRef="ADBFeedbackParameterType"/>
+                    <xtce:Argument name="Burn_time" argumentTypeRef="short"/>
+                </xtce:ArgumentList>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="6"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="ADBburnParam">
+                    <xtce:EntryList>
+                        <xtce:ArgumentRefEntry argumentRef="ADBParam"/>
+                        <xtce:ArgumentRefEntry argumentRef="Switch"/>
+                        <xtce:ArgumentRefEntry argumentRef="Feedback"/>
+                        <xtce:ArgumentRefEntry argumentRef="Burn_time"/>
                     </xtce:EntryList>
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
