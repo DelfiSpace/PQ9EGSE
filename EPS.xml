@@ -802,6 +802,14 @@
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
+            <xtce:EnumeratedArgumentType name="ResetParameterType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Reset"  value="59" shortDescription="Reset"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+
             <xtce:EnumeratedArgumentType name="ADBDEPType">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
@@ -879,24 +887,8 @@
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
 
-            <xtce:MetaCommand name="Reset">
-                <xtce:LongDescription>Reset Subsystem</xtce:LongDescription>
-                <xtce:ArgumentList/>
-                <xtce:BaseMetaCommand metaCommandRef="PQ9">
-                    <xtce:ArgumentAssignmentList>
-                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
-                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Reset"/>
-                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
-                    </xtce:ArgumentAssignmentList>
-                </xtce:BaseMetaCommand>
-                <xtce:CommandContainer name="Reset">
-                    <xtce:EntryList/>
-                </xtce:CommandContainer>
-            </xtce:MetaCommand>
-
             <xtce:MetaCommand name="GetTelemetry">
-                <xtce:LongDescription>Get Telemetry</xtce:LongDescription>
+                <xtce:LongDescription>Housekeeping Request</xtce:LongDescription>
                 <xtce:ArgumentList/>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
@@ -908,6 +900,76 @@
                 </xtce:BaseMetaCommand>
                 <xtce:CommandContainer name="GetTelemetry">
                     <xtce:EntryList/>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="Reset">
+                <xtce:LongDescription>Reset Subsystem</xtce:LongDescription>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="ResetParam" argumentTypeRef="ResetParameterType"/>
+                </xtce:ArgumentList>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="Reset">
+                  <xtce:EntryList>
+                      <xtce:ArgumentRefEntry argumentRef="ResetParam"/>
+                  </xtce:EntryList>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="EPSBusSW">
+                <xtce:LongDescription>EPS power bus</xtce:LongDescription>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="EPSParam" argumentTypeRef="EPSBusParameterType"/>
+                    <xtce:Argument name="state" argumentTypeRef="EPSBusSwitchParameterType"/>
+                </xtce:ArgumentList>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="EPSBusSW">
+                    <xtce:EntryList>
+                        <xtce:ArgumentRefEntry argumentRef="EPSParam"/>
+                        <xtce:ArgumentRefEntry argumentRef="state"/>
+                    </xtce:EntryList>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="ADBburnParam">
+                <xtce:LongDescription>ADB Deployment switch</xtce:LongDescription>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="ADBParam" argumentTypeRef="ADBParameterType"/>
+                    <xtce:Argument name="Switch" argumentTypeRef="ADBDEPType"/>
+                    <xtce:Argument name="Feedback" argumentTypeRef="ADBFeedbackParameterType"/>
+                    <xtce:Argument name="Burn_time" argumentTypeRef="short"/>
+                </xtce:ArgumentList>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="6"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="ADBburnParam">
+                    <xtce:EntryList>
+                        <xtce:ArgumentRefEntry argumentRef="ADBParam"/>
+                        <xtce:ArgumentRefEntry argumentRef="Switch"/>
+                        <xtce:ArgumentRefEntry argumentRef="Feedback"/>
+                        <xtce:ArgumentRefEntry argumentRef="Burn_time"/>
+                    </xtce:EntryList>
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
 
@@ -951,56 +1013,6 @@
                 <xtce:CommandContainer name="EPSGetParam">
                     <xtce:EntryList>
                         <xtce:ArgumentRefEntry argumentRef="Param1"/>
-                    </xtce:EntryList>
-                </xtce:CommandContainer>
-            </xtce:MetaCommand>
-
-            <xtce:MetaCommand name="EPSBusSW">
-                <xtce:LongDescription>Control EPS power bus</xtce:LongDescription>
-                <xtce:ArgumentList>
-                    <xtce:Argument name="EPSParam" argumentTypeRef="EPSBusParameterType"/>
-                    <xtce:Argument name="state" argumentTypeRef="EPSBusSwitchParameterType"/>
-                </xtce:ArgumentList>
-                <xtce:BaseMetaCommand metaCommandRef="PQ9">
-                    <xtce:ArgumentAssignmentList>
-                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
-                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
-                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
-                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
-                    </xtce:ArgumentAssignmentList>
-                </xtce:BaseMetaCommand>
-                <xtce:CommandContainer name="EPSBusSW">
-                    <xtce:EntryList>
-                        <xtce:ArgumentRefEntry argumentRef="EPSParam"/>
-                        <xtce:ArgumentRefEntry argumentRef="state"/>
-                    </xtce:EntryList>
-                </xtce:CommandContainer>
-            </xtce:MetaCommand>
-
-            <xtce:MetaCommand name="ADBburnParam">
-                <xtce:LongDescription>ADB DEP switch</xtce:LongDescription>
-                <xtce:ArgumentList>
-                    <xtce:Argument name="ADBParam" argumentTypeRef="ADBParameterType"/>
-                    <xtce:Argument name="Switch" argumentTypeRef="ADBDEPType"/>
-                    <xtce:Argument name="Feedback" argumentTypeRef="ADBFeedbackParameterType"/>
-                    <xtce:Argument name="Burn_time" argumentTypeRef="short"/>
-                </xtce:ArgumentList>
-                <xtce:BaseMetaCommand metaCommandRef="PQ9">
-                    <xtce:ArgumentAssignmentList>
-                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
-                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="6"/>
-                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
-                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
-                    </xtce:ArgumentAssignmentList>
-                </xtce:BaseMetaCommand>
-                <xtce:CommandContainer name="ADBburnParam">
-                    <xtce:EntryList>
-                        <xtce:ArgumentRefEntry argumentRef="ADBParam"/>
-                        <xtce:ArgumentRefEntry argumentRef="Switch"/>
-                        <xtce:ArgumentRefEntry argumentRef="Feedback"/>
-                        <xtce:ArgumentRefEntry argumentRef="Burn_time"/>
                     </xtce:EntryList>
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
