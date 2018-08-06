@@ -21,7 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.delfispace.protocols.LoopbackStream;
+import org.delfispace.pq9debugger.LoopbackStream;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;

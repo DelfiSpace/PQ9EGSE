@@ -19,7 +19,7 @@ package org.delfispace.protocols.hldlc;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import org.delfispace.protocols.LoopbackStream;
+import org.delfispace.pq9debugger.LoopbackStream;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -169,7 +169,7 @@ public class HLDLCTest
                
         receivedFrames = 0;
         protocol.setReceiverCallback((byte[] data) -> {
-            Assert.assertArrayEquals("Error", data, input);
+            Assert.assertArrayEquals("Error", input, data);
             receivedFrames++;
         });
         
@@ -177,6 +177,6 @@ public class HLDLCTest
         protocol.send(input);
         
         ls.join();
-        Assert.assertEquals("Error", receivedFrames, 2);
+        Assert.assertEquals("Error", 2, receivedFrames);
     }
 }
