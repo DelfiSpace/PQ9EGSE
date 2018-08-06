@@ -90,7 +90,7 @@ public class UplinkTab
             each(filter(tcs, tc -> tc.isAbstract() != true), tc ->
                 fieldset
                 (
-                    legend(tc.getDescription()),
+                    legend((tc.getShortDescription().isEmpty() ? tc.getName() : tc.getShortDescription())),
                     dl
                     (
                         each(filter(tc.getArguments(), arg -> !isArgumentRequired(tc, arg)), arg ->
@@ -98,24 +98,30 @@ public class UplinkTab
                         (
                             dt
                             ( 
-                                label(arg.getName() + ":").attr("for", tc.getName() + ":" + arg.getName()).attr("tabindex", tabIndex++)
+                                label((arg.getShortDescription().isEmpty() ? arg.getName() : arg.getDescription()) + ":")
+                                        .attr("for", tc.getName() + ":" + arg.getName())
+                                        .attr("tabindex", tabIndex++)
+                                        .attr("title", arg.getLongDescription())
                             ),
                             dd
                             (
                                 iffElse(arg.getEnumerations().isEmpty(), 
                                     input(attrs("#" + tc.getName() + ":" + arg.getName())).withType("text").
                                             withValue(arg.getInitialValue()).attr("title", 
-                                            arg.getDescription()),
+                                            arg.getLongDescription()),
                                     select 
                                     (
-                                        each(arg.getEnumerations(), e -> option(e.getLabel()).withValue(e.getLabel()))
-                                    ).withId(tc.getName() + ":" + arg.getName())
+                                        each(arg.getEnumerations(), e -> 
+                                             option(e.getShortDescription() == null ? 
+                                             e.getLabel() : e.getShortDescription()).withValue(e.getLabel()))
+                                    ).withId(tc.getName() + ":" + arg.getName()).attr("title", 
+                                            arg.getLongDescription())
                                 )
                             )   
                         )
                     )),
-                    button("Send").attr("id", tc.getName()).attr("onclick", "fetchData(this.id, [" + getIDs() + "])").attr("tabindex", tabIndex++).attr("title", tc.getDescription())
-                )
+                    button("Send").attr("id", tc.getName()).attr("onclick", "fetchData(this.id, [" + getIDs() + "])").attr("tabindex", tabIndex++)
+                ).attr("title", tc.getLongDescription())
             )
         );
         return t.render();

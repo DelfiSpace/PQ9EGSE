@@ -733,6 +733,7 @@
     <xtce:CommandMetaData>
         <xtce:ArgumentTypeSet>
             <xtce:EnumeratedArgumentType name="AddressType">
+                <xtce:LongDescription>Device address between 0 and 255 (unsigned)</xtce:LongDescription>
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
@@ -768,7 +769,7 @@
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
-            <xtce:EnumeratedArgumentType name="EPSParameterType">
+            <xtce:EnumeratedArgumentType name="EPSParameterType" shortDescription="Parameter">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
@@ -783,18 +784,18 @@
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
-            <xtce:EnumeratedArgumentType name="EPSBusParameterType">
+            <xtce:EnumeratedArgumentType name="EPSBusParameterType" shortDescription="Bus">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
-                    <xtce:Enumeration label="Bus1Sw"  value="43" shortDescription="Bus 1 Switch"/>
-                    <xtce:Enumeration label="Bus2Sw"  value="44" shortDescription="Bus 2 Switch"/>
-                    <xtce:Enumeration label="Bus3Sw"  value="45" shortDescription="Bus 3 Switch"/>
-                    <xtce:Enumeration label="Bus4Sw"  value="46" shortDescription="Bus 4 Switch"/>
+                    <xtce:Enumeration label="Bus1Sw" value="43" shortDescription="1"/>
+                    <xtce:Enumeration label="Bus2Sw" value="44" shortDescription="2"/>
+                    <xtce:Enumeration label="Bus3Sw" value="45" shortDescription="3"/>
+                    <xtce:Enumeration label="Bus4Sw" value="46" shortDescription="4"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
-            <xtce:EnumeratedArgumentType name="ADBParameterType">
+            <xtce:EnumeratedArgumentType name="ADBParameterType" shortDescription="Parameter">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
@@ -802,11 +803,11 @@
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
-            <xtce:EnumeratedArgumentType name="ResetParameterType">
+            <xtce:EnumeratedArgumentType name="ResetParameterType" shortDescription="Parameter">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
-                    <xtce:Enumeration label="Reset"  value="59" shortDescription="Reset"/>
+                    <xtce:Enumeration label="Reset" value="59" shortDescription="Reset"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
@@ -814,10 +815,10 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
-                    <xtce:Enumeration label="DEP1Sw"  value="1" shortDescription="Dep 1 Switch"/>
-                    <xtce:Enumeration label="DEP2Sw"  value="2" shortDescription="Dep 2 Switch"/>
-                    <xtce:Enumeration label="DEP3Sw"  value="3" shortDescription="Dep 3 Switch"/>
-                    <xtce:Enumeration label="DEP4Sw"  value="4" shortDescription="Dep 4 Switch"/>
+                    <xtce:Enumeration label="DEP1Sw" value="1" shortDescription="1"/>
+                    <xtce:Enumeration label="DEP2Sw" value="2" shortDescription="2"/>
+                    <xtce:Enumeration label="DEP3Sw" value="3" shortDescription="3"/>
+                    <xtce:Enumeration label="DEP4Sw" value="4" shortDescription="4"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
@@ -830,16 +831,17 @@
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
-            <xtce:EnumeratedArgumentType name="EPSBusSwitchParameterType">
+            <xtce:EnumeratedArgumentType name="EPSBusSwitchParameterType" shortDescription="Status">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
-                    <xtce:Enumeration label="BUSSwOff" value="0" shortDescription="Bus Switch off"/>
-                    <xtce:Enumeration label="BUSSwOn"  value="1" shortDescription="Bus Switch on"/>
+                    <xtce:Enumeration label="BUSSwOff" value="0" shortDescription="OFF"/>
+                    <xtce:Enumeration label="BUSSwOn"  value="1" shortDescription="ON"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
-            <xtce:IntegerArgumentType name="byte" shortDescription="Unsigned value between 0 and 255">
+            <xtce:IntegerArgumentType name="byte" shortDescription="Value">
+                <xtce:LongDescription>Unsigned value between 0 and 255.</xtce:LongDescription>
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8"/>
             </xtce:IntegerArgumentType>
@@ -871,8 +873,8 @@
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
 
-            <xtce:MetaCommand name="Ping">
-                <xtce:LongDescription>Ping Subsystem</xtce:LongDescription>
+            <xtce:MetaCommand name="Ping" shortDescription="Ping Subsystem">
+                <xtce:LongDescription>Checks if the subsystem is responding.</xtce:LongDescription>
                 <xtce:ArgumentList/>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
@@ -887,8 +889,8 @@
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
 
-            <xtce:MetaCommand name="GetTelemetry">
-                <xtce:LongDescription>Housekeeping Request</xtce:LongDescription>
+            <xtce:MetaCommand name="GetTelemetry" shortDescription="Housekeeping Request">
+                <xtce:LongDescription>This command requests the housekeeping frame from the selected destination address.</xtce:LongDescription>
                 <xtce:ArgumentList/>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
@@ -905,6 +907,7 @@
 
             <xtce:MetaCommand name="Reset">
                 <xtce:LongDescription>Reset Subsystem</xtce:LongDescription>
+                <xtce:LongDescription>Perform a subsystem reset.</xtce:LongDescription>
                 <xtce:ArgumentList>
                     <xtce:Argument name="ResetParam" argumentTypeRef="ResetParameterType"/>
                 </xtce:ArgumentList>
@@ -917,13 +920,13 @@
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
                 <xtce:CommandContainer name="Reset">
-                  <xtce:EntryList>
-                      <xtce:ArgumentRefEntry argumentRef="ResetParam"/>
-                  </xtce:EntryList>
+                    <xtce:EntryList>
+                        <xtce:ArgumentRefEntry argumentRef="ResetParam"/>
+                    </xtce:EntryList>
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
 
-            <xtce:MetaCommand name="EPSBusSW">
+            <xtce:MetaCommand name="EPSBusSW" shortDescription="Set EPS power bus">
                 <xtce:LongDescription>EPS power bus</xtce:LongDescription>
                 <xtce:ArgumentList>
                     <xtce:Argument name="EPSParam" argumentTypeRef="EPSBusParameterType"/>
@@ -973,7 +976,7 @@
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
 
-            <xtce:MetaCommand name="EPSSetParam">
+            <xtce:MetaCommand name="EPSSetParam" shortDescription="Set EPS parameter">
                 <xtce:LongDescription>Set EPS parameter</xtce:LongDescription>
                 <xtce:ArgumentList>
                     <xtce:Argument name="Param1" argumentTypeRef="EPSParameterType"/>
@@ -996,8 +999,8 @@
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
 
-            <xtce:MetaCommand name="EPSGetParam">
-                <xtce:LongDescription>Get EPS parameter</xtce:LongDescription>
+            <xtce:MetaCommand name="EPSGetParam" shortDescription="Get EPS parameter">
+                <xtce:LongDescription>Retrieve EPS parameter</xtce:LongDescription>
                 <xtce:ArgumentList>
                     <xtce:Argument name="Param1" argumentTypeRef="EPSParameterType"/>
                 </xtce:ArgumentList>
@@ -1019,4 +1022,28 @@
 
         </xtce:MetaCommandSet>
     </xtce:CommandMetaData>
+    <xtce:SpaceSystem name="COMMS" >
+        <xtce:TelemetryMetaData>
+        
+        </xtce:TelemetryMetaData>
+        <xtce:CommandMetaData>
+            <xtce:MetaCommandSet>
+                <xtce:MetaCommand name="PingRadio" shortDescription="Ping Radio">
+                    <xtce:ArgumentList/>
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/Ping">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="COMMS"/>  
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="Ping"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                    <xtce:CommandContainer name="PingRadio">
+                        <xtce:EntryList/>
+                    </xtce:CommandContainer>
+                </xtce:MetaCommand>
+            </xtce:MetaCommandSet>
+        </xtce:CommandMetaData>
+    </xtce:SpaceSystem>
 </xtce:SpaceSystem>
