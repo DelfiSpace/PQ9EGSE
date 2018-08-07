@@ -25,12 +25,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.delfispace.CommandWebServer.Command;
 import org.delfispace.CommandWebServer.CommandWebServer;
+import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataSocket;
 import org.delfispace.protocols.pq9.PQ9;
 import org.delfispace.protocols.pq9.PQ9Exception;
 import org.delfispace.protocols.pq9.PQ9PCInterface;
@@ -57,13 +59,18 @@ public class Main implements PQ9Receiver, Subscriber
 {
     private final String LOOPBACK_PORT_NAME = "Loopback";
     private final CommandWebServer srv;
+    private final PQ9DataSocket DatSktSrv;
     private PQ9PCInterface pcInterface = null; 
     private final JSONParser parser = new JSONParser(); 
     private XTCETMStream stream;
-    private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ");
+    private SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss.SSS ");
     private boolean loopback = true;
     private SerialPort comPort = null;
     
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) 
     {
         try 
@@ -77,6 +84,10 @@ public class Main implements PQ9Receiver, Subscriber
         }
     }
     
+    /**
+     *
+     * @throws Exception
+     */
     public Main() throws Exception 
     {
         String file = "EPS.xml";
@@ -100,9 +111,15 @@ public class Main implements PQ9Receiver, Subscriber
         
         Configuration.getInstance().setSerialPorts(spl);
                         
-        srv = new CommandWebServer(8080);                                    
+        srv = new CommandWebServer(8080); 
+        
+        DatSktSrv = new PQ9DataSocket(10000);
     }
     
+    /**
+     *
+     * @throws Exception
+     */
     public void start() throws Exception
     {
         // select default serial port
@@ -111,9 +128,14 @@ public class Main implements PQ9Receiver, Subscriber
         // connect GUI command handler
         srv.serReceptionHandler(this);  
         
+        // connect the test socket to the command handler
+        DatSktSrv.setCommandHandler(this);
+        
         // start the server
         srv.start();
-        srv.join();
+        DatSktSrv.start();
+        
+        srv.join();        
     }
     
     private void connectToSerialPort(String port) throws IOException
@@ -172,7 +194,7 @@ public class Main implements PQ9Receiver, Subscriber
         srv.send(new Command("log", sb.toString())); 
     }
     
-    private String processFrame(XTCETMStream stream, byte[] data) throws XTCEDatabaseException, Exception 
+    private String processFrame(XTCETMStream stream, byte[] data, HashMap<String, String> values) throws XTCEDatabaseException, Exception 
     {
         StringBuilder sb = new StringBuilder();
         
@@ -191,6 +213,7 @@ public class Main implements PQ9Receiver, Subscriber
                 sb.append("\n");
             } else 
             {
+                values.put(entry.getName(), val.getCalibratedValue());
                 sb.append(": " + val.getCalibratedValue() + " "
                         + entry.getParameter().getUnits() + " ("
                         + val.getRawValueHex()+ ")");
@@ -221,19 +244,25 @@ public class Main implements PQ9Receiver, Subscriber
     private boolean isWithinValidRange(XTCEContainerContentEntry entry)
     {
         XTCEValidRange range = entry.getParameter().getValidRange();
-        if (!range.isValidRangeApplied()) {
+        if (!range.isValidRangeApplied()) 
+        {
             return true;
-        } else {
+        } else 
+        {
             String valLow =  range.isLowValueCalibrated() ? 
                     entry.getValue().getCalibratedValue() : 
                     entry.getValue().getUncalibratedValue();
 
-            if (range.isLowValueInclusive()) {
-                if (Double.parseDouble(valLow) < Double.parseDouble(range.getLowValue())) {
+            if (range.isLowValueInclusive()) 
+            {
+                if (Double.parseDouble(valLow) < Double.parseDouble(range.getLowValue())) 
+                {
                     return false;
                 }
-            } else {
-                if (Double.parseDouble(valLow) <= Double.parseDouble(range.getLowValue())) {
+            } else 
+            {
+                if (Double.parseDouble(valLow) <= Double.parseDouble(range.getLowValue())) 
+                {
                     return false;
                 }
             }
@@ -242,12 +271,16 @@ public class Main implements PQ9Receiver, Subscriber
                     entry.getValue().getCalibratedValue() : 
                     entry.getValue().getUncalibratedValue();
             
-            if (range.isHighValueInclusive()) {
-                if (Double.parseDouble(valHigh) > Double.parseDouble(range.getHighValue())) {
+            if (range.isHighValueInclusive()) 
+            {
+                if (Double.parseDouble(valHigh) > Double.parseDouble(range.getHighValue())) 
+                {
                     return false;
                 }
-            } else {
-                if (Double.parseDouble(valHigh) >= Double.parseDouble(range.getHighValue())) {
+            } else 
+            {
+                if (Double.parseDouble(valHigh) >= Double.parseDouble(range.getHighValue())) 
+                {
                     return false;
                 }
             }
@@ -255,46 +288,61 @@ public class Main implements PQ9Receiver, Subscriber
         return true;
     }
 
+    /**
+     * Handle a frame received on the serial port
+     * 
+     * @param msg PQ9 message received on the serial port
+     */
     @Override
     public void received(PQ9 msg) 
     {
+        HashMap<String, String> data = null;
         StringBuilder sb = new StringBuilder();
-            try
-            {
-                Date rxTime = new Date();                
-                sb.append("<font color=\"black\">");
-                // print reception time
-                sb.append(df.format(rxTime));
-                // print the received frame
-                sb.append("New frame received: <br>");
-                sb.append("&emsp;&emsp;&emsp;&emsp;");
-                sb.append(msg.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
-                sb.append("</font>");
-                srv.send(new Command("datalog", sb.toString()));
-                
-                sb.setLength(0);
-                sb.append("<font color=\"black\">");
-                sb.append("&emsp;&emsp;&emsp;&emsp;Decoded frame: ");
-                sb.append(processFrame(stream, msg.getFrame()).replace("\n", "<br>&emsp;&emsp;&emsp;&emsp;"));
-                sb.append("</font>");
-                srv.send(new Command("datalog", sb.toString()));
-            } catch (XTCEDatabaseException ex)            
-            {                
-                handleException(ex);
-            } catch (NullPointerException ex)            
-            {                
-                handleException(new Exception("Invalid XTCE file"));
-            } 
-            catch (Exception ex)
-            {
-                handleException(ex);
-            }
+        try
+        {
+            Date rxTime = new Date(); 
+            
+            data = new HashMap<>();
+            data.put("_received_", Arrays.toString(msg.getFrame()));
+            
+            sb.append("<font color=\"black\">");
+            // print reception time
+            sb.append(df.format(rxTime));
+            // print the received frame
+            sb.append("New frame received: <br>");
+            sb.append("&emsp;&emsp;&emsp;&emsp;");
+            sb.append(msg.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
+            sb.append("</font>");
+            srv.send(new Command("datalog", sb.toString()));
+
+            sb.setLength(0);
+            sb.append("<font color=\"black\">");
+            sb.append("&emsp;&emsp;&emsp;&emsp;Decoded frame: ");
+            sb.append(processFrame(stream, msg.getFrame(), data).replace("\n", "<br>&emsp;&emsp;&emsp;&emsp;"));
+            sb.append("</font>");
+            srv.send(new Command("datalog", sb.toString()));
+        } catch (XTCEDatabaseException ex)            
+        {                
+            handleException(ex);
+        } catch (NullPointerException ex)            
+        {                
+            handleException(new Exception("Invalid XTCE file"));
+        } 
+        catch (Exception ex)
+        {
+            handleException(ex);
+        }
+        DatSktSrv.send(data);
     }
 
+    /**
+     * Handle external commands received from the GUI
+     * 
+     * @param cmd Command object received from the GUI
+     */
     @Override
     public void subscribe(Command cmd) 
-    {
-        
+    {        
         try 
         {
             switch(cmd.getCommand())
@@ -323,6 +371,7 @@ public class Main implements PQ9Receiver, Subscriber
             handleException(ex);
         }            
     }
+
     private void handleSendCommand(Command cmd) throws ParseException, PQ9Exception, IOException, XTCEDatabaseException
     {
         try
@@ -359,21 +408,28 @@ public class Main implements PQ9Receiver, Subscriber
                     if (tc.size() > 1)
                     {
                         throw new XTCEDatabaseException((String)obj.get("_command_") + " identifies multiple commands");
-                    }
+                    }                                          
                     obj.remove("_command_");
 
-                    for (Object key : obj.keySet()) 
+                    obj.keySet().forEach((key) -> 
                     {
-                        String keyStr = (((String)key).split(":"))[1];
-                        Object keyvalue = obj.get((String)key);
-                        XTCEArgument a = tc.get(0).getArgument(keyStr);
-                        XTCEContainerEntryValue valueObj =
-                                        new XTCEContainerEntryValue( a,
-                                                     (String)keyvalue,
-                                                     "==",
-                                                     "Calibrated" );
-                        values.add(valueObj);
-                    }
+                        try 
+                        {
+                            String keyStr = (((String)key).split(":"))[1];
+                            Object keyvalue = obj.get((String)key);                                                
+                            XTCEArgument a = tc.get(0).getArgument(keyStr);
+                            XTCEContainerEntryValue valueObj =
+                                    new XTCEContainerEntryValue( a,
+                                            (String)keyvalue,
+                                            "==",
+                                            "Calibrated" );
+                            values.add(valueObj);
+                        } catch (XTCEDatabaseException | ArrayIndexOutOfBoundsException ex)
+                        {
+                            // ignore this error: it means that the key was not 
+                            // found in the command definition
+                        }
+                    });
                     XTCETelecommandContentModel model =
                             Configuration.getInstance().getXTCEDatabase().processTelecommand( tc.get(0), values, false );
 
@@ -408,6 +464,7 @@ public class Main implements PQ9Receiver, Subscriber
             }            
         } catch (Exception ex)
         {
+            ex.printStackTrace();
             handleException(ex);
         } 
     }
