@@ -50,11 +50,11 @@ public class PQ9DataSocketTest2
         DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         
-        for(int h = 0; h < 10; h++)
+        for(int h = 0; h < 1; h++)
         {
             Thread.sleep(100);
             System.out.println("Connected");
-            String string = "{\"_send_\":\"PingRadio\",\"A\":\"1\"}";
+            String string = "{\"_send_\":\"Ping\",\"Destination\":\"EPS\"}";
             outToServer.writeBytes(string + "\n");
         }
         System.out.println("Done");

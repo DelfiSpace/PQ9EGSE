@@ -135,7 +135,8 @@ function fetchData(id, elm)
     obj['_send_'] = id;
     for(var i = 0; i < elm.length; i++)
     {   
-        obj[elm[i]] = document.getElementById(elm[i]).value;
+        var e = elm[i].split(":");
+        obj[elm[i].split(":")[1]] = document.getElementById(elm[i]).value;
     } 
     var s = JSON.stringify(obj);
     rpc.send('SendCommand', s);

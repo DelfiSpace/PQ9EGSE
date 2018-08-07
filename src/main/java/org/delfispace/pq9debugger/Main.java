@@ -304,7 +304,20 @@ public class Main implements PQ9Receiver, Subscriber
             Date rxTime = new Date(); 
             
             data = new HashMap<>();
-            data.put("_received_", Arrays.toString(msg.getFrame()));
+            byte[] frame = msg.getFrame();
+            
+            StringBuilder sb1 = new StringBuilder();
+            sb1.append("[");
+            for (int i = 0; i < frame.length; i++)
+            {
+                sb1.append(frame[i] & 0xFF);
+                if (i < frame.length - 1)
+                {
+                    sb1.append(", ");
+                }
+            }
+            sb1.append("]");
+            data.put("_raw_", sb1.toString());
             
             sb.append("<font color=\"black\">");
             // print reception time
@@ -415,13 +428,11 @@ public class Main implements PQ9Receiver, Subscriber
                     obj.keySet().forEach((key) -> 
                     {
                         try 
-                        {
-                            String keyStr = (((String)key).split(":"))[1];
-                            Object keyvalue = obj.get((String)key);                                                
-                            XTCEArgument a = tc.get(0).getArgument(keyStr);
+                        {                                                
+                            XTCEArgument a = tc.get(0).getArgument((String)key);
                             XTCEContainerEntryValue valueObj =
                                     new XTCEContainerEntryValue( a,
-                                            (String)keyvalue,
+                                            (String)obj.get((String)key),
                                             "==",
                                             "Calibrated" );
                             values.add(valueObj);
