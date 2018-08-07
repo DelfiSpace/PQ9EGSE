@@ -54,13 +54,11 @@ public class PQ9DataSocket extends Thread
     
     public void send(HashMap<String, String> data)
     {
-        System.out.println("Send");
         if (outputStream != null)
         {
             try 
             {
                 JSONObject obj=new JSONObject();
-                obj.put("_received_", "mamma");
                 data.forEach((k,v)->obj.put(k,v));
                 outputStream.writeBytes(obj.toJSONString() + "\n");
                 outputStream.flush();
@@ -84,7 +82,6 @@ public class PQ9DataSocket extends Thread
             try 
             {
                 connectionSocket = socketPool.accept();
-                System.out.println("Accepted");
                 
                 JSONParser parser = new JSONParser(); 
                 BufferedReader inputStream =
@@ -108,7 +105,6 @@ public class PQ9DataSocket extends Thread
             } 
             outputStream = null;
             connectionSocket = null;
-            System.out.println("Connection dropped");
         }
     }
 }

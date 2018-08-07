@@ -202,6 +202,7 @@ public class Main implements PQ9Receiver, Subscriber
  
         List<XTCEContainerContentEntry> entries = model.getContentList();
 
+        values.put("_received_", model.getName());
         for (XTCEContainerContentEntry entry : entries) 
         {
             sb.append(entry.getName());
