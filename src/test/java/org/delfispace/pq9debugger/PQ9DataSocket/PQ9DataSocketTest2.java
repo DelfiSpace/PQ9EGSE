@@ -54,7 +54,7 @@ public class PQ9DataSocketTest2
         {
             Thread.sleep(100);
             System.out.println("Connected");
-            String string = "{\"_command_\":\"PingRadio\",\"A\":\"1\"}";
+            String string = "{\"_send_\":\"PingRadio\",\"A\":\"1\"}";
             outToServer.writeBytes(string + "\n");
         }
         System.out.println("Done");

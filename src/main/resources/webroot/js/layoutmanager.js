@@ -132,7 +132,7 @@ function handleSend(buttonId)
 function fetchData(id, elm)
 {
     var obj = {};  
-    obj['_command_'] = id;
+    obj['_send_'] = id;
     for(var i = 0; i < elm.length; i++)
     {   
         obj[elm[i]] = document.getElementById(elm[i]).value;

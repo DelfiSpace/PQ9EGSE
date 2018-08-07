@@ -380,7 +380,7 @@ public class Main implements PQ9Receiver, Subscriber
             PQ9 frame = null;
             String data = cmd.getData();
             JSONObject obj = (JSONObject)parser.parse(data);
-            switch((String)obj.get("_command_"))
+            switch((String)obj.get("_send_"))
             {
                 case "SendRaw":                                        
                     int d = Integer.parseInt((String) obj.get("dest"));
@@ -399,18 +399,18 @@ public class Main implements PQ9Receiver, Subscriber
                     break;
                     
                 default:
-                    List<XTCETelecommand> tc = Configuration.getInstance().getXTCEDatabase().getTelecommands((String)obj.get("_command_"));
+                    List<XTCETelecommand> tc = Configuration.getInstance().getXTCEDatabase().getTelecommands((String)obj.get("_send_"));
                     List<XTCEContainerEntryValue> values = new ArrayList<>();
                     
                     if (tc.isEmpty())
                     {
-                        throw new XTCEDatabaseException("Command not found: " + (String)obj.get("_command_"));
+                        throw new XTCEDatabaseException("Command not found: " + (String)obj.get("_send_"));
                     }
                     if (tc.size() > 1)
                     {
-                        throw new XTCEDatabaseException((String)obj.get("_command_") + " identifies multiple commands");
+                        throw new XTCEDatabaseException((String)obj.get("_send_") + " identifies multiple commands");
                     }                                          
-                    obj.remove("_command_");
+                    obj.remove("_send_");
 
                     obj.keySet().forEach((key) -> 
                     {
