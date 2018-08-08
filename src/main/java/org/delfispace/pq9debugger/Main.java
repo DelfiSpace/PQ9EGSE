@@ -57,7 +57,7 @@ import org.xtce.toolkit.XTCEValidRange;
  */
 public class Main implements PQ9Receiver, Subscriber
 {
-    private final String LOOPBACK_PORT_NAME = "Loopback";
+    private static final String LOOPBACK_PORT_NAME = "Loopback";
     private final CommandWebServer srv;
     private final PQ9DataSocket DatSktSrv;
     private PQ9PCInterface pcInterface = null; 
@@ -75,7 +75,7 @@ public class Main implements PQ9Receiver, Subscriber
     {
         try 
         {
-            Main m = new Main();
+            Main m = new Main((args.length < 1) ? LOOPBACK_PORT_NAME : args[0]);
             m.start();
         } catch (Exception ex) 
         {
@@ -84,12 +84,15 @@ public class Main implements PQ9Receiver, Subscriber
         }
     }
     
-    /**
+    /** Main PQ9 Debugger class: it controls the whole software.
      *
+     * @param defaultSerialPort
      * @throws Exception
      */
-    public Main() throws Exception 
+    public Main(String defaultSerialPort) throws Exception 
     {
+        Logger.getLogger(Main.class.getName()).log(Level.CONFIG, "Using {0} as default serial port", defaultSerialPort);
+                    
         String file = "EPS.xml";
         try 
         {
@@ -109,10 +112,17 @@ public class Main implements PQ9Receiver, Subscriber
             spl.add(sp1.getSystemPortName());
         }
         
-        Configuration.getInstance().setSerialPorts(spl);
-                        
-        srv = new CommandWebServer(8080); 
+        // make sure the provided serial port exists, if not terminate the application
+        if (!spl.contains(defaultSerialPort))
+        {
+            throw new Exception("Invalid serial port " + defaultSerialPort);
+        }
         
+        Configuration.getInstance().setSerialPorts(spl);
+        // set the default serial port
+        Configuration.getInstance().setSerialPort(defaultSerialPort);
+                        
+        srv = new CommandWebServer(8080);         
         DatSktSrv = new PQ9DataSocket(10000);
     }
     
@@ -123,7 +133,7 @@ public class Main implements PQ9Receiver, Subscriber
     public void start() throws Exception
     {
         // select default serial port
-        connectToSerialPort(LOOPBACK_PORT_NAME);
+        connectToSerialPort(Configuration.getInstance().getSerialPort());
         
         // connect GUI command handler
         srv.serReceptionHandler(this);  
@@ -436,7 +446,7 @@ public class Main implements PQ9Receiver, Subscriber
                                             "==",
                                             "Calibrated" );
                             values.add(valueObj);
-                        } catch (XTCEDatabaseException | ArrayIndexOutOfBoundsException ex)
+                        } catch (XTCEDatabaseException ex)
                         {
                             // ignore this error: it means that the key was not 
                             // found in the command definition
