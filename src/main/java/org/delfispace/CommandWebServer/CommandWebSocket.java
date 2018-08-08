@@ -44,8 +44,9 @@ public class CommandWebSocket extends WebSocketAdapter
     private final JSONParser parser = new JSONParser();   
     private final cmdMultiPublisher cmd = cmdMultiPublisher.getInstance();
     private final cmdMultiSubscriber sub = cmdMultiSubscriber.getInstance();
-
-    // idle tioemout in ms
+    private String endpoint = "";
+    
+    // idle timeout in ms
     private final int IDLE_TIMEOUT = 5 * 60 * 1000;
     
     public CommandWebSocket()
@@ -71,8 +72,10 @@ public class CommandWebSocket extends WebSocketAdapter
     {
         super.onWebSocketConnect(sess);
         // make sure a keep-alive timeout is enabled
-        sess.setIdleTimeout(IDLE_TIMEOUT);                
-        System.out.println("Socket Connected");
+        sess.setIdleTimeout(IDLE_TIMEOUT);
+        endpoint = sess.getRemote().getInetSocketAddress().toString();
+        Logger.getLogger(CommandWebSocket.class.getName()).log(Level.FINEST, 
+                "Websocket connected from {0}", endpoint);
 
         List<String> spl = Configuration.getInstance().getSerialPorts();
         
@@ -91,12 +94,14 @@ public class CommandWebSocket extends WebSocketAdapter
     public void onWebSocketText(String message)
     {
         super.onWebSocketText(message);
-        try {
+        try 
+        {
             JSONObject obj = (JSONObject)parser.parse(message);
             this.cmd.publish(new Command((String) obj.get("command"), (String) obj.get("data")));
         } catch (ParseException ex) 
         {
-            Logger.getLogger(CommandWebSocket.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CommandWebSocket.class.getName()).log(Level.SEVERE, 
+                    String.format("Invalid message from %s: %s", endpoint, message), ex);
         }              
     }
     
@@ -104,13 +109,16 @@ public class CommandWebSocket extends WebSocketAdapter
     public void onWebSocketClose(int statusCode, String reason)
     {
         super.onWebSocketClose(statusCode,reason);
-        System.out.println("Socket Closed: [" + statusCode + "] " + reason);
+        Logger.getLogger(CommandWebSocket.class.getName()).log(Level.FINEST, 
+                String.format("Websocket %s closed: [%d] %s",
+                endpoint, statusCode, reason));
     }
     
     @Override
     public void onWebSocketError(Throwable cause)
     {
         super.onWebSocketError(cause);
-        cause.printStackTrace(System.err);
+        Logger.getLogger(CommandWebSocket.class.getName()).log(Level.FINEST, 
+                String.format("Websocket %s error:", endpoint), cause);
     }
 }
