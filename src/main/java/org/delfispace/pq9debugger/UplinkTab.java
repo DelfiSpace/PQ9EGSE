@@ -55,8 +55,8 @@ public class UplinkTab
     public static String generate()
     {
         List<String[]> numbers = new ArrayList();
-        numbers.add(new String[]{"dest", "Destination", "7"});
-        numbers.add(new String[]{"src", "Source", "1"});
+        numbers.add(new String[]{"raw:dest", "Destination", "7"});
+        numbers.add(new String[]{"raw:src", "Source", "1"});
         
         tabIndex = 0;
         idArray.setLength(0);
@@ -76,16 +76,16 @@ public class UplinkTab
                     (
                         dt
                         ( 
-                            label("Data" + ":").attr("for", "data").attr("tabindex", tabIndex)
+                            label("Data" + ":").attr("for", "raw:data").attr("tabindex", tabIndex)
                         ), 
                         dd
                         (
-                            textarea("17 1").withType("text").withId("data").attr("title", 
+                            textarea("17 1").withType("text").withId("raw:data").attr("title", 
                                     "Array of integers between 0 and 255 or hex bytes separated by blanks")
                         )
                     )
                 ),
-                button("Send").attr("id", "SendRaw").attr("onclick", "fetchData(this.id, [" + idArray.toString()+ ", 'data'])").attr("tabindex", tabIndex).attr("title", "Raw Frame")
+                button("Send").attr("id", "SendRaw").attr("onclick", "fetchData(this.id, [" + idArray.toString()+ ", 'raw:data'])").attr("tabindex", tabIndex).attr("title", "Raw Frame")
             ),
             each(filter(tcs, tc -> tc.isAbstract() != true), tc ->
                 fieldset
