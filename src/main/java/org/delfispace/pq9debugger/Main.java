@@ -46,6 +46,7 @@ import org.xtce.toolkit.XTCEContainerContentModel;
 import org.xtce.toolkit.XTCEContainerEntryValue;
 import org.xtce.toolkit.XTCEDatabase;
 import org.xtce.toolkit.XTCEDatabaseException;
+import org.xtce.toolkit.XTCEFunctions;
 import org.xtce.toolkit.XTCETMStream;
 import org.xtce.toolkit.XTCETelecommand;
 import org.xtce.toolkit.XTCETelecommandContentModel;
@@ -91,8 +92,7 @@ public class Main implements PQ9Receiver, Subscriber
      */
     public Main(String defaultSerialPort) throws Exception 
     {
-        Logger.getLogger(Main.class.getName()).log(Level.CONFIG, "Using {0} as default serial port", defaultSerialPort);
-                    
+        Logger.getLogger(Main.class.getName()).log(Level.INFO, "PQ9 EGSE started");
         String file = "EPS.xml";
         try 
         {
@@ -132,6 +132,9 @@ public class Main implements PQ9Receiver, Subscriber
      */
     public void start() throws Exception
     {
+        Logger.getLogger(Main.class.getName()).log(Level.CONFIG, "Using serial port {0}", 
+                Configuration.getInstance().getSerialPort());
+                    
         // select default serial port
         connectToSerialPort(Configuration.getInstance().getSerialPort());
         
@@ -213,21 +216,26 @@ public class Main implements PQ9Receiver, Subscriber
         List<XTCEContainerContentEntry> entries = model.getContentList();
 
         values.put("_received_", model.getName());
+        sb.append(model.getName());
+        sb.append("\n");
+        
         for (XTCEContainerContentEntry entry : entries) 
-        {
-            sb.append(entry.getName());
-            
+        {                        
             XTCEContainerEntryValue val = entry.getValue();
 
-            if (val == null) 
-            {
-                sb.append("\n");
-            } else 
+            if (val != null) 
             {
                 values.put(entry.getName(), val.getCalibratedValue());
-                sb.append(": " + val.getCalibratedValue() + " "
-                        + entry.getParameter().getUnits() + " ("
-                        + val.getRawValueHex()+ ")");
+                
+                sb.append("\t");
+                sb.append(entry.getName());
+                sb.append(": ");
+                sb.append(val.getCalibratedValue());
+                sb.append(" ");
+                sb.append(entry.getParameter().getUnits());
+                sb.append(" (");
+                sb.append(val.getRawValueHex());
+                sb.append(")");
 
                 if (!isWithinValidRange(entry))
                 {
@@ -342,7 +350,7 @@ public class Main implements PQ9Receiver, Subscriber
             sb.setLength(0);
             sb.append("<font color=\"black\">");
             sb.append("&emsp;&emsp;&emsp;&emsp;Decoded frame: ");
-            sb.append(processFrame(stream, msg.getFrame(), data).replace("\n", "<br>&emsp;&emsp;&emsp;&emsp;"));
+            sb.append(processFrame(stream, msg.getFrame(), data).replace("\n", "<br>&emsp;&emsp;&emsp;&emsp;").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
             sb.append("</font>");
             srv.send(new Command("datalog", sb.toString()));
         } catch (XTCEDatabaseException ex)            
@@ -377,6 +385,7 @@ public class Main implements PQ9Receiver, Subscriber
 
                 case "setSerialPort":
                     connectToSerialPort(cmd.getData());
+                    // TODO: update the header for all existing conenctions
                     break;
 
                 case "ping":
@@ -457,15 +466,8 @@ public class Main implements PQ9Receiver, Subscriber
 
                     BitSet rawBits    = model.encodeContainer();
                     long   sizeInBits = model.getTotalSize();
-                    byte[] rawcmd = new byte[(int)Math.ceil((float)sizeInBits / 8)];
-                    for(int h = 0; h < rawcmd.length; h++)
-                    {
-                        rawcmd[h] = 0;
-                        for(int k = 0; k < 8; k++)
-                        {
-                            rawcmd[h] |= (byte)((rawBits.get(k + h * 8) ? 1 : 0) << (7 - k));
-                        }
-                    }                    
+                    
+                    byte[] rawcmd = XTCEFunctions.getStreamByteArrayFromBitSet(rawBits, (int)Math.ceil((float)sizeInBits / 8));                 
                     frame = new PQ9(rawcmd[0] & 0xFF, rawcmd[2] & 0xFF, Arrays.copyOfRange(rawcmd, 3, rawcmd.length));
                     break;
             }
@@ -484,8 +486,14 @@ public class Main implements PQ9Receiver, Subscriber
                 sb.append("</font>");
                 srv.send(new Command("datalog", sb.toString()));  
             }            
+        } catch (java.lang.NumberFormatException ex)
+        {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
+                    String.format("Invalid value: %s", cmd.toString()), ex);
+            handleException(ex);
         } catch (Exception ex)
         {
+            System.out.println(cmd);
             ex.printStackTrace();
             handleException(ex);
         } 
