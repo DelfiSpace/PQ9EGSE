@@ -240,6 +240,7 @@
             <xtce:Parameter name="Destination" parameterTypeRef="AddressType"/>
             <xtce:Parameter name="Size" parameterTypeRef="byte"/>
             <xtce:Parameter name="Source" parameterTypeRef="AddressType"/>
+            <xtce:Parameter name="Counter" parameterTypeRef="short"/>
             <xtce:Parameter name="Service" parameterTypeRef="ServiceType"/>
             <xtce:Parameter name="Request" parameterTypeRef="RequestType"/>
 
@@ -366,6 +367,7 @@
                     <xtce:ParameterRefEntry parameterRef="Destination"/>
                     <xtce:ParameterRefEntry parameterRef="Size"/>
                     <xtce:ParameterRefEntry parameterRef="Source"/>
+                    <xtce:ParameterRefEntry parameterRef="Counter"/>
                     <xtce:ParameterRefEntry parameterRef="Service"/>
                     <xtce:ParameterRefEntry parameterRef="Request"/>
                 </xtce:EntryList>
@@ -859,6 +861,7 @@
                     <xtce:Argument name="Destination" argumentTypeRef="AddressType"/>
                     <xtce:Argument name="Size" argumentTypeRef="byte"/>
                     <xtce:Argument name="Source" argumentTypeRef="AddressType"/>
+                    <xtce:Argument name="Counter" argumentTypeRef="short"/>
                     <xtce:Argument name="Service" argumentTypeRef="ServiceType"/>
                     <xtce:Argument name="Request" argumentTypeRef="RequestType"/>
                 </xtce:ArgumentList>
@@ -867,6 +870,7 @@
                         <xtce:ArgumentRefEntry argumentRef="Destination"/>
                         <xtce:ArgumentRefEntry argumentRef="Size"/>
                         <xtce:ArgumentRefEntry argumentRef="Source"/>
+                        <xtce:ArgumentRefEntry argumentRef="Counter"/>
                         <xtce:ArgumentRefEntry argumentRef="Service"/>
                         <xtce:ArgumentRefEntry argumentRef="Request"/>
                     </xtce:EntryList>
@@ -880,6 +884,7 @@
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="Ping"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                     </xtce:ArgumentAssignmentList>
@@ -896,6 +901,7 @@
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="Housekeeping"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                     </xtce:ArgumentAssignmentList>
@@ -915,6 +921,7 @@
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
                     </xtce:ArgumentAssignmentList>
@@ -937,6 +944,7 @@
                         <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
                     </xtce:ArgumentAssignmentList>
@@ -962,6 +970,7 @@
                         <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="6"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
                     </xtce:ArgumentAssignmentList>
@@ -987,6 +996,7 @@
                         <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                     </xtce:ArgumentAssignmentList>
@@ -1009,6 +1019,7 @@
                         <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Reply"/>
                     </xtce:ArgumentAssignmentList>
@@ -1024,7 +1035,7 @@
     </xtce:CommandMetaData>
     <xtce:SpaceSystem name="COMMS" >
         <xtce:TelemetryMetaData>
-        
+
         </xtce:TelemetryMetaData>
         <xtce:CommandMetaData>
             <xtce:MetaCommandSet>
@@ -1032,9 +1043,10 @@
                     <xtce:ArgumentList/>
                     <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/Ping">
                         <xtce:ArgumentAssignmentList>
-                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="COMMS"/>  
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="COMMS"/>
                             <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                            <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                             <xtce:ArgumentAssignment argumentName="Service" argumentValue="Ping"/>
                             <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                         </xtce:ArgumentAssignmentList>
