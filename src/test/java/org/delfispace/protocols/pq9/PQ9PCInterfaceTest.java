@@ -88,7 +88,9 @@ public class PQ9PCInterfaceTest
         } catch (PQ9Exception ex) {
             Logger.getLogger(PQ9PCInterfaceTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
+        runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x04, (byte)0x04, (byte)0x0B, (byte)0x7D, (byte)0x5C, (byte)0x11, (byte)0x02, (byte)0x65, (byte)0x7D, (byte)0x5E}, 
+                new byte[]{(byte)0x01, (byte)0x04, (byte)0x04, (byte)0x0B, (byte)0x7C, (byte)0x11, (byte)0x02, (byte)0x65, (byte)0x7e});
         runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x00, (byte)0x02, (byte)0xDB, (byte)0xEE}, 
                 new byte[]{(byte)0x01, (byte)0x00, (byte)0x02, (byte)0xDB, (byte)0xEE});
         runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x01, (byte)0x02, (byte)0x01, (byte)0xB3, (byte)0x07}, 

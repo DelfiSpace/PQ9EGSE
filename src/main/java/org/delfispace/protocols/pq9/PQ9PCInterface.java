@@ -161,7 +161,6 @@ public class PQ9PCInterface
                             default:
                                 // illegal sequence, aborting
                                 startFound = false;
-                                controlFound = false;
                                 // throw exception here
                                 if (errorHdl != null)
                                 {
@@ -175,28 +174,30 @@ public class PQ9PCInterface
                     {
                         // new data byte, add it to the buffer
                         bs.write(rx);
-                        if ((sizeFrame != -1) && (sizeFrame == bs.size() - 5))
-                        {
-                            startFound = false;
-                            controlFound = false;
-                            sizeFrame = -1;
-                            try 
-                            {
-                                PQ9 t = new PQ9(bs.toByteArray());   
-                                // clean the buffer if a valid frame was found
-                                bs.reset();
-                                return t;
-                            } catch (PQ9Exception ex) 
-                            {
-                                // the frame is not valid, throw away the data and wait for a new frame
-                                if (errorHdl != null)
-                                {
-                                    errorHdl.error(ex);
-                                }
-                                return null;
-                            }                        
-                        }
                     }
+                    
+                    // check if we received all the bytes and can check the checksum
+                    if ((sizeFrame != -1) && (sizeFrame == bs.size() - 5))
+                    {
+                        startFound = false;
+                        controlFound = false;
+                        sizeFrame = -1;
+                        try 
+                        {
+                            PQ9 t = new PQ9(bs.toByteArray());   
+                            // clean the buffer if a valid frame was found
+                            bs.reset();
+                            return t;
+                        } catch (PQ9Exception ex) 
+                        {
+                            // the frame is not valid, throw away the data and wait for a new frame
+                            if (errorHdl != null)
+                            {
+                                errorHdl.error(ex);
+                            }
+                            return null;
+                        }                        
+                    }                    
 
                     // initialize the counter to catch the frame size byte and use it to 
                     // detect frame termination
