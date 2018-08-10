@@ -35,6 +35,7 @@
                 <xtce:EnumerationList>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
                     <xtce:Enumeration label="Ackownledgment" value="4"/>
+                    <xtce:Enumeration label="PacketStats" value="6"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
@@ -356,6 +357,21 @@
             <xtce:Parameter name="ADCSTemperature" parameterTypeRef="TMPtemperature"/>
 
             <xtce:Parameter name="testing2" parameterTypeRef="short"/>
+
+            <xtce:Parameter name="RxRawCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="RxErrCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="RxOBCCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="RxEPSCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="RxADBCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="RxADCSCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="RxCOMMSCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="RxDBGCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="TxOBCCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="TxEPSCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="TxADBCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="TxADCSCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="TxCOMMSCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="TxDBGCounter" parameterTypeRef="short"/>
 
             <xtce:Parameter name="crc" parameterTypeRef="short"/>
 
@@ -720,6 +736,35 @@
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
+
+            <xtce:SequenceContainer name="PACKET_STATS" shortDescription="packet statistics frame">
+                <xtce:EntryList>
+                    <xtce:ParameterRefEntry parameterRef="RxRawCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="RxErrCounter"/>
+
+                    <xtce:ParameterRefEntry parameterRef="RxOBCCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="RxEPSCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="RxADBCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="RxADCSCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="RxCOMMSCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="RxDBGCounter"/>
+
+                    <xtce:ParameterRefEntry parameterRef="TxOBCCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="TxEPSCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="TxADBCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="TxADCSCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="TxCOMMSCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="TxDBGCounter"/>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Service" value="PacketStats"/>
+                            <xtce:Comparison parameterRef="Request" value="Reply"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
         </xtce:ContainerSet>
 
         <xtce:StreamSet>
@@ -755,6 +800,7 @@
                     <xtce:Enumeration label="GetSetParam" value="1"/>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
                     <xtce:Enumeration label="Verification" value="4"/>
+                    <xtce:Enumeration label="PacketStats" value="6"/>
                     <xtce:Enumeration label="Reset" value="9"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                 </xtce:EnumerationList>
@@ -907,6 +953,23 @@
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
                 <xtce:CommandContainer name="GetTelemetry">
+                    <xtce:EntryList/>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="PStats" shortDescription="Packet statistics">
+                <xtce:LongDescription>Checks the subsystem packet statistics.</xtce:LongDescription>
+                <xtce:ArgumentList/>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="PacketStats"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="PStats">
                     <xtce:EntryList/>
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
