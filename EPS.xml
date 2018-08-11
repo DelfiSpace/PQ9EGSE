@@ -36,6 +36,7 @@
                     <xtce:Enumeration label="Housekeeping" value="3"/>
                     <xtce:Enumeration label="Ackownledgment" value="4"/>
                     <xtce:Enumeration label="Ping" value="17"/>
+                    <xtce:Enumeration label="RX" value="55"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
 
@@ -1006,6 +1007,8 @@
                         </xtce:DefaultCalibrator>
                     </xtce:IntegerDataEncoding>
                 </xtce:FloatParameterType>
+                
+                <xtce:ArrayParameterType name="byteArray" arrayTypeRef="/Delfi-PQ/byte" numberOfDimensions="1"/>
             </xtce:ParameterTypeSet>
             
             <xtce:ParameterSet>
@@ -1031,6 +1034,9 @@
                 <xtce:Parameter name="BusVoltage" shortDescription="Bus Voltage" parameterTypeRef="VoltageType"/>
                 <xtce:Parameter name="SupplyVoltage" shortDescription="3V3 Supply Voltage" parameterTypeRef="VoltageType"/>
                 <xtce:Parameter name="ADCreading" parameterTypeRef="VoltageType"/>
+                
+                <xtce:Parameter name="Data" parameterTypeRef="byteArray"/>
+
             </xtce:ParameterSet>
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="HK" shortDescription="COMMS Housekeeping frame">
@@ -1079,6 +1085,31 @@
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
                 </xtce:SequenceContainer>
+                
+                <xtce:SequenceContainer name="RXData" shortDescription="COMMS RX data">
+                    <xtce:EntryList>
+                        <xtce:ArrayParameterRefEntry parameterRef="Data">
+                            <xtce:DimensionList>
+                                <xtce:Size>
+                                    <xtce:DynamicValue>
+                                        <xtce:ParameterInstanceRef parameterRef="/Delfi-PQ/Size" useCalibratedValue="true"/>
+                                        <xtce:LinearAdjustment intercept="-4" slope="1"/>
+                                    </xtce:DynamicValue>
+                                </xtce:Size>
+                            </xtce:DimensionList>
+                        </xtce:ArrayParameterRefEntry>
+                    </xtce:EntryList>
+                    <xtce:BaseContainer containerRef="/Delfi-PQ/PQ9">
+                        <xtce:RestrictionCriteria>
+                            <xtce:ComparisonList>
+                                <xtce:Comparison parameterRef="Source" value="COMMS"/>
+                                <xtce:Comparison parameterRef="Service" value="RX"/>
+                                <xtce:Comparison parameterRef="Request" value="Reply"/>
+                            </xtce:ComparisonList>
+                        </xtce:RestrictionCriteria>
+                    </xtce:BaseContainer>
+                </xtce:SequenceContainer>
+                        
             </xtce:ContainerSet>            
         </xtce:TelemetryMetaData>
         
