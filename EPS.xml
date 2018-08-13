@@ -25,7 +25,8 @@
                     <xtce:Enumeration label="ADB" value="3"/>
                     <xtce:Enumeration label="COMMS" value="4"/>
                     <xtce:Enumeration label="ADCS" value="5"/>
-                    <xtce:Enumeration label="OBC2" value="7"/>
+                    <xtce:Enumeration label="DEBUG" value="7"/>
+                    <xtce:Enumeration label="EGSE" value="8"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
 
@@ -724,7 +725,8 @@
                     <xtce:Enumeration label="ADB" value="3"/>
                     <xtce:Enumeration label="COMMS" value="4"/>
                     <xtce:Enumeration label="ADCS" value="5"/>
-                    <xtce:Enumeration label="OBC2" value="7"/>
+                    <xtce:Enumeration label="DEBUG" value="7"/>
+                    <xtce:Enumeration label="EGSE" value="8"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
