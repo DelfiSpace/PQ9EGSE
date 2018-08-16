@@ -336,6 +336,7 @@ public class Main implements PQ9Receiver, Subscriber
             }
             sb1.append("]");
             data.put("_raw_", sb1.toString());
+            data.put("_timestamp_", rxTime.toString());
             
             sb.append("<font color=\"black\">");
             // print reception time
