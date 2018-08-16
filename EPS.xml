@@ -360,7 +360,7 @@
             <xtce:Parameter name="TxCOMMSCounter" parameterTypeRef="short"/>
             <xtce:Parameter name="TxDBGCounter" parameterTypeRef="short"/>
 
-            <xtce:Parameter name="crc" parameterTypeRef="short"/>
+            <xtce:Parameter name="CRC" parameterTypeRef="short"/>
 
         </xtce:ParameterSet>
         <xtce:ContainerSet>
@@ -373,6 +373,11 @@
                     <xtce:ParameterRefEntry parameterRef="Counter"/>
                     <xtce:ParameterRefEntry parameterRef="Service"/>
                     <xtce:ParameterRefEntry parameterRef="Request"/>
+                    <xtce:ParameterRefEntry parameterRef="CRC">
+                        <xtce:LocationInContainerInBits referenceLocation="containerEnd">
+                            <xtce:FixedValue>0</xtce:FixedValue>
+                        </xtce:LocationInContainerInBits>
+                    </xtce:ParameterRefEntry>
                 </xtce:EntryList>
             </xtce:SequenceContainer>
 
@@ -506,8 +511,6 @@
                     <xtce:ParameterRefEntry parameterRef="URBVoltage"/>
 
                     <xtce:ParameterRefEntry parameterRef="testing2"/>
-
-                    <xtce:ParameterRefEntry parameterRef="crc"/>
 
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
