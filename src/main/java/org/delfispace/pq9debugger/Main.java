@@ -228,7 +228,7 @@ public class Main implements PQ9Receiver, Subscriber
                 values.put(entry.getName(), val.getCalibratedValue());
                 
                 sb.append("\t");
-                sb.append(entry.getName());
+                sb.append(entry.getParameter().getShortDescription().isEmpty() ? entry.getName() : entry.getParameter().getShortDescription());
                 sb.append(": ");
                 sb.append(val.getCalibratedValue());
                 sb.append(" ");
