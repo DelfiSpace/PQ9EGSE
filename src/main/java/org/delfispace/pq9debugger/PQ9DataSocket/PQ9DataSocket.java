@@ -42,16 +42,41 @@ public class PQ9DataSocket extends Thread
     private DataOutputStream outputStream = null;
     private Subscriber cmdHandler = null;
     
+    /**
+     * Create a PQ9 Data socket object connected to the specified port. 
+     * For automatic port selection, set the port 0.
+     * 
+     * @param port
+     * @throws IOException
+     */
     public PQ9DataSocket(int port) throws IOException
     {
-        socketPool = new ServerSocket(port);        
+        socketPool = new ServerSocket(port);    
     }
     
+    /**
+     * Return the local port being used by the server.
+     * 
+     * @return
+     */
+    public int getLocalPort()
+    {
+        return socketPool.getLocalPort();
+    }
+    
+    /**
+     *
+     * @param hdl
+     */
     public void setCommandHandler(Subscriber hdl)
     {
         cmdHandler = hdl;
     }
     
+    /**
+     *
+     * @param data
+     */
     public void send(HashMap<String, String> data)
     {
         if (outputStream != null)
@@ -63,12 +88,16 @@ public class PQ9DataSocket extends Thread
                 outputStream.writeBytes(obj.toJSONString() + "\n");
                 outputStream.flush();
             } catch (IOException ex) 
-            {
+            {   
                 // ignore error
             }
         }
     }
     
+    /**
+     *
+     * @throws IOException
+     */
     public void close() throws IOException
     {
         socketPool.close();

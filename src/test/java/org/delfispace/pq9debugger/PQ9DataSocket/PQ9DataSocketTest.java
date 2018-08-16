@@ -47,10 +47,11 @@ public class PQ9DataSocketTest
 
     @Test
     public void testCreateFrame() throws IOException, InterruptedException 
-    {
-        int srvPort = 10000;
+    {              
+        // automaticall use a free local port
+        PQ9DataSocket srv = new PQ9DataSocket(0);
+        int srvPort = srv.getLocalPort();
         
-        PQ9DataSocket srv = new PQ9DataSocket(srvPort);
         srv.setCommandHandler((cmd) -> 
         {
             System.out.println("Command:");
