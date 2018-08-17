@@ -783,14 +783,6 @@
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
-            <xtce:EnumeratedArgumentType name="ADBParameterType" shortDescription="Parameter">
-                <xtce:UnitSet/>
-                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
-                <xtce:EnumerationList>
-                    <xtce:Enumeration label="DEPSW"  value="49" shortDescription="Dep Switch"/>
-                </xtce:EnumerationList>
-            </xtce:EnumeratedArgumentType>
-
             <xtce:EnumeratedArgumentType name="ResetParameterType" shortDescription="Parameter">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
@@ -969,14 +961,13 @@
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
                 <xtce:ArgumentList>
-                    <xtce:Argument name="ADBParam" argumentTypeRef="ADBParameterType"/>
                     <xtce:Argument name="Switch" argumentTypeRef="ADBDEPType"/>
                     <xtce:Argument name="Feedback" argumentTypeRef="ADBFeedbackParameterType"/>
                     <xtce:Argument name="Burn_time" argumentTypeRef="short"/>
                 </xtce:ArgumentList>
                 <xtce:CommandContainer name="ADBburnParam">
                     <xtce:EntryList>
-                        <xtce:ArgumentRefEntry argumentRef="ADBParam"/>
+                        <xtce:FixedValueEntry binaryValue="31" sizeInBits="8"/>
                         <xtce:ArgumentRefEntry argumentRef="Switch"/>
                         <xtce:ArgumentRefEntry argumentRef="Feedback"/>
                         <xtce:ArgumentRefEntry argumentRef="Burn_time"/>
