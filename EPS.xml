@@ -410,7 +410,7 @@
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>
                         <xtce:ComparisonList>
-                            <xtce:Comparison parameterRef="Source" value="OBC2"/>
+                            <xtce:Comparison parameterRef="Source" value="DEBUG"/>
                             <xtce:Comparison parameterRef="Service" value="Housekeeping"/>
                             <xtce:Comparison parameterRef="Request" value="Reply"/>
                         </xtce:ComparisonList>
@@ -788,6 +788,22 @@
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
+            <xtce:EnumeratedArgumentType name="SensorLoopTimingParameterType" shortDescription="Parameter">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Sensor_Delay"  value="61" shortDescription="Sensor loop delay"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+
+            <xtce:EnumeratedArgumentType name="OBCCommandLoopTimingParameterType" shortDescription="Parameter">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="OBC_Master_delay"  value="62" shortDescription="OBC command loop delay"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+
             <xtce:EnumeratedArgumentType name="ResetParameterType" shortDescription="Parameter">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
@@ -834,6 +850,11 @@
             <xtce:IntegerArgumentType name="short">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="16"/>
+            </xtce:IntegerArgumentType>
+
+            <xtce:IntegerArgumentType name="long">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="32"/>
             </xtce:IntegerArgumentType>
 
         </xtce:ArgumentTypeSet>
@@ -929,6 +950,52 @@
                 <xtce:CommandContainer name="Reset">
                     <xtce:EntryList>
                         <xtce:ArgumentRefEntry argumentRef="ResetParam"/>
+                    </xtce:EntryList>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="SetSensorLoopTiming">
+                <xtce:LongDescription>Sets the sensor loop delay</xtce:LongDescription>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="SensorLoopTimingParam" argumentTypeRef="SensorLoopTimingParameterType"/>
+                    <xtce:Argument name="TimingParam" argumentTypeRef="long"/>
+                </xtce:ArgumentList>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="SetSensorLoopTiming">
+                    <xtce:EntryList>
+                        <xtce:ArgumentRefEntry argumentRef="SensorLoopTimingParam"/>
+                        <xtce:ArgumentRefEntry argumentRef="TimingParam"/>
+                    </xtce:EntryList>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="SetOBCCommandLoopTiming">
+                <xtce:LongDescription>Sets the command loop delay</xtce:LongDescription>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="OBCCommandLoopTimingParam" argumentTypeRef="OBCCommandLoopTimingParameterType"/>
+                    <xtce:Argument name="TimingParam" argumentTypeRef="long"/>
+                </xtce:ArgumentList>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="SetOBCCommandLoopTiming">
+                    <xtce:EntryList>
+                        <xtce:ArgumentRefEntry argumentRef="OBCCommandLoopTimingParam"/>
+                        <xtce:ArgumentRefEntry argumentRef="TimingParam"/>
                     </xtce:EntryList>
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
