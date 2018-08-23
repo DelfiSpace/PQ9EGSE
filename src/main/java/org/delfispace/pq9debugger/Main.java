@@ -96,7 +96,14 @@ public class Main implements PQ9Receiver, Subscriber
         try 
         {
             Configuration.getInstance().setXTCEDatabase( new XTCEDatabase(new File(file), true, true, true) );
-            stream = Configuration.getInstance().getXTCEDatabase().getStream( "PQ9bus" );                          
+            stream = Configuration.getInstance().getXTCEDatabase().getStream( "PQ9bus" );  
+            if (Configuration.getInstance().getXTCEDatabase().getErrorCount() != 0)
+            {
+                Configuration.getInstance().getXTCEDatabase().getDocumentWarnings().forEach((item) -> 
+                {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "XML parsing error: {0}", item);
+                });
+            }
         } catch (XTCEDatabaseException ex) 
         {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
