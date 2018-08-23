@@ -58,7 +58,7 @@ import org.xtce.toolkit.XTCEValidRange;
  */
 public class Main implements PQ9Receiver, Subscriber
 {
-    private static final String LOOPBACK_PORT_NAME = "Loopback";
+    private static final String NULL_PORT_NAME = " ";
     private final CommandWebServer srv;
     private final PQ9DataSocket DatSktSrv;
     private PQ9PCInterface pcInterface = null; 
@@ -75,7 +75,7 @@ public class Main implements PQ9Receiver, Subscriber
     {
         try 
         {
-            Main m = new Main((args.length < 1) ? LOOPBACK_PORT_NAME : args[0]);
+            Main m = new Main((args.length < 1) ? NULL_PORT_NAME : args[0]);
             m.start();
         } catch (Exception ex) 
         {
@@ -112,7 +112,7 @@ public class Main implements PQ9Receiver, Subscriber
         SerialPort[] sp = SerialPort.getCommPorts();
 
         List<String> spl = new ArrayList();
-        spl.add(LOOPBACK_PORT_NAME);
+        spl.add(NULL_PORT_NAME);
         for (SerialPort sp1 : sp) 
         {
             spl.add(sp1.getSystemPortName());
@@ -170,12 +170,10 @@ public class Main implements PQ9Receiver, Subscriber
             pcInterface.close();
         }
 
-        if (port.equals(LOOPBACK_PORT_NAME))
+        if (port.equals(NULL_PORT_NAME))
         {                        
-            // select loopback port
-            LoopbackStream ls = new LoopbackStream();
             // crete the HLDLC reader
-            pcInterface = new PQ9PCInterface(ls.getInputStream(), ls.getOutputStream(), true);        
+            pcInterface = new PQ9PCInterface(new NullInputStream(), new NullOutputStream());        
         }
         else
         {
@@ -314,6 +312,70 @@ public class Main implements PQ9Receiver, Subscriber
         return true;
     }
 
+    private void newFrameToGUI(PQ9 msg, Date time, boolean received) throws XTCEDatabaseException, Exception
+    {
+        StringBuilder sb = new StringBuilder();
+        HashMap<String, String> data = new HashMap<>();
+        
+        byte[] frame = msg.getFrame();
+
+        StringBuilder sb1 = new StringBuilder();
+        sb1.append("[");
+        for (int i = 0; i < frame.length; i++)
+        {
+            sb1.append(frame[i] & 0xFF);
+            if (i < frame.length - 1)
+            {
+                sb1.append(", ");
+            }
+        }
+        sb1.append("]");
+        data.put("_raw_", sb1.toString());
+        data.put("_timestamp_", time.toString());
+        
+        if (received)
+        {
+            sb.append("<font color=\"black\">");
+        }
+        else
+        {
+            sb.append("<font color=\"yellow\">");
+        }
+        // print time
+        sb.append(df.format(time));
+        // print the received frame
+        if (received)
+        {
+            sb.append("New frame received: <br>");
+        }
+        else
+        {
+            sb.append("New frame transmitted: <br>");
+        }
+        sb.append("&emsp;&emsp;&emsp;&emsp;");
+        sb.append(msg.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
+        sb.append("</font>");
+        srv.send(new Command("datalog", sb.toString()));
+
+        sb.setLength(0);
+        if (received)
+        {
+            sb.append("<font color=\"black\">");
+        }
+        else
+        {
+            sb.append("<font color=\"yellow\">");
+        }
+        sb.append("&emsp;&emsp;&emsp;&emsp;Decoded frame: ");
+        sb.append(processFrame(stream, msg.getFrame(), data).replace("\n", "<br>&emsp;&emsp;&emsp;&emsp;").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
+        sb.append("</font>");
+        srv.send(new Command("datalog", sb.toString()));  
+        
+        if (received)
+        {
+            DatSktSrv.send(data);
+        }
+    }
     /**
      * Handle a frame received on the serial port
      * 
@@ -321,46 +383,13 @@ public class Main implements PQ9Receiver, Subscriber
      */
     @Override
     public void received(PQ9 msg) 
-    {
-        HashMap<String, String> data = null;
-        StringBuilder sb = new StringBuilder();
+    {        
+        Date rxTime = new Date();                         
+        
+        
         try
         {
-            Date rxTime = new Date(); 
-            
-            data = new HashMap<>();
-            byte[] frame = msg.getFrame();
-            
-            StringBuilder sb1 = new StringBuilder();
-            sb1.append("[");
-            for (int i = 0; i < frame.length; i++)
-            {
-                sb1.append(frame[i] & 0xFF);
-                if (i < frame.length - 1)
-                {
-                    sb1.append(", ");
-                }
-            }
-            sb1.append("]");
-            data.put("_raw_", sb1.toString());
-            data.put("_timestamp_", rxTime.toString());
-            
-            sb.append("<font color=\"black\">");
-            // print reception time
-            sb.append(df.format(rxTime));
-            // print the received frame
-            sb.append("New frame received: <br>");
-            sb.append("&emsp;&emsp;&emsp;&emsp;");
-            sb.append(msg.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
-            sb.append("</font>");
-            srv.send(new Command("datalog", sb.toString()));
-
-            sb.setLength(0);
-            sb.append("<font color=\"black\">");
-            sb.append("&emsp;&emsp;&emsp;&emsp;Decoded frame: ");
-            sb.append(processFrame(stream, msg.getFrame(), data).replace("\n", "<br>&emsp;&emsp;&emsp;&emsp;").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
-            sb.append("</font>");
-            srv.send(new Command("datalog", sb.toString()));
+            newFrameToGUI(msg, rxTime, true);
         } catch (XTCEDatabaseException ex)            
         {                
             handleException(ex);
@@ -372,7 +401,7 @@ public class Main implements PQ9Receiver, Subscriber
         {
             handleException(ex);
         }
-        DatSktSrv.send(data);
+        
     }
 
     /**
@@ -481,16 +510,9 @@ public class Main implements PQ9Receiver, Subscriber
             }
             
             pcInterface.send(frame);
-            StringBuilder sb = new StringBuilder();
-            sb.append("<font color=\"yellow\">");
-            // print reception time
-            sb.append(df.format(new Date()));
-            // print the received frame
-            sb.append("New frame transmitted: <br>");
-            sb.append("&emsp;&emsp;&emsp;&emsp;");
-            sb.append(frame.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;")); 
-            sb.append("</font>");
-            srv.send(new Command("datalog", sb.toString()));           
+            
+            newFrameToGUI(frame, new Date(), false);
+                     
         } catch (java.lang.NumberFormatException ex)
         {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
@@ -498,8 +520,6 @@ public class Main implements PQ9Receiver, Subscriber
             handleException(ex);
         } catch (Exception ex)
         {
-            System.out.println(cmd);
-            ex.printStackTrace();
             handleException(ex);
         } 
     }
