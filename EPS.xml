@@ -366,6 +366,7 @@
         <xtce:ContainerSet>
 
             <xtce:SequenceContainer name="PQ9" abstract="true" shortDescription="PQ9 frame">
+                <xtce:LongDescription>This is the message header used to transfer data on the internal bus. All other messages implement it.</xtce:LongDescription>
                 <xtce:EntryList>
                     <xtce:ParameterRefEntry parameterRef="Destination"/>
                     <xtce:ParameterRefEntry parameterRef="Size"/>
@@ -379,6 +380,34 @@
                         </xtce:LocationInContainerInBits>
                     </xtce:ParameterRefEntry>
                 </xtce:EntryList>
+            </xtce:SequenceContainer>
+
+            <xtce:SequenceContainer name="HousekeepingRequest" shortDescription="Housekeeping request">
+                <xtce:LongDescription>This message is used to request the housekeeping frame to the subsystem.</xtce:LongDescription>
+                <xtce:EntryList>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Service" value="Housekeeping"/>
+                            <xtce:Comparison parameterRef="Request" value="Request"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+
+            <xtce:SequenceContainer name="PingRequest" shortDescription="Ping request">
+                <xtce:LongDescription>This message is used to send a ping request to the subsystem.</xtce:LongDescription>
+                <xtce:EntryList>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Service" value="Ping"/>
+                            <xtce:Comparison parameterRef="Request" value="Request"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
             </xtce:SequenceContainer>
 
             <xtce:SequenceContainer name="OBC_HK" shortDescription="OBC Housekeeping frame">
@@ -637,7 +666,7 @@
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
 
-            <xtce:SequenceContainer name="Ping_Reply" shortDescription="Ping reply">
+            <xtce:SequenceContainer name="PingReply" shortDescription="Ping reply">
                 <xtce:EntryList>
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
@@ -783,14 +812,6 @@
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
-            <xtce:EnumeratedArgumentType name="ResetParameterType" shortDescription="Parameter">
-                <xtce:UnitSet/>
-                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
-                <xtce:EnumerationList>
-                    <xtce:Enumeration label="Reset" value="59" shortDescription="Reset"/>
-                </xtce:EnumerationList>
-            </xtce:EnumeratedArgumentType>
-
             <xtce:EnumeratedArgumentType name="ADBDEPType">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
@@ -914,12 +935,9 @@
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
-                <xtce:ArgumentList>
-                    <xtce:Argument name="ResetParam" argumentTypeRef="ResetParameterType"/>
-                </xtce:ArgumentList>
                 <xtce:CommandContainer name="Reset">
                     <xtce:EntryList>
-                        <xtce:ArgumentRefEntry argumentRef="ResetParam"/>
+                        <xtce:FixedValueEntry binaryValue="3b" sizeInBits="8"/>
                     </xtce:EntryList>
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
