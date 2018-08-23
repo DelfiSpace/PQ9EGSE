@@ -65,7 +65,6 @@ public class Main implements PQ9Receiver, Subscriber
     private final JSONParser parser = new JSONParser(); 
     private XTCETMStream stream;
     private SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss.SSS ");
-    private boolean loopback = true;
     private SerialPort comPort = null;
     
     /**
@@ -166,15 +165,13 @@ public class Main implements PQ9Receiver, Subscriber
 
         if (port.equals(LOOPBACK_PORT_NAME))
         {                        
-            loopback = true;
             // select loopback port
             LoopbackStream ls = new LoopbackStream();
             // crete the HLDLC reader
-            pcInterface = new PQ9PCInterface(ls.getInputStream(), ls.getOutputStream(), loopback);        
+            pcInterface = new PQ9PCInterface(ls.getInputStream(), ls.getOutputStream(), true);        
         }
         else
         {
-            loopback = false;
             // first time we connectot  a serial port            
             comPort = SerialPort.getCommPort(port);
 
@@ -183,6 +180,9 @@ public class Main implements PQ9Receiver, Subscriber
 
             // configure the seriql port parameters
             comPort.setComPortParameters(115200, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+            
+            // set the serial port in blocking mode
+            comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
             
             // crete the HLDLC reader
             pcInterface = new PQ9PCInterface(comPort.getInputStream(), comPort.getOutputStream());
@@ -474,19 +474,16 @@ public class Main implements PQ9Receiver, Subscriber
             }
             
             pcInterface.send(frame);
-            if (!loopback)
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.append("<font color=\"yellow\">");
-                // print reception time
-                sb.append(df.format(new Date()));
-                // print the received frame
-                sb.append("New frame transmitted: <br>");
-                sb.append("&emsp;&emsp;&emsp;&emsp;");
-                sb.append(frame.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;")); 
-                sb.append("</font>");
-                srv.send(new Command("datalog", sb.toString()));  
-            }            
+            StringBuilder sb = new StringBuilder();
+            sb.append("<font color=\"yellow\">");
+            // print reception time
+            sb.append(df.format(new Date()));
+            // print the received frame
+            sb.append("New frame transmitted: <br>");
+            sb.append("&emsp;&emsp;&emsp;&emsp;");
+            sb.append(frame.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;")); 
+            sb.append("</font>");
+            srv.send(new Command("datalog", sb.toString()));           
         } catch (java.lang.NumberFormatException ex)
         {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
