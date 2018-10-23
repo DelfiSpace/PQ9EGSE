@@ -366,12 +366,13 @@
             <xtce:Parameter name="TxCOMMSCounter" parameterTypeRef="short"/>
             <xtce:Parameter name="TxDBGCounter" parameterTypeRef="short"/>
 
-            <xtce:Parameter name="crc" parameterTypeRef="short"/>
+            <xtce:Parameter name="CRC" parameterTypeRef="short"/>
 
         </xtce:ParameterSet>
         <xtce:ContainerSet>
 
             <xtce:SequenceContainer name="PQ9" abstract="true" shortDescription="PQ9 frame">
+                <xtce:LongDescription>This is the message header used to transfer data on the internal bus. All other messages implement it.</xtce:LongDescription>
                 <xtce:EntryList>
                     <xtce:ParameterRefEntry parameterRef="Destination"/>
                     <xtce:ParameterRefEntry parameterRef="Size"/>
@@ -379,7 +380,40 @@
                     <xtce:ParameterRefEntry parameterRef="Counter"/>
                     <xtce:ParameterRefEntry parameterRef="Service"/>
                     <xtce:ParameterRefEntry parameterRef="Request"/>
+                    <xtce:ParameterRefEntry parameterRef="CRC">
+                        <xtce:LocationInContainerInBits referenceLocation="containerEnd">
+                            <xtce:FixedValue>0</xtce:FixedValue>
+                        </xtce:LocationInContainerInBits>
+                    </xtce:ParameterRefEntry>
                 </xtce:EntryList>
+            </xtce:SequenceContainer>
+
+            <xtce:SequenceContainer name="HousekeepingRequest" shortDescription="Housekeeping request">
+                <xtce:LongDescription>This message is used to request the housekeeping frame to the subsystem.</xtce:LongDescription>
+                <xtce:EntryList>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Service" value="Housekeeping"/>
+                            <xtce:Comparison parameterRef="Request" value="Request"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+
+            <xtce:SequenceContainer name="PingRequest" shortDescription="Ping request">
+                <xtce:LongDescription>This message is used to send a ping request to the subsystem.</xtce:LongDescription>
+                <xtce:EntryList>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Service" value="Ping"/>
+                            <xtce:Comparison parameterRef="Request" value="Request"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
             </xtce:SequenceContainer>
 
             <xtce:SequenceContainer name="OBC_HK" shortDescription="OBC Housekeeping frame">
@@ -507,8 +541,6 @@
 
                     <xtce:ParameterRefEntry parameterRef="testing2"/>
 
-                    <xtce:ParameterRefEntry parameterRef="crc"/>
-
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>
@@ -634,7 +666,7 @@
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
 
-            <xtce:SequenceContainer name="Ping_Reply" shortDescription="Ping reply">
+            <xtce:SequenceContainer name="PingReply" shortDescription="Ping reply">
                 <xtce:EntryList>
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
@@ -780,38 +812,6 @@
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
-            <xtce:EnumeratedArgumentType name="ADBParameterType" shortDescription="Parameter">
-                <xtce:UnitSet/>
-                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
-                <xtce:EnumerationList>
-                    <xtce:Enumeration label="DEPSW"  value="49" shortDescription="Dep Switch"/>
-                </xtce:EnumerationList>
-            </xtce:EnumeratedArgumentType>
-
-            <xtce:EnumeratedArgumentType name="SensorLoopTimingParameterType" shortDescription="Parameter">
-                <xtce:UnitSet/>
-                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
-                <xtce:EnumerationList>
-                    <xtce:Enumeration label="Sensor_Delay"  value="61" shortDescription="Sensor loop delay"/>
-                </xtce:EnumerationList>
-            </xtce:EnumeratedArgumentType>
-
-            <xtce:EnumeratedArgumentType name="OBCCommandLoopTimingParameterType" shortDescription="Parameter">
-                <xtce:UnitSet/>
-                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
-                <xtce:EnumerationList>
-                    <xtce:Enumeration label="OBC_Master_delay"  value="62" shortDescription="OBC command loop delay"/>
-                </xtce:EnumerationList>
-            </xtce:EnumeratedArgumentType>
-
-            <xtce:EnumeratedArgumentType name="ResetParameterType" shortDescription="Parameter">
-                <xtce:UnitSet/>
-                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
-                <xtce:EnumerationList>
-                    <xtce:Enumeration label="Reset" value="59" shortDescription="Reset"/>
-                </xtce:EnumerationList>
-            </xtce:EnumeratedArgumentType>
-
             <xtce:EnumeratedArgumentType name="ADBDEPType">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
@@ -883,7 +883,6 @@
 
             <xtce:MetaCommand name="Ping" shortDescription="Ping Subsystem">
                 <xtce:LongDescription>Checks if the subsystem is responding.</xtce:LongDescription>
-                <xtce:ArgumentList/>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
@@ -900,7 +899,6 @@
 
             <xtce:MetaCommand name="GetTelemetry" shortDescription="Housekeeping Request">
                 <xtce:LongDescription>This command requests the housekeeping frame from the selected destination address.</xtce:LongDescription>
-                <xtce:ArgumentList/>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
@@ -917,7 +915,6 @@
 
             <xtce:MetaCommand name="PStats" shortDescription="Packet statistics">
                 <xtce:LongDescription>Checks the subsystem packet statistics.</xtce:LongDescription>
-                <xtce:ArgumentList/>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
@@ -933,11 +930,7 @@
             </xtce:MetaCommand>
 
             <xtce:MetaCommand name="Reset">
-                <xtce:LongDescription>Reset Subsystem</xtce:LongDescription>
                 <xtce:LongDescription>Perform a subsystem reset.</xtce:LongDescription>
-                <xtce:ArgumentList>
-                    <xtce:Argument name="ResetParam" argumentTypeRef="ResetParameterType"/>
-                </xtce:ArgumentList>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
@@ -949,7 +942,7 @@
                 </xtce:BaseMetaCommand>
                 <xtce:CommandContainer name="Reset">
                     <xtce:EntryList>
-                        <xtce:ArgumentRefEntry argumentRef="ResetParam"/>
+                        <xtce:FixedValueEntry binaryValue="3b" sizeInBits="8"/>
                     </xtce:EntryList>
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
@@ -1002,10 +995,6 @@
 
             <xtce:MetaCommand name="EPSBusSW" shortDescription="Set EPS power bus">
                 <xtce:LongDescription>EPS power bus</xtce:LongDescription>
-                <xtce:ArgumentList>
-                    <xtce:Argument name="EPSParam" argumentTypeRef="EPSBusParameterType"/>
-                    <xtce:Argument name="state" argumentTypeRef="EPSBusSwitchParameterType"/>
-                </xtce:ArgumentList>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
@@ -1016,6 +1005,10 @@
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="EPSParam" argumentTypeRef="EPSBusParameterType"/>
+                    <xtce:Argument name="state" argumentTypeRef="EPSBusSwitchParameterType"/>
+                </xtce:ArgumentList>
                 <xtce:CommandContainer name="EPSBusSW">
                     <xtce:EntryList>
                         <xtce:ArgumentRefEntry argumentRef="EPSParam"/>
@@ -1026,12 +1019,6 @@
 
             <xtce:MetaCommand name="ADBburnParam">
                 <xtce:LongDescription>ADB Deployment switch</xtce:LongDescription>
-                <xtce:ArgumentList>
-                    <xtce:Argument name="ADBParam" argumentTypeRef="ADBParameterType"/>
-                    <xtce:Argument name="Switch" argumentTypeRef="ADBDEPType"/>
-                    <xtce:Argument name="Feedback" argumentTypeRef="ADBFeedbackParameterType"/>
-                    <xtce:Argument name="Burn_time" argumentTypeRef="short"/>
-                </xtce:ArgumentList>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
@@ -1042,9 +1029,14 @@
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="Switch" argumentTypeRef="ADBDEPType"/>
+                    <xtce:Argument name="Feedback" argumentTypeRef="ADBFeedbackParameterType"/>
+                    <xtce:Argument name="Burn_time" argumentTypeRef="short"/>
+                </xtce:ArgumentList>
                 <xtce:CommandContainer name="ADBburnParam">
                     <xtce:EntryList>
-                        <xtce:ArgumentRefEntry argumentRef="ADBParam"/>
+                        <xtce:FixedValueEntry binaryValue="31" sizeInBits="8"/>
                         <xtce:ArgumentRefEntry argumentRef="Switch"/>
                         <xtce:ArgumentRefEntry argumentRef="Feedback"/>
                         <xtce:ArgumentRefEntry argumentRef="Burn_time"/>
@@ -1054,10 +1046,6 @@
 
             <xtce:MetaCommand name="EPSSetParam" shortDescription="Set EPS parameter">
                 <xtce:LongDescription>Set EPS parameter</xtce:LongDescription>
-                <xtce:ArgumentList>
-                    <xtce:Argument name="Param1" argumentTypeRef="EPSParameterType"/>
-                    <xtce:Argument name="Param2" argumentTypeRef="byte"/>
-                </xtce:ArgumentList>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
@@ -1068,6 +1056,10 @@
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="Param1" argumentTypeRef="EPSParameterType"/>
+                    <xtce:Argument name="Param2" argumentTypeRef="byte"/>
+                </xtce:ArgumentList>
                 <xtce:CommandContainer name="EPSSetParam">
                     <xtce:EntryList>
                         <xtce:ArgumentRefEntry argumentRef="Param1"/>
@@ -1078,9 +1070,6 @@
 
             <xtce:MetaCommand name="EPSGetParam" shortDescription="Get EPS parameter">
                 <xtce:LongDescription>Retrieve EPS parameter</xtce:LongDescription>
-                <xtce:ArgumentList>
-                    <xtce:Argument name="Param1" argumentTypeRef="EPSParameterType"/>
-                </xtce:ArgumentList>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
@@ -1091,6 +1080,9 @@
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Reply"/>
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="Param1" argumentTypeRef="EPSParameterType"/>
+                </xtce:ArgumentList>
                 <xtce:CommandContainer name="EPSGetParam">
                     <xtce:EntryList>
                         <xtce:ArgumentRefEntry argumentRef="Param1"/>
@@ -1248,7 +1240,6 @@
         <xtce:CommandMetaData>
             <xtce:MetaCommandSet>
                 <xtce:MetaCommand name="PingRadio" shortDescription="Ping Radio">
-                    <xtce:ArgumentList/>
                     <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/Ping">
                         <xtce:ArgumentAssignmentList>
                             <xtce:ArgumentAssignment argumentName="Destination" argumentValue="COMMS"/>

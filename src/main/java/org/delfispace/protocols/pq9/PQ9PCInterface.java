@@ -30,7 +30,6 @@ public class PQ9PCInterface
 {
     private final InputStream in;
     private final OutputStream out;
-    private final boolean loopback;
     private PQ9Receiver callback;
     private PQ9ErrorHandler errorHdl;
     private readerThread reader;
@@ -49,17 +48,9 @@ public class PQ9PCInterface
     public PQ9PCInterface(InputStream in, OutputStream out) 
     {
         this.in = in;
-        this.out = out;
-        this.loopback = false;
+        this.out = out;        
     }
-
-    public PQ9PCInterface(InputStream in, OutputStream out, boolean loopback) 
-    {
-        this.in = in;
-        this.out = out;
-        this.loopback = loopback;
-    }
-    
+        
     public void close() throws IOException
     {
         if (reader != null)
@@ -263,10 +254,7 @@ public class PQ9PCInterface
                     break;
             }
         }
-        if (!this.loopback)
-        {
-            out.write(HLDLC_STOP_FLAG);
-        }
+        out.write(HLDLC_STOP_FLAG);
         out.flush();
     }
 

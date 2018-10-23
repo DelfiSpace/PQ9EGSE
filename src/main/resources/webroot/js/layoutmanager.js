@@ -102,7 +102,7 @@ rpc.onmessage( function(command, data)
     switch(command) 
     {
         case "log":
-            appendToDiv("log", myGetTime() + data);
+            appendToDiv("log", data);
             break;
 
         case "datalog":
