@@ -228,9 +228,6 @@
                 <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
             </xtce:FloatParameterType>
 
-            <xtce:ArrayParameterType name="TMPtemperatureArray" arrayTypeRef="TMPtemperature" numberOfDimensions="1"/>
-            <xtce:ArrayParameterType name="INAcurrentArray" arrayTypeRef="INAcurrent" numberOfDimensions="1"/>
-            <xtce:ArrayParameterType name="INAvoltageArray" arrayTypeRef="INAvoltage" numberOfDimensions="1"/>
             <xtce:ArrayParameterType name="shortArray" arrayTypeRef="short" numberOfDimensions="1"/>
             <xtce:ArrayParameterType name="bitStatusArray" arrayTypeRef="bitStatus" numberOfDimensions="1"/>
             <xtce:ArrayParameterType name="DEPStatusArray" arrayTypeRef="DEPStatus" numberOfDimensions="1"/>
@@ -277,15 +274,15 @@
             <xtce:Parameter name="EPS_DC_INA_Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="EPS_UR_INA_Status" parameterTypeRef="sensorBitStatus"/>
 
-            <xtce:Parameter name="EPS_SA1_INA_Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="EPS_SA2_INA_Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="EPS_SA3_INA_Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="EPS_SA4_INA_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_XP_INA_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_XM_INA_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_YP_INA_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_YM_INA_Status" parameterTypeRef="sensorBitStatus"/>
 
-            <xtce:Parameter name="EPS_SA1_TMP_Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="EPS_SA2_TMP_Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="EPS_SA3_TMP_Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="EPS_SA4_TMP_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_XP_TMP_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_XM_TMP_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_YP_TMP_Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="EPS_YM_TMP_Status" parameterTypeRef="sensorBitStatus"/>
 
             <xtce:Parameter name="EPS_LTC_Status" parameterTypeRef="sensorBitStatus"/>
 
@@ -301,9 +298,19 @@
             <xtce:Parameter name="ADCS_INA3_Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="ADCS_INA4_Status" parameterTypeRef="sensorBitStatus"/>
 
-            <xtce:Parameter name="SAVoltage" parameterTypeRef="INAvoltageArray"/>
-            <xtce:Parameter name="SACurrent" parameterTypeRef="INAcurrentArray"/>
-            <xtce:Parameter name="SATemp" parameterTypeRef="TMPtemperatureArray"/>
+            <xtce:Parameter name="EPS_YP_voltage" parameterTypeRef="INAvoltage"/>
+            <xtce:Parameter name="EPS_YM_voltage" parameterTypeRef="INAvoltage"/>
+            <xtce:Parameter name="EPS_XP_voltage" parameterTypeRef="INAvoltage"/>
+            <xtce:Parameter name="EPS_XM_voltage" parameterTypeRef="INAvoltage"/>
+            <xtce:Parameter name="EPS_YP_current" parameterTypeRef="INAcurrent"/>
+            <xtce:Parameter name="EPS_YM_current" parameterTypeRef="INAcurrent"/>
+            <xtce:Parameter name="EPS_XP_current" parameterTypeRef="INAcurrent"/>
+            <xtce:Parameter name="EPS_XM_current" parameterTypeRef="INAcurrent"/>
+
+            <xtce:Parameter name="SA_YP_Temp" parameterTypeRef="TMPtemperature"/>
+            <xtce:Parameter name="SA_YM_Temp" parameterTypeRef="TMPtemperature"/>
+            <xtce:Parameter name="SA_XP_Temp" parameterTypeRef="TMPtemperature"/>
+            <xtce:Parameter name="SA_XM_Temp" parameterTypeRef="TMPtemperature"/>
 
             <xtce:Parameter name="BusCurrent" parameterTypeRef="INAcurrentArray"/>
             <xtce:Parameter name="BusVoltage" parameterTypeRef="INAvoltageArray"/>
@@ -439,7 +446,7 @@
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>
                         <xtce:ComparisonList>
-                            <xtce:Comparison parameterRef="Source" value="OBC2"/>
+                            <xtce:Comparison parameterRef="Source" value="DEBUG"/>
                             <xtce:Comparison parameterRef="Service" value="Housekeeping"/>
                             <xtce:Comparison parameterRef="Request" value="Reply"/>
                         </xtce:ComparisonList>
@@ -458,36 +465,30 @@
 
                     <xtce:ParameterRefEntry parameterRef="Sensor15Status"/>
                     <xtce:ParameterRefEntry parameterRef="EPS_LTC_Status"/>
-                    <xtce:ParameterRefEntry parameterRef="EPS_SA4_INA_Status"/>
-                    <xtce:ParameterRefEntry parameterRef="EPS_SA3_INA_Status"/>
-                    <xtce:ParameterRefEntry parameterRef="EPS_SA2_INA_Status"/>
-                    <xtce:ParameterRefEntry parameterRef="EPS_SA1_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_XM_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_XP_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_YM_INA_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_YP_INA_Status"/>
                     <xtce:ParameterRefEntry parameterRef="EPS_UR_INA_Status"/>
                     <xtce:ParameterRefEntry parameterRef="EPS_DC_INA_Status"/>
                     <xtce:ParameterRefEntry parameterRef="EPS_B4_INA_Status"/>
                     <xtce:ParameterRefEntry parameterRef="EPS_B3_INA_Status"/>
                     <xtce:ParameterRefEntry parameterRef="EPS_B2_INA_Status"/>
                     <xtce:ParameterRefEntry parameterRef="EPS_B1_INA_Status"/>
-                    <xtce:ParameterRefEntry parameterRef="EPS_SA4_TMP_Status"/>
-                    <xtce:ParameterRefEntry parameterRef="EPS_SA3_TMP_Status"/>
-                    <xtce:ParameterRefEntry parameterRef="EPS_SA2_TMP_Status"/>
-                    <xtce:ParameterRefEntry parameterRef="EPS_SA1_TMP_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_XM_TMP_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_XP_TMP_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_YM_TMP_Status"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_YP_TMP_Status"/>
 
-                    <xtce:ArrayParameterRefEntry parameterRef="SACurrent">
-                        <xtce:DimensionList>
-                            <xtce:Size>
-                                <xtce:FixedValue>4</xtce:FixedValue>
-                            </xtce:Size>
-                        </xtce:DimensionList>
-                    </xtce:ArrayParameterRefEntry>
+                    <xtce:ParameterRefEntry parameterRef="EPS_YP_current"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_YM_current"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_XP_current"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_XM_current"/>
 
-                    <xtce:ArrayParameterRefEntry parameterRef="SAVoltage">
-                        <xtce:DimensionList>
-                            <xtce:Size>
-                                <xtce:FixedValue>4</xtce:FixedValue>
-                            </xtce:Size>
-                        </xtce:DimensionList>
-                    </xtce:ArrayParameterRefEntry>
+                    <xtce:ParameterRefEntry parameterRef="EPS_YP_voltage"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_YM_voltage"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_XP_voltage"/>
+                    <xtce:ParameterRefEntry parameterRef="EPS_XM_voltage"/>
 
                     <xtce:ArrayParameterRefEntry parameterRef="SATemp">
                         <xtce:DimensionList>
@@ -1116,6 +1117,11 @@
                 <xtce:IntegerDataEncoding sizeInBits="16"/>
             </xtce:IntegerArgumentType>
 
+            <xtce:IntegerArgumentType name="long">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="32"/>
+            </xtce:IntegerArgumentType>
+
         </xtce:ArgumentTypeSet>
         <xtce:MetaCommandSet>
             <xtce:MetaCommand abstract="true" name="PQ9">
@@ -1202,6 +1208,52 @@
                 <xtce:CommandContainer name="Reset">
                     <xtce:EntryList>
                         <xtce:FixedValueEntry binaryValue="3b" sizeInBits="8"/>
+                    </xtce:EntryList>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="SetSensorLoopTiming">
+                <xtce:LongDescription>Sets the sensor loop delay</xtce:LongDescription>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="SensorLoopTimingParam" argumentTypeRef="SensorLoopTimingParameterType"/>
+                    <xtce:Argument name="TimingParam" argumentTypeRef="long"/>
+                </xtce:ArgumentList>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="SetSensorLoopTiming">
+                    <xtce:EntryList>
+                        <xtce:ArgumentRefEntry argumentRef="SensorLoopTimingParam"/>
+                        <xtce:ArgumentRefEntry argumentRef="TimingParam"/>
+                    </xtce:EntryList>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="SetOBCCommandLoopTiming">
+                <xtce:LongDescription>Sets the command loop delay</xtce:LongDescription>
+                <xtce:ArgumentList>
+                    <xtce:Argument name="OBCCommandLoopTimingParam" argumentTypeRef="OBCCommandLoopTimingParameterType"/>
+                    <xtce:Argument name="TimingParam" argumentTypeRef="long"/>
+                </xtce:ArgumentList>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="SetOBCCommandLoopTiming">
+                    <xtce:EntryList>
+                        <xtce:ArgumentRefEntry argumentRef="OBCCommandLoopTimingParam"/>
+                        <xtce:ArgumentRefEntry argumentRef="TimingParam"/>
                     </xtce:EntryList>
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
