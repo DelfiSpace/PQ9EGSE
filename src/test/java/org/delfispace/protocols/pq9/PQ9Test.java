@@ -122,4 +122,52 @@ public class PQ9Test
         
         System.out.println(t1);
     }
+    
+    @Test
+    public void testLongFrame1() throws IOException, PQ9Exception 
+    {
+        final String methodName =
+            Thread.currentThread().getStackTrace()[1].getMethodName();
+
+        System.out.println( "Test Case: " + methodName + "()" );
+        
+        PQ9 t1 = new PQ9(1, 2, new byte[130]);
+        
+        System.out.println(t1);
+    }
+    
+    @Test
+    public void testLongFrame2() throws IOException, PQ9Exception 
+    {
+        final String methodName =
+            Thread.currentThread().getStackTrace()[1].getMethodName();
+
+        System.out.println( "Test Case: " + methodName + "()" );
+        
+        PQ9 t1 = new PQ9(new byte[]{(byte)0x07, (byte)0x82, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x11, 
+                (byte)0x01, (byte)0x11, (byte)0x01, (byte)0x25, (byte)0x1D });
+        
+        System.out.println(t1);
+    }     
 }

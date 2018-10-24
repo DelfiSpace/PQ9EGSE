@@ -64,9 +64,9 @@ public class PQ9
         }
         data[2] = (byte)(source & 0xFF);
         
-        short crc = crc16(data, 0, data[1] + 3);
-        data[4 + data[1]] = (byte)(crc & 0xFF);
-        data[3 + data[1]] = (byte)((crc >> 8) & 0xFF);                
+        short crc = crc16(data, 0, getDataSize() + 3);
+        data[4 + getDataSize()] = (byte)(crc & 0xFF);
+        data[3 + getDataSize()] = (byte)((crc >> 8) & 0xFF);                
     }
     
     /**
@@ -87,12 +87,12 @@ public class PQ9
         }
 
         // check size
-        if (input[1] == input.length - 5)
+        if ((input[1] & 0xFF) == input.length - 5)
         {
             // check if the CRC is correct
-            short crc1 = (short)((((int)input[input[1] + 4] & 0xFF) | 
-                    ((short)input[input[1] + 3] << 8)) & 0xFFFF) ;
-            short crc2 = crc16(input, 0, input[1] + 3);
+            short crc1 = (short)((((int)input[(input[1] & 0xFF) + 4] & 0xFF) | 
+                    ((short)input[(input[1] & 0xFF) + 3] << 8)) & 0xFFFF) ;
+            short crc2 = crc16(input, 0, (input[1] & 0xFF) + 3);
 
             if (crc1 == crc2)
             {
@@ -104,13 +104,13 @@ public class PQ9
                 throw new PQ9Exception(String.format(
                         "CRC mismatch: expected %02X %02X but got %02X %02X", 
                         crc2 & 0xFF, (crc2 & 0xFF00) >> 8 & 0xFF, 
-                        input[3 + input[1]], input[4 + input[1]]));
+                        input[3 + (input[1] & 0xFF)], input[4 + (input[1] & 0xFF)]));
             }
         }
         else
         {
             throw new PQ9Exception("Frame size mismatch: expected " + 
-                    input[1] + " but got " + (input.length - 5) );
+                    (input[1] & 0xFF) + " but got " + (input.length - 5) );
         }
     }
     
@@ -118,27 +118,27 @@ public class PQ9
      *
      * @return
      */
-    public byte getDestination()
+    public final int getDestination()
     {
-        return data[0];
+        return data[0] & 0xFF;
     }
     
     /**
      *
      * @return
      */
-    public byte getSource()
+    public final int getSource()
     {
-        return data[2];
+        return data[2] & 0xFF;
     }
     
     /**
      *
      * @return
      */
-    public byte getDataSize()
+    public final int getDataSize()
     {
-        return data[1];
+        return data[1] & 0xFF;
     }
     
     /**
@@ -148,10 +148,10 @@ public class PQ9
      */
     public byte[] getData()
     {
-        if (data[1] != 0)
+        if (getDataSize() != 0)
         {
-            byte[] tmp = new byte[data[1]];
-            System.arraycopy(data, 3, tmp, 0, data[1]);
+            byte[] tmp = new byte[getDataSize()];
+            System.arraycopy(data, 3, tmp, 0, getDataSize());
             return tmp;
         }
         return null;
@@ -191,19 +191,19 @@ public class PQ9
         sb.append(String.format("\tDestination: 0x%02X\n", getDestination()));
         sb.append(String.format("\tSource: 0x%02X\n", getSource()));
         sb.append("\tData: ");
-        if (data[1] == 0)
+        if (getDataSize() == 0)
         {
             sb.append("\n");
         }
         else
         {
-            for(int i = 0; i < data[1]; i++)
+            for(int i = 0; i < getDataSize(); i++)
             {
                 sb.append(String.format("0x%02X ", data[3 + i]));
             }
             sb.append("\n");
         }
-        int realCRC = (data[3 + data[1]] & 0xFF) | ((((int)data[4 + data[1]]) << 8) & 0xFF00);
+        int realCRC = (data[3 + getDataSize()] & 0xFF) | ((((int)data[4 + getDataSize()]) << 8) & 0xFF00);
         sb.append(String.format("\tCRC: 0x%04X\n", realCRC));
         return sb.toString();
     }

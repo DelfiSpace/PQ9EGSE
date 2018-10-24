@@ -168,7 +168,32 @@ public class PQ9PCInterfaceTest
         System.out.println( "Test Case: " + methodName + "()" );
         
         PQ9 frame = new PQ9(1, 2, new byte[]{(byte)0x7E, (byte)0x7D, (byte)0x7C});
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        LoopbackStream ls = new LoopbackStream();
+        
+        protocol = new PQ9PCInterface(ls.getInputStream(), ls.getOutputStream());
+               
+        receivedFrames = 0;
+        protocol.setReceiverCallback((PQ9 data) -> {
+            Assert.assertArrayEquals("Error", data.getFrame(), frame.getFrame());
+            receivedFrames++;
+        });
+        
+        protocol.send(frame);
+        protocol.send(frame);
+        
+        ls.join();
+        Assert.assertEquals("Error", 2, receivedFrames);
+    }
+    
+    @Test
+    public void testAsynchReceiveLongFrame() throws IOException, InterruptedException, PQ9Exception
+    {
+        final String methodName =
+            Thread.currentThread().getStackTrace()[1].getMethodName();
+
+        System.out.println( "Test Case: " + methodName + "()" );
+        
+        PQ9 frame = new PQ9(1, 2, new byte[130]);
         LoopbackStream ls = new LoopbackStream();
         
         protocol = new PQ9PCInterface(ls.getInputStream(), ls.getOutputStream());
