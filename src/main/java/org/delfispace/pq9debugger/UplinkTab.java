@@ -35,6 +35,8 @@ import static j2html.TagCreator.select;
 import static j2html.TagCreator.textarea;
 import j2html.tags.ContainerTag;
 import j2html.tags.Tag;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import org.omg.space.xtce.MetaCommandType;
@@ -49,94 +51,104 @@ import org.xtce.toolkit.XTCETelecommand;
 public class UplinkTab 
 {
     private static int tabIndex = 0;
-    private static final StringBuilder idArray = new StringBuilder();
-    private static List<String> ids = new ArrayList();
+    private static final StringBuilder IDARRAY = new StringBuilder();
+    private static final List<String> IDS = new ArrayList();
     
     public static String generate()
     {
-        List<String[]> numbers = new ArrayList();
-        numbers.add(new String[]{"raw:dest", "Destination", "7"});
-        numbers.add(new String[]{"raw:src", "Source", "1"});
-        
-        tabIndex = 0;
-        idArray.setLength(0);
-        
-        List<XTCETelecommand> tcs = Configuration.getInstance().getXTCEDatabase().getTelecommands();
+        try
+        {
+            List<String[]> numbers = new ArrayList();
+            numbers.add(new String[]{"raw:dest", "Destination", "7"});
+            numbers.add(new String[]{"raw:src", "Source", "1"});
 
-        Tag t = div
-        (
-            link().withRel("stylesheet").withType("text/css").withHref("/css/uplink.css"),
-            fieldset
-            (                            
-                legend("Raw Frame"),
-                dl
-                (
-                    each(numbers, i -> entry(i[0], i[1], i[2])),
-                    div
-                    (
-                        dt
-                        ( 
-                            label("Data" + ":").attr("for", "raw:data").attr("tabindex", tabIndex)
-                        ), 
-                        dd
-                        (
-                            textarea("17 1").withType("text").withId("raw:data").attr("title", 
-                                    "Array of integers between 0 and 255 or hex bytes separated by blanks")
-                        )
-                    )
-                ),
-                button("Send").attr("id", "SendRaw").attr("onclick", "fetchData(this.id, [" + idArray.toString()+ ", 'raw:data'])").attr("tabindex", tabIndex).attr("title", "Raw Frame")
-            ),
-            each(filter(tcs, tc -> tc.isAbstract() != true), tc ->
+            tabIndex = 0;
+            IDARRAY.setLength(0);
+
+            List<XTCETelecommand> tcs = Configuration.getInstance().getXTCEDatabase().getTelecommands();
+
+            Tag t = div
+            (
+                link().withRel("stylesheet").withType("text/css").withHref("/css/uplink.css"),
                 fieldset
-                (
-                    legend((tc.getShortDescription().isEmpty() ? tc.getName() : tc.getShortDescription())),
+                (                            
+                    legend("Raw Frame"),
                     dl
                     (
-                        each(filter(tc.getArguments(), arg -> !isArgumentRequired(tc, arg)), arg ->
+                        each(numbers, i -> entry(i[0], i[1], i[2])),
                         div
                         (
                             dt
                             ( 
-                                label((arg.getShortDescription().isEmpty() ? arg.getName() : arg.getDescription()) + ":")
-                                        .attr("for", tc.getName() + ":" + arg.getName())
-                                        .attr("tabindex", tabIndex++)
-                                        .attr("title", arg.getLongDescription())
-                            ),
+                                label("Data" + ":").attr("for", "raw:data").attr("tabindex", tabIndex)
+                            ), 
                             dd
                             (
-                                iffElse(arg.getEnumerations().isEmpty(), 
-                                    input(attrs("#" + tc.getName() + ":" + arg.getName())).withType("text").
-                                            withValue(arg.getInitialValue()).attr("title", 
-                                            arg.getLongDescription()),
-                                    select 
-                                    (
-                                        each(arg.getEnumerations(), e -> 
-                                             option(e.getShortDescription() == null ? 
-                                             e.getLabel() : e.getShortDescription()).withValue(e.getLabel()))
-                                    ).withId(tc.getName() + ":" + arg.getName()).attr("title", 
-                                            arg.getLongDescription())
-                                )
-                            )   
+                                textarea("17 1").withType("text").withId("raw:data").attr("title", 
+                                        "Array of integers between 0 and 255 or hex bytes separated by blanks")
+                            )
                         )
-                    )),
-                    button("Send").attr("id", tc.getName()).attr("onclick", "fetchData(this.id, [" + getIDs() + "])").attr("tabindex", tabIndex++)
-                ).attr("title", tc.getLongDescription())
-            )
-        );
-        return t.render();
+                    ),
+                    button("Send").attr("id", "SendRaw").attr("onclick", "fetchData(this.id, [" + IDARRAY.toString()+ ", 'raw:data'])").attr("tabindex", tabIndex).attr("title", "Raw Frame")
+                ),
+                each(filter(tcs, tc -> tc.isAbstract() != true), tc ->
+                    fieldset
+                    (
+                        legend((tc.getShortDescription().isEmpty() ? tc.getName() : tc.getShortDescription())),
+                        dl
+                        (
+                            each(filter(tc.getArguments(), arg -> !isArgumentRequired(tc, arg)), arg ->
+                            div
+                            (
+                                dt
+                                ( 
+                                    label((arg.getShortDescription().isEmpty() ? arg.getName() : arg.getDescription()) + ":")
+                                            .attr("for", tc.getName() + ":" + arg.getName())
+                                            .attr("tabindex", tabIndex++)
+                                            .attr("title", arg.getLongDescription())
+                                ),
+                                dd
+                                (
+                                    iffElse(arg.getEnumerations().isEmpty(), 
+                                        input(attrs("#" + tc.getName() + ":" + arg.getName())).withType("text").
+                                                withValue(arg.getInitialValue()).attr("title", 
+                                                arg.getLongDescription()),
+                                        select 
+                                        (
+                                            each(arg.getEnumerations(), e -> 
+                                                 option(e.getShortDescription() == null ? 
+                                                 e.getLabel() : e.getShortDescription()).withValue(e.getLabel()))
+                                        ).withId(tc.getName() + ":" + arg.getName()).attr("title", 
+                                                arg.getLongDescription())
+                                    )
+                                )   
+                            )
+                        )),
+                        button("Send").attr("id", tc.getName()).attr("onclick", "fetchData(this.id, [" + getIDs() + "])").attr("tabindex", tabIndex++)
+                    ).attr("title", tc.getLongDescription())
+                )
+            );
+            return t.render();
+        } catch (Exception ex)
+        {
+            // make sure that, in case of exceptions, the message is printed out
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            ex.printStackTrace(pw);
+            return sw.toString();
+        }
     }
     
     private static ContainerTag entry(String id, String description, String value) 
     {
         tabIndex++;
-        if (idArray.length() != 0)
+        if (IDARRAY.length() != 0)
         {
-            idArray.append(", ");
+            IDARRAY.append(", ");
         }
-        idArray.append("\'");
-        idArray.append(id);
-        idArray.append("\'");        
+        IDARRAY.append("\'");
+        IDARRAY.append(id);
+        IDARRAY.append("\'");        
         return div
         (
             dt
@@ -165,7 +177,7 @@ public class UplinkTab
         }
         if (!found)
         {
-            ids.add(tc.getName() + ":" + a.getName());
+            IDS.add(tc.getName() + ":" + a.getName());
         }
         return found;
     }
@@ -174,7 +186,7 @@ public class UplinkTab
     {
         StringBuilder sb = new StringBuilder();
         int index = 0;
-        for(String id : ids)
+        for(String id : IDS)
         {
             if (index != 0)
             {
@@ -185,7 +197,7 @@ public class UplinkTab
             sb.append(id);
             sb.append("'");
         }
-        ids.clear();
+        IDS.clear();
         return sb.toString();
     }
 }
