@@ -439,7 +439,7 @@ public class Main implements PQ9Receiver, Subscriber
         } catch (ParseException | PQ9Exception | XTCEDatabaseException | IOException ex) 
         {
             handleException(ex);
-        }            
+        }   
     }
 
     private void handleSendCommand(Command cmd) throws ParseException, PQ9Exception, IOException, XTCEDatabaseException
@@ -508,7 +508,6 @@ public class Main implements PQ9Receiver, Subscriber
                     frame = new PQ9(rawcmd[0] & 0xFF, rawcmd[2] & 0xFF, Arrays.copyOfRange(rawcmd, 3, rawcmd.length));
                     break;
             }
-            
             pcInterface.send(frame);
             
             newFrameToGUI(frame, new Date(), false);
@@ -520,6 +519,8 @@ public class Main implements PQ9Receiver, Subscriber
             handleException(ex);
         } catch (Exception ex)
         {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
+                    String.format("Invalid value: %s", cmd.toString()), ex);
             handleException(ex);
         } 
     }
