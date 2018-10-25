@@ -303,7 +303,7 @@
             <xtce:Parameter name="B2_voltage" parameterTypeRef="INAvoltage"/>
             <xtce:Parameter name="B3_voltage" parameterTypeRef="INAvoltage"/>
             <xtce:Parameter name="B4_voltage" parameterTypeRef="INAvoltage"/>
-            
+
             <xtce:Parameter name="B1_current" parameterTypeRef="INAcurrent"/>
             <xtce:Parameter name="B2_current" parameterTypeRef="INAcurrent"/>
             <xtce:Parameter name="B3_current" parameterTypeRef="INAcurrent"/>
@@ -313,7 +313,7 @@
             <xtce:Parameter name="SA_YM_voltage" parameterTypeRef="INAvoltage"/>
             <xtce:Parameter name="SA_XP_voltage" parameterTypeRef="INAvoltage"/>
             <xtce:Parameter name="SA_XM_voltage" parameterTypeRef="INAvoltage"/>
-            
+
             <xtce:Parameter name="SA_YP_current" parameterTypeRef="INAcurrent"/>
             <xtce:Parameter name="SA_YM_current" parameterTypeRef="INAcurrent"/>
             <xtce:Parameter name="SA_XP_current" parameterTypeRef="INAcurrent"/>
@@ -508,7 +508,7 @@
                     <xtce:ParameterRefEntry parameterRef="B2_current"/>
                     <xtce:ParameterRefEntry parameterRef="B3_current"/>
                     <xtce:ParameterRefEntry parameterRef="B4_current"/>
-                    
+
                     <xtce:ParameterRefEntry parameterRef="B1_voltage"/>
                     <xtce:ParameterRefEntry parameterRef="B2_voltage"/>
                     <xtce:ParameterRefEntry parameterRef="B3_voltage"/>
@@ -1009,6 +1009,13 @@
                     <xtce:Enumeration label="ADCS" value="5"/>
                     <xtce:Enumeration label="DEBUG" value="7"/>
                     <xtce:Enumeration label="EGSE" value="8"/>
+                    <xtce:Enumeration label="OBC_INJ" value="129"/>
+                    <xtce:Enumeration label="EPS_INJ" value="130"/>
+                    <xtce:Enumeration label="ADB_INJ" value="131"/>
+                    <xtce:Enumeration label="COMMS_INJ" value="132"/>
+                    <xtce:Enumeration label="ADCS_INJ" value="133"/>
+                    <xtce:Enumeration label="DEBUG_INJ" value="134"/>
+                    <xtce:Enumeration label="EGSE_INJ" value="135"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
@@ -1022,6 +1029,7 @@
                     <xtce:Enumeration label="PacketStats" value="6"/>
                     <xtce:Enumeration label="Reset" value="9"/>
                     <xtce:Enumeration label="Ping" value="17"/>
+                    <xtce:Enumeration label="Freeze" value="21"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
@@ -1197,6 +1205,22 @@
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
 
+            <xtce:MetaCommand name="Freeze">
+                <xtce:LongDescription>Stops a subsystem from working.</xtce:LongDescription>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Freeze"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="Freeze">
+                    <xtce:EntryList/>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
             <xtce:MetaCommand name="SetSensorLoopTiming">
                 <xtce:LongDescription>Sets the sensor loop delay</xtce:LongDescription>
                 <xtce:BaseMetaCommand metaCommandRef="PQ9">
@@ -1212,7 +1236,7 @@
                     <!-- Fix the next one -->
                     <xtce:Argument name="SensorLoopTimingParam" argumentTypeRef="long"/>
                     <xtce:Argument name="TimingParam" argumentTypeRef="long"/>
-                </xtce:ArgumentList>                
+                </xtce:ArgumentList>
                 <xtce:CommandContainer name="SetSensorLoopTiming">
                     <xtce:EntryList>
                         <xtce:ArgumentRefEntry argumentRef="SensorLoopTimingParam"/>
