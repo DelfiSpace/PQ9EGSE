@@ -6,6 +6,7 @@
     <xtce:Header version="1.0" validationStatus="Draft">
         <xtce:AuthorSet>
             <xtce:Author>Stefano Speretta, Delft University of Technology</xtce:Author>
+            <xtce:Author>Nikitas Chronas Foteinakis, Delft University of Technology</xtce:Author>
         </xtce:AuthorSet>
         <xtce:NoteSet>
             <xtce:Note>This file describes the PQ9 bus frames for Delfi-PQ.</xtce:Note>
@@ -1208,7 +1209,8 @@
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
                 <xtce:ArgumentList>
-                    <!--xtce:Argument name="SensorLoopTimingParam" argumentTypeRef="SensorLoopTimingParameterType"/-->
+                    <!-- Fix the next one -->
+                    <xtce:Argument name="SensorLoopTimingParam" argumentTypeRef="long"/>
                     <xtce:Argument name="TimingParam" argumentTypeRef="long"/>
                 </xtce:ArgumentList>                
                 <xtce:CommandContainer name="SetSensorLoopTiming">
@@ -1231,7 +1233,8 @@
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
                 <xtce:ArgumentList>
-                    <!--xtce:Argument name="OBCCommandLoopTimingParam" argumentTypeRef="OBCCommandLoopTimingParameterType"/-->
+                    <!-- Fix the next one -->
+                    <xtce:Argument name="OBCCommandLoopTimingParam" argumentTypeRef="long"/>
                     <xtce:Argument name="TimingParam" argumentTypeRef="long"/>
                 </xtce:ArgumentList>
                 <xtce:CommandContainer name="SetOBCCommandLoopTiming">
