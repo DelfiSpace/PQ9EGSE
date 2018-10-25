@@ -94,6 +94,7 @@
                     <target>${java.version}</target>
                     <testSource>${java.version}</testSource>
                     <testTarget>${java.version}</testTarget>
+                    <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
 
