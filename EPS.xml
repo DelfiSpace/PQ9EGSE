@@ -429,6 +429,20 @@
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
 
+            <xtce:SequenceContainer name="Encapsulated_frame" shortDescription="It encapsulates another frame in the payload">
+                <xtce:EntryList>
+                    <xtce:ContainerRefEntry containerRef="PQ9"/>
+                </xtce:EntryList>
+              <xtce:BaseContainer containerRef="PQ9">
+                  <xtce:RestrictionCriteria>
+                      <xtce:ComparisonList>
+                          <xtce:Comparison parameterRef="Service" value="Encapsulate"/>
+                          <xtce:Comparison parameterRef="Request" value="Reply"/>
+                      </xtce:ComparisonList>
+                  </xtce:RestrictionCriteria>
+              </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+
             <xtce:SequenceContainer name="EmptyQueue" shortDescription="COMMS Empty queue">
                 <xtce:LongDescription>This message notifies that they are not new packets in the RF queue.</xtce:LongDescription>
                 <xtce:EntryList>
