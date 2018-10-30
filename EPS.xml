@@ -37,6 +37,7 @@
                 <xtce:EnumerationList>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
                     <xtce:Enumeration label="Ackownledgment" value="4"/>
+                    <xtce:Enumeration label="Encapsulate" value="5"/>
                     <xtce:Enumeration label="PacketStats" value="6"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                     <xtce:Enumeration label="RX" value="55"/>
@@ -50,6 +51,7 @@
                     <xtce:Enumeration label="Request" value="1"/>
                     <xtce:Enumeration label="Reply" value="2"/>
                     <xtce:Enumeration label="ACKErrorReply" value="4"/>
+                    <xtce:Enumeration label="EmptyQueue" value="5"/>
                     <xtce:Enumeration label="RF_TX" value="6"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
@@ -422,6 +424,20 @@
                         <xtce:ComparisonList>
                             <xtce:Comparison parameterRef="Service" value="Ping"/>
                             <xtce:Comparison parameterRef="Request" value="Request"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+
+            <xtce:SequenceContainer name="EmptyQueue" shortDescription="COMMS Empty queue">
+                <xtce:LongDescription>This message notifies that they are not new packets in the RF queue.</xtce:LongDescription>
+                <xtce:EntryList>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Service" value="Encapsulate"/>
+                            <xtce:Comparison parameterRef="Request" value="EmptyQueue"/>
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
@@ -1026,10 +1042,11 @@
                     <xtce:Enumeration label="GetSetParam" value="1"/>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
                     <xtce:Enumeration label="Verification" value="4"/>
+                    <xtce:Enumeration label="Encapsulate" value="5"/>
                     <xtce:Enumeration label="PacketStats" value="6"/>
                     <xtce:Enumeration label="Reset" value="9"/>
                     <xtce:Enumeration label="Ping" value="17"/>
-                    <xtce:Enumeration label="Freeze" value="21"/>
+                    <xtce:Enumeration label="Testing" value="21"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
@@ -1041,6 +1058,9 @@
                     <xtce:Enumeration label="Reply" value="2"/>
                     <xtce:Enumeration label="Set" value="3"/>
                     <xtce:Enumeration label="ACK_error" value="4"/>
+                    <xtce:Enumeration label="Freeze" value="6"/>
+                    <xtce:Enumeration label="Start_master" value="7"/>
+                    <xtce:Enumeration label="Stop_master" value="8"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
 
@@ -1212,11 +1232,62 @@
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
                         <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
-                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Freeze"/>
-                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Testing"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Freeze"/>
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
                 <xtce:CommandContainer name="Freeze">
+                    <xtce:EntryList/>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="Start_Master_loop">
+                <xtce:LongDescription>Enables the master query.</xtce:LongDescription>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Testing"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Start_master"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="Start_Master_loop">
+                    <xtce:EntryList/>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="Stop_Master_loop">
+                <xtce:LongDescription>Disables the master query.</xtce:LongDescription>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Testing"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Stop_master"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="Stop_Master_loop">
+                    <xtce:EntryList/>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="COMMS_RF_PACKET_CHECK">
+                <xtce:LongDescription>Checks the COMMS RF queue for incoming packets.</xtce:LongDescription>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="COMMS"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Encapsulate"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="COMMS_RF_PACKET_CHECK">
                     <xtce:EntryList/>
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
