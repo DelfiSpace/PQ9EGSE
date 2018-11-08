@@ -341,6 +341,7 @@
                     <xtce:Enumeration label="Reply" value="2"/>
                     <xtce:Enumeration label="Set" value="3"/>
                     <xtce:Enumeration label="ACK_error" value="4"/>
+                    <xtce:Enumeration label="Freeze" value="6"/>
                     <xtce:Enumeration label="Start_master" value="7"/>
                     <xtce:Enumeration label="Stop_master" value="8"/>
                 </xtce:EnumerationList>
@@ -1276,6 +1277,24 @@
                         <xtce:EntryList/>
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
+
+            <xtce:MetaCommand name="Freeze">
+                 <xtce:LongDescription>Stops a subsystem from working.</xtce:LongDescription>
+                 <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                     <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Freeze"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Testing"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Freeze"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="Freeze">
+                    <xtce:EntryList/>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
 
             <xtce:MetaCommand name="Start_Master_loop">
                <xtce:LongDescription>Enables the master query.</xtce:LongDescription>
