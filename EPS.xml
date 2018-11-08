@@ -201,6 +201,15 @@
                     <xtce:ParameterRefEntry parameterRef="Request"/>
                 </xtce:EntryList>
             </xtce:SequenceContainer>
+            <xtce:SequenceContainer name="HousekeepingHeader" shortDescription="Common Housekeeping frame header">
+                <xtce:LongDescription>This header is used in all housekeeping frames.</xtce:LongDescription>
+                <xtce:EntryList>
+                    <xtce:ParameterRefEntry parameterRef="Uptime"/>
+                    <xtce:ParameterRefEntry parameterRef="testing4"/>
+                    <xtce:ParameterRefEntry parameterRef="BootCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="SoftwareBootCounter"/>
+                </xtce:EntryList>
+            </xtce:SequenceContainer>
             <xtce:SequenceContainer name="PingRequest" shortDescription="Ping request">
                 <xtce:LongDescription>This message is used to send a ping request to the subsystem.</xtce:LongDescription>
                 <xtce:EntryList>
@@ -548,10 +557,7 @@
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="EPSHousekeepingReply" shortDescription="EPS Housekeeping frame">
                     <xtce:EntryList>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Uptime"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing4"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/BootCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SoftwareBootCounter"/>
+                        <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor15Status"/>
                         <xtce:ParameterRefEntry parameterRef="EPS_LTC_Status"/>
                         <xtce:ParameterRefEntry parameterRef="SA_XM_INA_Status"/>
@@ -740,10 +746,7 @@
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="OBCHousekeepingReply" shortDescription="OBC Housekeeping frame">
                     <xtce:EntryList>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Uptime"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing4"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/BootCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SoftwareBootCounter"/>
+                        <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor0Status"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor1Status"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor2Status"/>
@@ -816,10 +819,7 @@
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="ADCSHousekeepingReply" shortDescription="ADCS Housekeeping frame">
                     <xtce:EntryList>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Uptime"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing4"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/BootCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SoftwareBootCounter"/>
+                        <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor0Status"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor1Status"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor2Status"/>
@@ -881,8 +881,7 @@
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="ADBHousekeepingReply" shortDescription="ADB Housekeeping frame">
                     <xtce:EntryList>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Uptime"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing4"/>
+                        <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor0Status"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor1Status"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor2Status"/>
@@ -1050,8 +1049,7 @@
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="COMMSHousekeepingReply" shortDescription="COMMS Housekeeping frame">
                     <xtce:EntryList>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Uptime"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing4"/>
+                        <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
                         <xtce:ParameterRefEntry parameterRef="padding"/>
                         <xtce:ParameterRefEntry parameterRef="COMMS_ADC9_Status"/>
                         <xtce:ParameterRefEntry parameterRef="COMMS_ADC8_Status"/>
