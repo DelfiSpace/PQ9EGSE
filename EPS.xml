@@ -1208,6 +1208,24 @@
                         <xtce:EntryList/>
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
+                <xtce:MetaCommand name="ResetPQ9" shortDescription="Reset PQ9 bus">
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="COMMS"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                            <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                      <xtce:ArgumentList/>
+                      <xtce:CommandContainer name="ResetPQ9">
+                          <xtce:EntryList>
+                              <xtce:FixedValueEntry binaryValue="63" sizeInBits="8"/>
+                          </xtce:EntryList>
+                      </xtce:CommandContainer>
+                </xtce:MetaCommand>
             </xtce:MetaCommandSet>
         </xtce:CommandMetaData>
     </xtce:SpaceSystem>
