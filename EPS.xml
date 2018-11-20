@@ -620,11 +620,11 @@
                         <xtce:ParameterRefEntry parameterRef="URBCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="URBVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing2"/>
-                    </xtce:EntryList>                    
+                    </xtce:EntryList>
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="EPSHousekeepingReply" shortDescription="EPS Housekeeping frame">
                     <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="EPSHousekeepingContainer"/>                        
+                        <xtce:ContainerRefEntry containerRef="EPSHousekeepingContainer"/>
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/HousekeepingReply">
                         <xtce:RestrictionCriteria>
@@ -636,7 +636,7 @@
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="SendEPSHousekeepingRequest" shortDescription="Send EPS Housekeeping frame request">
                     <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="EPSHousekeepingContainer"/>                        
+                        <xtce:ContainerRefEntry containerRef="EPSHousekeepingContainer"/>
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/SendRFFrame">
                         <xtce:RestrictionCriteria>
@@ -645,7 +645,7 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
-                </xtce:SequenceContainer>                
+                </xtce:SequenceContainer>
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
         <xtce:CommandMetaData>
@@ -782,7 +782,7 @@
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="OBCHousekeepingReply" shortDescription="OBC Housekeeping frame">
                     <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="OBCHousekeepingContainer"/>                        
+                        <xtce:ContainerRefEntry containerRef="OBCHousekeepingContainer"/>
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/HousekeepingReply">
                         <xtce:RestrictionCriteria>
@@ -794,7 +794,7 @@
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="SendOBCHousekeepingRequest" shortDescription="Send OBC Housekeeping frame request">
                     <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="OBCHousekeepingContainer"/>                        
+                        <xtce:ContainerRefEntry containerRef="OBCHousekeepingContainer"/>
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/SendRFFrame">
                         <xtce:RestrictionCriteria>
@@ -803,7 +803,7 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
-                </xtce:SequenceContainer>   
+                </xtce:SequenceContainer>
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
         <xtce:CommandMetaData>
@@ -875,11 +875,11 @@
                         <xtce:ParameterRefEntry parameterRef="ADCSVoltage3"/>
                         <xtce:ParameterRefEntry parameterRef="ADCSVoltage4"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing2"/>
-                    </xtce:EntryList>                    
+                    </xtce:EntryList>
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="ADCSHousekeepingReply" shortDescription="ADCS Housekeeping frame">
                     <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="ADCSHousekeepingContainer"/>                        
+                        <xtce:ContainerRefEntry containerRef="ADCSHousekeepingContainer"/>
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/HousekeepingReply">
                         <xtce:RestrictionCriteria>
@@ -891,7 +891,7 @@
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="SendADCSHousekeepingRequest" shortDescription="Send ADCS Housekeeping frame request">
                     <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="ADCSHousekeepingContainer"/>                        
+                        <xtce:ContainerRefEntry containerRef="ADCSHousekeepingContainer"/>
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/SendRFFrame">
                         <xtce:RestrictionCriteria>
@@ -981,7 +981,7 @@
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="ADBHousekeepingReply" shortDescription="ADB Housekeeping frame">
                     <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="ADBHousekeepingContainer"/>                        
+                        <xtce:ContainerRefEntry containerRef="ADBHousekeepingContainer"/>
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/HousekeepingReply">
                         <xtce:RestrictionCriteria>
@@ -993,7 +993,7 @@
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="SendADBHousekeepingRequest" shortDescription="Send ADB Housekeeping frame request">
                     <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="ADBHousekeepingContainer"/>                        
+                        <xtce:ContainerRefEntry containerRef="ADBHousekeepingContainer"/>
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/SendRFFrame">
                         <xtce:RestrictionCriteria>
@@ -1146,7 +1146,7 @@
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="COMMSHousekeepingReply" shortDescription="COMMS Housekeeping frame">
                     <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="COMMSHousekeepingContainer"/>                        
+                        <xtce:ContainerRefEntry containerRef="COMMSHousekeepingContainer"/>
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/HousekeepingReply">
                         <xtce:RestrictionCriteria>
@@ -1158,7 +1158,7 @@
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="SendCOMMSHousekeepingRequest" shortDescription="Send COMMS Housekeeping frame request">
                     <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="COMMSHousekeepingContainer"/>                        
+                        <xtce:ContainerRefEntry containerRef="COMMSHousekeepingContainer"/>
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/SendRFFrame">
                         <xtce:RestrictionCriteria>
@@ -1208,6 +1208,120 @@
                     </xtce:BaseMetaCommand>
                     <xtce:CommandContainer name="PingRadio">
                         <xtce:EntryList/>
+                    </xtce:CommandContainer>
+                </xtce:MetaCommand>
+            </xtce:MetaCommandSet>
+        </xtce:CommandMetaData>
+    </xtce:SpaceSystem>
+    <xtce:SpaceSystem name="MPP">
+        <xtce:TelemetryMetaData>
+            <xtce:ParameterTypeSet>
+                <xtce:EnumeratedParameterType name="DEPStatus">
+                    <xtce:UnitSet/>
+                    <xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
+                    <xtce:EnumerationList>
+                        <xtce:Enumeration label="OFF" value="1"/>
+                        <xtce:Enumeration label="ON" value="0"/>
+                    </xtce:EnumerationList>
+                </xtce:EnumeratedParameterType>
+                <xtce:ArrayParameterType name="DEPStatusArray" arrayTypeRef="DEPStatus" numberOfDimensions="1"/>
+            </xtce:ParameterTypeSet>
+            <xtce:ParameterSet>
+                <xtce:Parameter name="TxADBCounter" parameterTypeRef="/Delfi-PQ/short"/>
+                <xtce:Parameter name="ADBCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="ADBVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="ADBTemperature" parameterTypeRef="/Delfi-PQ/TMPtemperature"/>
+                <xtce:Parameter name="DEPSwitchesSetting" parameterTypeRef="/Delfi-PQ/bitStatusArray"/>
+                <xtce:Parameter name="DEPSwitchesStatus" parameterTypeRef="DEPStatusArray"/>
+            </xtce:ParameterSet>
+            <xtce:ContainerSet>
+                <xtce:SequenceContainer name="MPPHousekeepingContainer" shortDescription="MPP Housekeeping container">
+                    <xtce:EntryList>
+                        <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="LPMCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="LPMVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="VLMCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="VLMVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="HeaterCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="HeaterVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPTemperature"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing2"/>
+                    </xtce:EntryList>
+                </xtce:SequenceContainer>
+                <xtce:SequenceContainer name="MPPHousekeepingReply" shortDescription="MPP Housekeeping frame">
+                    <xtce:EntryList>
+                        <xtce:ContainerRefEntry containerRef="MPPHousekeepingContainer"/>
+                    </xtce:EntryList>
+                    <xtce:BaseContainer containerRef="/Delfi-PQ/HousekeepingReply">
+                        <xtce:RestrictionCriteria>
+                            <xtce:ComparisonList>
+                                <xtce:Comparison parameterRef="Source" value="MPP"/>
+                            </xtce:ComparisonList>
+                        </xtce:RestrictionCriteria>
+                    </xtce:BaseContainer>
+                </xtce:SequenceContainer>
+                <xtce:SequenceContainer name="SendMPPHousekeepingRequest" shortDescription="Send MPP Housekeeping frame request">
+                    <xtce:EntryList>
+                        <xtce:ContainerRefEntry containerRef="MPPHousekeepingContainer"/>
+                    </xtce:EntryList>
+                    <xtce:BaseContainer containerRef="/Delfi-PQ/SendRFFrame">
+                        <xtce:RestrictionCriteria>
+                            <xtce:ComparisonList>
+                                <xtce:Comparison parameterRef="Source" value="MPP"/>
+                            </xtce:ComparisonList>
+                        </xtce:RestrictionCriteria>
+                    </xtce:BaseContainer>
+                </xtce:SequenceContainer>
+            </xtce:ContainerSet>
+        </xtce:TelemetryMetaData>
+        <xtce:CommandMetaData>
+            <xtce:ArgumentTypeSet>
+                <xtce:EnumeratedArgumentType name="ADBDEPType">
+                    <xtce:UnitSet/>
+                    <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                    <xtce:EnumerationList>
+                        <xtce:Enumeration label="DEP1Sw" value="1" shortDescription="1"/>
+                        <xtce:Enumeration label="DEP2Sw" value="2" shortDescription="2"/>
+                        <xtce:Enumeration label="DEP3Sw" value="3" shortDescription="3"/>
+                        <xtce:Enumeration label="DEP4Sw" value="4" shortDescription="4"/>
+                    </xtce:EnumerationList>
+                </xtce:EnumeratedArgumentType>
+                <xtce:EnumeratedArgumentType name="ADBFeedbackParameterType">
+                    <xtce:UnitSet/>
+                    <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                    <xtce:EnumerationList>
+                        <xtce:Enumeration label="Feedbackoff" value="0" shortDescription="Feedback off"/>
+                        <xtce:Enumeration label="Feedbackon" value="1" shortDescription="Feedback on"/>
+                    </xtce:EnumerationList>
+                </xtce:EnumeratedArgumentType>
+            </xtce:ArgumentTypeSet>
+            <xtce:MetaCommandSet>
+                <xtce:MetaCommand name="ADBburnParam">
+                    <xtce:LongDescription>ADB Deployment switch</xtce:LongDescription>
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="6"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                            <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                    <xtce:ArgumentList>
+                        <xtce:Argument name="Switch" argumentTypeRef="ADBDEPType"/>
+                        <xtce:Argument name="Feedback" argumentTypeRef="ADBFeedbackParameterType"/>
+                        <xtce:Argument name="Burn_time" argumentTypeRef="/Delfi-PQ/short"/>
+                    </xtce:ArgumentList>
+                    <xtce:CommandContainer name="ADBburnParam">
+                        <xtce:EntryList>
+                            <xtce:FixedValueEntry binaryValue="31" sizeInBits="8"/>
+                            <xtce:ArgumentRefEntry argumentRef="Switch"/>
+                            <xtce:ArgumentRefEntry argumentRef="Feedback"/>
+                            <xtce:ArgumentRefEntry argumentRef="Burn_time"/>
+                        </xtce:EntryList>
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
             </xtce:MetaCommandSet>
