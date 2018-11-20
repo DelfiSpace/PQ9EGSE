@@ -1222,7 +1222,7 @@
                       <xtce:ArgumentList/>
                       <xtce:CommandContainer name="ResetPQ9">
                           <xtce:EntryList>
-                              <xtce:FixedValueEntry binaryValue="63" sizeInBits="8"/>
+                              <xtce:FixedValueEntry binaryValue="3F" sizeInBits="8"/>
                           </xtce:EntryList>
                       </xtce:CommandContainer>
                 </xtce:MetaCommand>
