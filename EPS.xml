@@ -1215,29 +1215,35 @@
     </xtce:SpaceSystem>
     <xtce:SpaceSystem name="MPP">
         <xtce:TelemetryMetaData>
-            <xtce:ParameterTypeSet>
-                <xtce:EnumeratedParameterType name="DEPStatus">
-                    <xtce:UnitSet/>
-                    <xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
-                    <xtce:EnumerationList>
-                        <xtce:Enumeration label="OFF" value="1"/>
-                        <xtce:Enumeration label="ON" value="0"/>
-                    </xtce:EnumerationList>
-                </xtce:EnumeratedParameterType>
-                <xtce:ArrayParameterType name="DEPStatusArray" arrayTypeRef="DEPStatus" numberOfDimensions="1"/>
-            </xtce:ParameterTypeSet>
             <xtce:ParameterSet>
-                <xtce:Parameter name="TxADBCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="ADBCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="ADBVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="ADBTemperature" parameterTypeRef="/Delfi-PQ/TMPtemperature"/>
-                <xtce:Parameter name="DEPSwitchesSetting" parameterTypeRef="/Delfi-PQ/bitStatusArray"/>
-                <xtce:Parameter name="DEPSwitchesStatus" parameterTypeRef="DEPStatusArray"/>
+                <xtce:Parameter name="MPPTemperatureStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPINA1_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPINA2_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPINA3_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPINA4_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="MPPVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="LPMCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="LPMVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="VLMCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="VLMVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="HeaterCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="HeaterVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="MPPTemperature" parameterTypeRef="/Delfi-PQ/TMPtemperature"/>
+                <xtce:Parameter name="LPMExternalSensor" parameterTypeRef="/Delfi-PQ/short"/>
             </xtce:ParameterSet>
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="MPPHousekeepingContainer" shortDescription="MPP Housekeeping container">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor0Status"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor1Status"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor2Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPINA1_Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPINA2_Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPINA3_Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPINA4_Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPTemperatureStatus"/>
                         <xtce:ParameterRefEntry parameterRef="MPPCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="MPPVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="LPMCurrent"/>
@@ -1247,6 +1253,7 @@
                         <xtce:ParameterRefEntry parameterRef="HeaterCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="HeaterVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="MPPTemperature"/>
+                        <xtce:ParameterRefEntry parameterRef="LPMExternalSensor"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing2"/>
                     </xtce:EntryList>
                 </xtce:SequenceContainer>
@@ -1278,31 +1285,21 @@
         </xtce:TelemetryMetaData>
         <xtce:CommandMetaData>
             <xtce:ArgumentTypeSet>
-                <xtce:EnumeratedArgumentType name="ADBDEPType">
+                <xtce:EnumeratedArgumentType name="MPPValveSwitchesType">
                     <xtce:UnitSet/>
                     <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                     <xtce:EnumerationList>
-                        <xtce:Enumeration label="DEP1Sw" value="1" shortDescription="1"/>
-                        <xtce:Enumeration label="DEP2Sw" value="2" shortDescription="2"/>
-                        <xtce:Enumeration label="DEP3Sw" value="3" shortDescription="3"/>
-                        <xtce:Enumeration label="DEP4Sw" value="4" shortDescription="4"/>
-                    </xtce:EnumerationList>
-                </xtce:EnumeratedArgumentType>
-                <xtce:EnumeratedArgumentType name="ADBFeedbackParameterType">
-                    <xtce:UnitSet/>
-                    <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
-                    <xtce:EnumerationList>
-                        <xtce:Enumeration label="Feedbackoff" value="0" shortDescription="Feedback off"/>
-                        <xtce:Enumeration label="Feedbackon" value="1" shortDescription="Feedback on"/>
+                        <xtce:Enumeration label="on" value="1" shortDescription="Valve on"/>
+                        <xtce:Enumeration label="off" value="0" shortDescription="Valve off"/>
                     </xtce:EnumerationList>
                 </xtce:EnumeratedArgumentType>
             </xtce:ArgumentTypeSet>
             <xtce:MetaCommandSet>
-                <xtce:MetaCommand name="ADBburnParam">
-                    <xtce:LongDescription>ADB Deployment switch</xtce:LongDescription>
+                <xtce:MetaCommand name="MPPDigitalPot">
+                    <xtce:LongDescription>MPP Digital pot</xtce:LongDescription>
                     <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
                         <xtce:ArgumentAssignmentList>
-                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="MPP"/>
                             <xtce:ArgumentAssignment argumentName="Size" argumentValue="6"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
                             <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
@@ -1311,20 +1308,48 @@
                         </xtce:ArgumentAssignmentList>
                     </xtce:BaseMetaCommand>
                     <xtce:ArgumentList>
-                        <xtce:Argument name="Switch" argumentTypeRef="ADBDEPType"/>
-                        <xtce:Argument name="Feedback" argumentTypeRef="ADBFeedbackParameterType"/>
-                        <xtce:Argument name="Burn_time" argumentTypeRef="/Delfi-PQ/short"/>
+                        <xtce:Argument name="value" argumentTypeRef="/Delfi-PQ/short"/>
                     </xtce:ArgumentList>
-                    <xtce:CommandContainer name="ADBburnParam">
+                    <xtce:CommandContainer name="MPPDPOT">
                         <xtce:EntryList>
-                            <xtce:FixedValueEntry binaryValue="31" sizeInBits="8"/>
-                            <xtce:ArgumentRefEntry argumentRef="Switch"/>
-                            <xtce:ArgumentRefEntry argumentRef="Feedback"/>
-                            <xtce:ArgumentRefEntry argumentRef="Burn_time"/>
+                            <xtce:FixedValueEntry binaryValue="41" sizeInBits="8"/>
+                            <xtce:ArgumentRefEntry argumentRef="value"/>
                         </xtce:EntryList>
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
-            </xtce:MetaCommandSet>
+                <xtce:MetaCommand name="MPPValveSwitches">
+                    <xtce:LongDescription>MPP valve switches</xtce:LongDescription>
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="MPP"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="6"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                            <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                    <xtce:ArgumentList>
+                        <xtce:Argument name="LPMHeat" argumentTypeRef="MPPValveSwitchesType"/>
+                        <xtce:Argument name="VLMHeat" argumentTypeRef="MPPValveSwitchesType"/>
+                        <xtce:Argument name="LPMSpike" argumentTypeRef="MPPValveSwitchesType"/>
+                        <xtce:Argument name="VLMSpike" argumentTypeRef="MPPValveSwitchesType"/>
+                        <xtce:Argument name="LPMHold" argumentTypeRef="MPPValveSwitchesType"/>
+                        <xtce:Argument name="VLMHold" argumentTypeRef="MPPValveSwitchesType"/>
+                    </xtce:ArgumentList>
+                    <xtce:CommandContainer name="MPPValveSwitches">
+                        <xtce:EntryList>
+                            <xtce:FixedValueEntry binaryValue="43" sizeInBits="8"/>
+                            <xtce:ArgumentRefEntry argumentRef="LPMHeat"/>
+                            <xtce:ArgumentRefEntry argumentRef="VLMHeat"/>
+                            <xtce:ArgumentRefEntry argumentRef="LPMSpike"/>
+                            <xtce:ArgumentRefEntry argumentRef="VLMSpike"/>
+                            <xtce:ArgumentRefEntry argumentRef="LPMHold"/>
+                            <xtce:ArgumentRefEntry argumentRef="VLMHold"/>
+                        </xtce:EntryList>
+                    </xtce:CommandContainer>
+                </xtce:MetaCommand>
+           </xtce:MetaCommandSet>
         </xtce:CommandMetaData>
     </xtce:SpaceSystem>
     <xtce:SpaceSystem name="TEST">
