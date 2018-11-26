@@ -1223,10 +1223,10 @@
                 <xtce:Parameter name="MPPINA4_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="MPPCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="MPPVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="LPMCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="LPMVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="VLMCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="VLMVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="HOLDCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="HOLDVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="SPIKECurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="SPIKEVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="HeaterCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="HeaterVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="MPPTemperature" parameterTypeRef="/Delfi-PQ/TMPtemperature"/>
@@ -1246,10 +1246,10 @@
                         <xtce:ParameterRefEntry parameterRef="MPPTemperatureStatus"/>
                         <xtce:ParameterRefEntry parameterRef="MPPCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="MPPVoltage"/>
-                        <xtce:ParameterRefEntry parameterRef="LPMCurrent"/>
-                        <xtce:ParameterRefEntry parameterRef="LPMVoltage"/>
-                        <xtce:ParameterRefEntry parameterRef="VLMCurrent"/>
-                        <xtce:ParameterRefEntry parameterRef="VLMVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="HOLDCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="HOLDVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="SPIKECurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="SPIKEVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="HeaterCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="HeaterVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="MPPTemperature"/>
