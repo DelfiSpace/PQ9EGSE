@@ -1217,10 +1217,10 @@
         <xtce:TelemetryMetaData>
             <xtce:ParameterSet>
                 <xtce:Parameter name="MPPTemperatureStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="MPPINA1_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="MPPINA2_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="MPPINA3_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="MPPINA4_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPINAHold_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPINASpike_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPINAHeater_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPINA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="MPPCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="MPPVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="HOLDCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
@@ -1239,10 +1239,10 @@
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor0Status"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor1Status"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor2Status"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPINA1_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPINA2_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPINA3_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPINA4_Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPINAHeater_Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPINASpike_Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPINAHold_Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPINA_Status"/>
                         <xtce:ParameterRefEntry parameterRef="MPPTemperatureStatus"/>
                         <xtce:ParameterRefEntry parameterRef="MPPCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="MPPVoltage"/>
