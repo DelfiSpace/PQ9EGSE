@@ -216,18 +216,16 @@ public class Main implements PQ9Receiver, Subscriber
     {
         StringBuilder sb = new StringBuilder();
         
-        XTCEContainerContentModel model = stream.processStream( data );
- 
+        XTCEContainerContentModel model = stream.processStream( data );        
         List<XTCEContainerContentEntry> entries = model.getContentList();
 
         values.put("_received_", model.getName());
         sb.append(model.getName());
         sb.append("\n");
         
-        for (XTCEContainerContentEntry entry : entries) 
-        {                        
+        entries.forEach((XTCEContainerContentEntry entry) -> 
+        {
             XTCEContainerEntryValue val = entry.getValue();
-
             if (val != null) 
             {
                 values.put(entry.getName(), val.getCalibratedValue());
@@ -252,7 +250,7 @@ public class Main implements PQ9Receiver, Subscriber
                     sb.append("\n");
                 }
             }
-        }
+        });
         List<String> warnings = model.getWarnings();
         Iterator<String> it = warnings.iterator();
         while(it.hasNext())
