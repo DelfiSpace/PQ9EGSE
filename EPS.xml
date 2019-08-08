@@ -43,6 +43,7 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
+                	<xtce:Enumeration label="Error" value="0"/>
                     <xtce:Enumeration label="Request" value="1"/>
                     <xtce:Enumeration label="Reply" value="2"/>
                     <xtce:Enumeration label="ACKErrorReply" value="4"/>
@@ -79,7 +80,7 @@
                     <xtce:DefaultCalibrator>
                         <xtce:MathOperationCalibrator>
                             <xtce:ThisParameterOperand/>
-                            <xtce:ValueOperand>0.00125</xtce:ValueOperand>
+                            <xtce:ValueOperand>0.001</xtce:ValueOperand>
                             <xtce:Operator>*</xtce:Operator>
                         </xtce:MathOperationCalibrator>
                     </xtce:DefaultCalibrator>
@@ -90,11 +91,11 @@
                 <xtce:UnitSet>
                     <xtce:Unit>A</xtce:Unit>
                 </xtce:UnitSet>
-                <xtce:IntegerDataEncoding sizeInBits="16">
+                <xtce:IntegerDataEncoding encoding="twosComplement" sizeInBits="16">
                     <xtce:DefaultCalibrator>
                         <xtce:MathOperationCalibrator>
                             <xtce:ThisParameterOperand/>
-                            <xtce:ValueOperand>0.00009</xtce:ValueOperand>
+                            <xtce:ValueOperand>0.001</xtce:ValueOperand>
                             <xtce:Operator>*</xtce:Operator>
                         </xtce:MathOperationCalibrator>
                     </xtce:DefaultCalibrator>
@@ -163,11 +164,9 @@
             <xtce:Parameter name="Destination" parameterTypeRef="AddressType"/>
             <xtce:Parameter name="Size" parameterTypeRef="byte"/>
             <xtce:Parameter name="Source" parameterTypeRef="AddressType"/>
-            <xtce:Parameter name="Counter" parameterTypeRef="short"/>
             <xtce:Parameter name="Service" parameterTypeRef="ServiceType"/>
             <xtce:Parameter name="Request" parameterTypeRef="RequestType"/>
             <xtce:Parameter name="Uptime" parameterTypeRef="SUBSSYSuptime"/>
-            <xtce:Parameter name="testing4" parameterTypeRef="long"/>
             <xtce:Parameter name="BootCounter" parameterTypeRef="short"/>
             <xtce:Parameter name="SoftwareBootCounter" parameterTypeRef="byte"/>
             <xtce:Parameter name="Sensor0Status" parameterTypeRef="sensorBitStatus"/>
@@ -186,7 +185,6 @@
             <xtce:Parameter name="Sensor13Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor14Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor15Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="testing2" parameterTypeRef="short"/>
             <xtce:Parameter name="MCUTemp" parameterTypeRef="MCUtemperature"/>
         </xtce:ParameterSet>
         <xtce:ContainerSet>
@@ -196,7 +194,6 @@
                     <xtce:ParameterRefEntry parameterRef="Destination"/>
                     <xtce:ParameterRefEntry parameterRef="Size"/>
                     <xtce:ParameterRefEntry parameterRef="Source"/>
-                    <xtce:ParameterRefEntry parameterRef="Counter"/>
                     <xtce:ParameterRefEntry parameterRef="Service"/>
                     <xtce:ParameterRefEntry parameterRef="Request"/>
                 </xtce:EntryList>
@@ -205,7 +202,6 @@
                 <xtce:LongDescription>This header is used in all housekeeping frames.</xtce:LongDescription>
                 <xtce:EntryList>
                     <xtce:ParameterRefEntry parameterRef="Uptime"/>
-                    <xtce:ParameterRefEntry parameterRef="testing4"/>
                     <xtce:ParameterRefEntry parameterRef="BootCounter"/>
                     <xtce:ParameterRefEntry parameterRef="SoftwareBootCounter"/>
                 </xtce:EntryList>
@@ -367,7 +363,6 @@
                     <xtce:Argument name="Destination" argumentTypeRef="AddressType"/>
                     <xtce:Argument name="Size" argumentTypeRef="byte"/>
                     <xtce:Argument name="Source" argumentTypeRef="AddressType"/>
-                    <xtce:Argument name="Counter" argumentTypeRef="short"/>
                     <xtce:Argument name="Service" argumentTypeRef="ServiceType"/>
                     <xtce:Argument name="Request" argumentTypeRef="RequestType"/>
                 </xtce:ArgumentList>
@@ -376,7 +371,6 @@
                         <xtce:ArgumentRefEntry argumentRef="Destination"/>
                         <xtce:ArgumentRefEntry argumentRef="Size"/>
                         <xtce:ArgumentRefEntry argumentRef="Source"/>
-                        <xtce:ArgumentRefEntry argumentRef="Counter"/>
                         <xtce:ArgumentRefEntry argumentRef="Service"/>
                         <xtce:ArgumentRefEntry argumentRef="Request"/>
                     </xtce:EntryList>
@@ -388,7 +382,6 @@
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="Ping"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                     </xtce:ArgumentAssignmentList>
@@ -403,7 +396,6 @@
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="Housekeeping"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                     </xtce:ArgumentAssignmentList>
@@ -418,7 +410,6 @@
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
                     </xtce:ArgumentAssignmentList>
@@ -435,7 +426,6 @@
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
                     </xtce:ArgumentAssignmentList>
@@ -617,7 +607,6 @@
                         <xtce:ParameterRefEntry parameterRef="IntVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="URBCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="URBVoltage"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing2"/>
                     </xtce:EntryList>                    
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="EPSHousekeepingReply" shortDescription="EPS Housekeeping frame">
@@ -689,7 +678,6 @@
                             <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
                             <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                             <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                             <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
                         </xtce:ArgumentAssignmentList>
@@ -712,7 +700,6 @@
                             <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
                             <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                             <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                             <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                         </xtce:ArgumentAssignmentList>
@@ -735,7 +722,6 @@
                             <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
                             <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                             <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                             <xtce:ArgumentAssignment argumentName="Request" argumentValue="Reply"/>
                         </xtce:ArgumentAssignmentList>
@@ -775,7 +761,6 @@
                         <xtce:ParameterRefEntry parameterRef="OBC_TMP_Status"/>
                         <xtce:ParameterRefEntry parameterRef="OBCCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="OBCVoltage"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing2"/>
                     </xtce:EntryList>
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="OBCHousekeepingReply" shortDescription="OBC Housekeeping frame">
@@ -812,7 +797,6 @@
                         <xtce:ArgumentAssignmentList>
                             <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                             <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                             <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
                         </xtce:ArgumentAssignmentList>
@@ -872,7 +856,6 @@
                         <xtce:ParameterRefEntry parameterRef="ADCSVoltage2"/>
                         <xtce:ParameterRefEntry parameterRef="ADCSVoltage3"/>
                         <xtce:ParameterRefEntry parameterRef="ADCSVoltage4"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing2"/>
                     </xtce:EntryList>                    
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="ADCSHousekeepingReply" shortDescription="ADCS Housekeeping frame">
@@ -974,7 +957,6 @@
                             </xtce:DimensionList>
                         </xtce:ArrayParameterRefEntry>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/MCUTemp"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing2"/>
                     </xtce:EntryList>
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="ADBHousekeepingReply" shortDescription="ADB Housekeeping frame">
@@ -1032,7 +1014,6 @@
                             <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
                             <xtce:ArgumentAssignment argumentName="Size" argumentValue="6"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                             <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
                             <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
                         </xtce:ArgumentAssignmentList>
@@ -1139,7 +1120,6 @@
                         <xtce:ParameterRefEntry parameterRef="ProtectionVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="SupplyVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="SupplyCurrent"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/testing2"/>
                     </xtce:EntryList>
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="COMMSHousekeepingReply" shortDescription="COMMS Housekeeping frame">
@@ -1199,7 +1179,6 @@
                             <xtce:ArgumentAssignment argumentName="Destination" argumentValue="COMMS"/>
                             <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                             <xtce:ArgumentAssignment argumentName="Service" argumentValue="Ping"/>
                             <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                         </xtce:ArgumentAssignmentList>
@@ -1268,7 +1247,6 @@
                         <xtce:ArgumentAssignmentList>
                             <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                             <xtce:ArgumentAssignment argumentName="Service" argumentValue="PacketStats"/>
                             <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                         </xtce:ArgumentAssignmentList>
@@ -1284,7 +1262,6 @@
                      <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                        <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="Freeze"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="Testing"/>
@@ -1303,7 +1280,6 @@
                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="OBC"/>
                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                       <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Testing"/>
                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Start_master"/>
                    </xtce:ArgumentAssignmentList>
@@ -1319,7 +1295,6 @@
                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
                        <xtce:ArgumentAssignment argumentName="Destination" argumentValue="OBC"/>
-                       <xtce:ArgumentAssignment argumentName="Counter" argumentValue="0"/>
                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Testing"/>
                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Stop_master"/>
                    </xtce:ArgumentAssignmentList>
