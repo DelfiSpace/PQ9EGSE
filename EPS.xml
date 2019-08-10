@@ -102,20 +102,12 @@
                 </xtce:IntegerDataEncoding>
                 <xtce:ValidRange minExclusive="-0.1" maxExclusive="2.5" validRangeAppliesToCalibrated="true"/>
             </xtce:FloatParameterType>
-            <xtce:FloatParameterType name="SUBSSYSuptime">
+            <xtce:IntegerParameterType name="SUBSSYSuptime">
                 <xtce:UnitSet>
                     <xtce:Unit>s</xtce:Unit>
                 </xtce:UnitSet>
-                <xtce:IntegerDataEncoding sizeInBits="32">
-                    <xtce:DefaultCalibrator>
-                        <xtce:MathOperationCalibrator>
-                            <xtce:ThisParameterOperand/>
-                            <xtce:ValueOperand>0.001</xtce:ValueOperand>
-                            <xtce:Operator>*</xtce:Operator>
-                        </xtce:MathOperationCalibrator>
-                    </xtce:DefaultCalibrator>
-                </xtce:IntegerDataEncoding>
-            </xtce:FloatParameterType>
+                <xtce:IntegerDataEncoding encoding="unsigned" sizeInBits="32"/>
+            </xtce:IntegerParameterType>            
             <xtce:FloatParameterType name="Temperature">
                 <xtce:UnitSet>
                     <xtce:Unit>°C</xtce:Unit>
