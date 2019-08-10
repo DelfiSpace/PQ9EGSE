@@ -85,7 +85,7 @@
                         </xtce:MathOperationCalibrator>
                     </xtce:DefaultCalibrator>
                 </xtce:IntegerDataEncoding>
-                <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
+                <xtce:ValidRange minInclusive="0.0" maxExclusive="6.0" validRangeAppliesToCalibrated="true"/>
             </xtce:FloatParameterType>
             <xtce:FloatParameterType name="INAcurrent">
                 <xtce:UnitSet>
@@ -100,7 +100,7 @@
                         </xtce:MathOperationCalibrator>
                     </xtce:DefaultCalibrator>
                 </xtce:IntegerDataEncoding>
-                <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
+                <xtce:ValidRange minExclusive="-0.1" maxExclusive="2.5" validRangeAppliesToCalibrated="true"/>
             </xtce:FloatParameterType>
             <xtce:FloatParameterType name="SUBSSYSuptime">
                 <xtce:UnitSet>
@@ -116,20 +116,20 @@
                     </xtce:DefaultCalibrator>
                 </xtce:IntegerDataEncoding>
             </xtce:FloatParameterType>
-            <xtce:FloatParameterType name="TMPtemperature">
+            <xtce:FloatParameterType name="Temperature">
                 <xtce:UnitSet>
                     <xtce:Unit>°C</xtce:Unit>
                 </xtce:UnitSet>
-                <xtce:IntegerDataEncoding sizeInBits="16">
+                <xtce:IntegerDataEncoding encoding="twosComplement" sizeInBits="16">
                     <xtce:DefaultCalibrator>
                         <xtce:MathOperationCalibrator>
                             <xtce:ThisParameterOperand/>
-                            <xtce:ValueOperand>0.0625</xtce:ValueOperand>
+                            <xtce:ValueOperand>0.1</xtce:ValueOperand>
                             <xtce:Operator>*</xtce:Operator>
                         </xtce:MathOperationCalibrator>
                     </xtce:DefaultCalibrator>
                 </xtce:IntegerDataEncoding>
-                <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
+                <xtce:ValidRange minExclusive="-60.0" maxExclusive="130.0" validRangeAppliesToCalibrated="true"/>
             </xtce:FloatParameterType>
             <xtce:FloatParameterType name="MCUtemperature">
                 <xtce:UnitSet>
@@ -457,29 +457,8 @@
                         <xtce:DefaultCalibrator>
                             <xtce:MathOperationCalibrator>
                                 <xtce:ThisParameterOperand/>
-                                <xtce:ValueOperand>65535</xtce:ValueOperand>
-                                <xtce:Operator>/</xtce:Operator>
-                                <xtce:ValueOperand>6</xtce:ValueOperand>
+                                <xtce:ValueOperand>0.001</xtce:ValueOperand>
                                 <xtce:Operator>*</xtce:Operator>
-                            </xtce:MathOperationCalibrator>
-                        </xtce:DefaultCalibrator>
-                    </xtce:IntegerDataEncoding>
-                    <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
-                </xtce:FloatParameterType>
-                <xtce:FloatParameterType name="LTCtemperature">
-                    <xtce:UnitSet>
-                        <xtce:Unit>°C</xtce:Unit>
-                    </xtce:UnitSet>
-                    <xtce:IntegerDataEncoding sizeInBits="16">
-                        <xtce:DefaultCalibrator>
-                            <xtce:MathOperationCalibrator>
-                                <xtce:ThisParameterOperand/>
-                                <xtce:ValueOperand>65535</xtce:ValueOperand>
-                                <xtce:Operator>/</xtce:Operator>
-                                <xtce:ValueOperand>600</xtce:ValueOperand>
-                                <xtce:Operator>*</xtce:Operator>
-                                <xtce:ValueOperand>272.15</xtce:ValueOperand>
-                                <xtce:Operator>-</xtce:Operator>
                             </xtce:MathOperationCalibrator>
                         </xtce:DefaultCalibrator>
                     </xtce:IntegerDataEncoding>
@@ -531,13 +510,13 @@
                 <xtce:Parameter name="SA_YM_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="SA_XP_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="SA_XM_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="SA_YP_temperature" parameterTypeRef="/Delfi-PQ/TMPtemperature"/>
-                <xtce:Parameter name="SA_YM_temperature" parameterTypeRef="/Delfi-PQ/TMPtemperature"/>
-                <xtce:Parameter name="SA_XP_temperature" parameterTypeRef="/Delfi-PQ/TMPtemperature"/>
-                <xtce:Parameter name="SA_XM_temperature" parameterTypeRef="/Delfi-PQ/TMPtemperature"/>
+                <xtce:Parameter name="SA_YP_temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="SA_YM_temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="SA_XP_temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="SA_XM_temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
                 <xtce:Parameter name="BattVoltage" parameterTypeRef="LTCvoltage"/>
                 <xtce:Parameter name="BattCapacity" parameterTypeRef="LTCcapacity"/>
-                <xtce:Parameter name="BattTemperature" parameterTypeRef="LTCtemperature"/>
+                <xtce:Parameter name="BattTemperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
                 <xtce:Parameter name="BusSwitchesSetting" parameterTypeRef="/Delfi-PQ/bitStatusArray"/>
                 <xtce:Parameter name="BusSwitchesStatus" parameterTypeRef="/Delfi-PQ/bitStatusArray"/>
                 <xtce:Parameter name="IntCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
@@ -833,7 +812,7 @@
                 <xtce:Parameter name="ADCSVoltage2" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="ADCSVoltage3" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="ADCSVoltage4" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="ADCSTemperature" parameterTypeRef="/Delfi-PQ/TMPtemperature"/>
+                <xtce:Parameter name="ADCSTemperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
             </xtce:ParameterSet>
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="ADCSHousekeepingContainer" shortDescription="ADCS Housekeeping container">
@@ -909,7 +888,7 @@
                 <xtce:Parameter name="ADBVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="ADB_TMP_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="ADB_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADBTemperature" parameterTypeRef="/Delfi-PQ/TMPtemperature"/>
+                <xtce:Parameter name="ADBTemperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
                 <xtce:Parameter name="DEPSwitchesSetting" parameterTypeRef="/Delfi-PQ/bitStatusArray"/>
                 <xtce:Parameter name="DEPSwitchesStatus" parameterTypeRef="DEPStatusArray"/>
             </xtce:ParameterSet>
@@ -1084,7 +1063,7 @@
                 <xtce:Parameter name="COMMS_ADC7_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="COMMS_ADC8_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="COMMS_ADC9_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="TCXOTemperature" shortDescription="TCXO Temperature" parameterTypeRef="/Delfi-PQ/TMPtemperature"/>
+                <xtce:Parameter name="TCXOTemperature" shortDescription="TCXO Temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
                 <xtce:Parameter name="SupplyCurrent" shortDescription="Supply Current" parameterTypeRef="CurrentType"/>
                 <xtce:Parameter name="RXVoltage" shortDescription="RX Supply Voltage" parameterTypeRef="VoltageType"/>
                 <xtce:Parameter name="TXVoltage" shortDescription="TX Supply Voltage" parameterTypeRef="VoltageType"/>
