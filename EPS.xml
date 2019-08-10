@@ -799,20 +799,20 @@
     <xtce:SpaceSystem name="ADCS">
         <xtce:TelemetryMetaData>
             <xtce:ParameterSet>
-                <xtce:Parameter name="ADCS_TMP_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADCS_INA1_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADCS_INA2_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADCS_INA3_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADCS_INA4_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADCSCurrent1" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="ADCSCurrent2" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="ADCSCurrent3" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="ADCSCurrent4" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="ADCSVoltage1" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="ADCSVoltage2" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="ADCSVoltage3" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="ADCSVoltage4" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="ADCSTemperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="TemperatureStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="TorquerZStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="TorquerYStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="TorquerXStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="BusStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="TorquerZCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="TorquerYCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="TorquerXCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="BusCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="TorquerZVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="TorquerYVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="TorquerXVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="BusVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="Temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
             </xtce:ParameterSet>
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="ADCSHousekeepingContainer" shortDescription="ADCS Housekeeping container">
@@ -821,20 +821,20 @@
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor0Status"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor1Status"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor2Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCS_INA1_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCS_INA2_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCS_INA3_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCS_INA4_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCS_TMP_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCSTemperature"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCSCurrent1"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCSCurrent2"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCSCurrent3"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCSCurrent4"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCSVoltage1"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCSVoltage2"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCSVoltage3"/>
-                        <xtce:ParameterRefEntry parameterRef="ADCSVoltage4"/>
+                        <xtce:ParameterRefEntry parameterRef="TorquerZStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="TorquerYStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="TorquerXStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="BusStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="TemperatureStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="Temperature"/>
+                        <xtce:ParameterRefEntry parameterRef="TorquerZCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="TorquerYCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="TorquerXCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="BusCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="TorquerZVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="TorquerYVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="TorquerXVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="BusVoltage"/>
                     </xtce:EntryList>                    
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="ADCSHousekeepingReply" shortDescription="ADCS Housekeeping frame">
