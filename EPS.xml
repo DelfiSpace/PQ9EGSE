@@ -35,6 +35,7 @@
                     <xtce:Enumeration label="Ackownledgment" value="4"/>
                     <xtce:Enumeration label="PacketStats" value="6"/>
                     <xtce:Enumeration label="Ping" value="17"/>
+                    <xtce:Enumeration label="Reset" value="19"/>
                     <xtce:Enumeration label="Testing" value="21"/>
                     <xtce:Enumeration label="RX" value="55"/>
                 </xtce:EnumerationList>
@@ -48,8 +49,16 @@
                     <xtce:Enumeration label="Reply" value="2"/>
                     <xtce:Enumeration label="ACKErrorReply" value="4"/>
                     <xtce:Enumeration label="RF_TX" value="6"/>
-                    <xtce:Enumeration label="Start_master" value="7"/>
-                   <xtce:Enumeration label="Stop_master" value="8"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedParameterType>
+            <xtce:EnumeratedParameterType name="ResetType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                	<xtce:Enumeration label="Error" value="0"/>
+                    <xtce:Enumeration label="Soft" value="1"/>
+                    <xtce:Enumeration label="Hard" value="2"/>
+                    <xtce:Enumeration label="PowerCycle" value="3"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
             <xtce:EnumeratedParameterType name="sensorBitStatus">
@@ -316,7 +325,7 @@
                     <xtce:Enumeration label="Housekeeping" value="3"/>
                     <xtce:Enumeration label="Verification" value="4"/>
                     <xtce:Enumeration label="PacketStats" value="6"/>
-                    <xtce:Enumeration label="Reset" value="9"/>
+                    <xtce:Enumeration label="Reset" value="19"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                     <xtce:Enumeration label="Testing" value="21"/>
                 </xtce:EnumerationList>
@@ -330,8 +339,6 @@
                     <xtce:Enumeration label="Set" value="3"/>
                     <xtce:Enumeration label="ACK_error" value="4"/>
                     <xtce:Enumeration label="Freeze" value="6"/>
-                    <xtce:Enumeration label="Start_master" value="7"/>
-                    <xtce:Enumeration label="Stop_master" value="8"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
             <xtce:IntegerArgumentType name="byte" shortDescription="Value">
@@ -347,6 +354,15 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="32"/>
             </xtce:IntegerArgumentType>
+            <xtce:EnumeratedArgumentType name="ResetType" shortDescription="Type of reset">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Soft" value="1"/>
+                    <xtce:Enumeration label="Hard" value="2"/>
+                    <xtce:Enumeration label="PowerCycle" value="3"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
         </xtce:ArgumentTypeSet>
         <xtce:MetaCommandSet>
             <xtce:MetaCommand abstract="true" name="PQ9">
@@ -402,38 +418,19 @@
                     <xtce:ArgumentAssignmentList>
                         <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
-                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
-                    </xtce:ArgumentAssignmentList>
-                </xtce:BaseMetaCommand>
-                <xtce:CommandContainer name="Reset">
-                    <xtce:EntryList>
-                        <xtce:FixedValueEntry binaryValue="3b" sizeInBits="8"/>
-                    </xtce:EntryList>
-                </xtce:CommandContainer>
-            </xtce:MetaCommand>
-            <xtce:MetaCommand name="SetSensorLoopTiming">
-                <xtce:LongDescription>Sets the sensor loop delay</xtce:LongDescription>
-                <xtce:BaseMetaCommand metaCommandRef="PQ9">
-                    <xtce:ArgumentAssignmentList>
-                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
-                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
-                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Reset"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
                 <xtce:ArgumentList>
-                    <!-- Fix the next one -->
-                    <xtce:Argument name="SensorLoopTimingParam" argumentTypeRef="long"/>
-                    <xtce:Argument name="TimingParam" argumentTypeRef="long"/>
-                </xtce:ArgumentList>
-                <xtce:CommandContainer name="SetSensorLoopTiming">
+                        <xtce:Argument name="Type" argumentTypeRef="/Delfi-PQ/ResetType"/>
+                    </xtce:ArgumentList>
+                <xtce:CommandContainer name="Reset">
                     <xtce:EntryList>
-                        <xtce:ArgumentRefEntry argumentRef="SensorLoopTimingParam"/>
-                        <xtce:ArgumentRefEntry argumentRef="TimingParam"/>
+                    	<xtce:ArgumentRefEntry argumentRef="Type"/>
                     </xtce:EntryList>
                 </xtce:CommandContainer>
-            </xtce:MetaCommand>
+            </xtce:MetaCommand>            
         </xtce:MetaCommandSet>
     </xtce:CommandMetaData>
 
@@ -456,19 +453,13 @@
                     </xtce:IntegerDataEncoding>
                     <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
                 </xtce:FloatParameterType>
-                <xtce:FloatParameterType name="LTCcapacity">
-                    <xtce:UnitSet/>
-                    <xtce:IntegerDataEncoding sizeInBits="16">
-                        <xtce:DefaultCalibrator>
-                            <xtce:MathOperationCalibrator>
-                                <xtce:ThisParameterOperand/>
-                                <xtce:ValueOperand>0.0265625</xtce:ValueOperand>
-                                <xtce:Operator>*</xtce:Operator>
-                            </xtce:MathOperationCalibrator>
-                        </xtce:DefaultCalibrator>
-                    </xtce:IntegerDataEncoding>
-                    <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
-                </xtce:FloatParameterType>
+                <xtce:IntegerParameterType name="LTCcapacity">
+                    <xtce:UnitSet>
+                    	<xtce:Unit>mAh</xtce:Unit>
+                    </xtce:UnitSet>
+                    <xtce:IntegerDataEncoding sizeInBits="16" />
+                    <xtce:ValidRange minInclusive="0" maxInclusive="2000" validRangeAppliesToCalibrated="true"/>
+                </xtce:IntegerParameterType>
             </xtce:ParameterTypeSet>
             <xtce:ParameterSet>
                 <xtce:Parameter name="EPS_B1_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
@@ -760,32 +751,6 @@
                 </xtce:SequenceContainer>   
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
-        <xtce:CommandMetaData>
-            <xtce:MetaCommandSet>
-                <xtce:MetaCommand name="SetOBCCommandLoopTiming">
-                    <xtce:LongDescription>Sets the command loop delay</xtce:LongDescription>
-                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
-                        <xtce:ArgumentAssignmentList>
-                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
-                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
-                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
-                        </xtce:ArgumentAssignmentList>
-                    </xtce:BaseMetaCommand>
-                    <xtce:ArgumentList>
-                        <!-- Fix the next one -->
-                        <xtce:Argument name="OBCCommandLoopTimingParam" argumentTypeRef="/Delfi-PQ/long"/>
-                        <xtce:Argument name="TimingParam" argumentTypeRef="/Delfi-PQ/long"/>
-                    </xtce:ArgumentList>
-                    <xtce:CommandContainer name="SetOBCCommandLoopTiming">
-                        <xtce:EntryList>
-                            <!--xtce:ArgumentRefEntry argumentRef="OBCCommandLoopTimingParam"/-->
-                            <xtce:ArgumentRefEntry argumentRef="TimingParam"/>
-                        </xtce:EntryList>
-                    </xtce:CommandContainer>
-                </xtce:MetaCommand>
-            </xtce:MetaCommandSet>
-        </xtce:CommandMetaData>
     </xtce:SpaceSystem>
 
     <xtce:SpaceSystem name="ADCS">
@@ -1242,38 +1207,7 @@
                 <xtce:CommandContainer name="Freeze">
                     <xtce:EntryList/>
                 </xtce:CommandContainer>
-            </xtce:MetaCommand>
-
-            <xtce:MetaCommand name="Start_Master_loop">
-               <xtce:LongDescription>Enables the master query.</xtce:LongDescription>
-               <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
-                   <xtce:ArgumentAssignmentList>
-                       <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
-                       <xtce:ArgumentAssignment argumentName="Destination" argumentValue="OBC"/>
-                       <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                       <xtce:ArgumentAssignment argumentName="Service" argumentValue="Testing"/>
-                       <xtce:ArgumentAssignment argumentName="Request" argumentValue="Start_master"/>
-                   </xtce:ArgumentAssignmentList>
-               </xtce:BaseMetaCommand>
-               <xtce:CommandContainer name="Start_Master_loop">
-                   <xtce:EntryList/>
-               </xtce:CommandContainer>
-           </xtce:MetaCommand>
-            <xtce:MetaCommand name="Stop_Master_loop">
-               <xtce:LongDescription>Disables the master query.</xtce:LongDescription>
-               <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
-                   <xtce:ArgumentAssignmentList>
-                       <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
-                       <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                       <xtce:ArgumentAssignment argumentName="Destination" argumentValue="OBC"/>
-                       <xtce:ArgumentAssignment argumentName="Service" argumentValue="Testing"/>
-                       <xtce:ArgumentAssignment argumentName="Request" argumentValue="Stop_master"/>
-                   </xtce:ArgumentAssignmentList>
-               </xtce:BaseMetaCommand>
-               <xtce:CommandContainer name="Stop_Master_loop">
-                   <xtce:EntryList/>
-               </xtce:CommandContainer>
-           </xtce:MetaCommand>
+            </xtce:MetaCommand>                        
            </xtce:MetaCommandSet>
         </xtce:CommandMetaData>
     </xtce:SpaceSystem>
