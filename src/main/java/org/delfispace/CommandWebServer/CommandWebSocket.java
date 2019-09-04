@@ -16,17 +16,10 @@
  */
 package org.delfispace.CommandWebServer;
 
-import static j2html.TagCreator.button;
-import static j2html.TagCreator.div;
-import static j2html.TagCreator.each;
-import static j2html.TagCreator.option;
-import static j2html.TagCreator.select;
-import j2html.tags.Tag;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.delfispace.pq9debugger.Configuration;
+import org.delfispace.pq9debugger.HeaderTab;
 import org.delfispace.pq9debugger.cmdMultiPublisher;
 import org.delfispace.pq9debugger.cmdMultiSubscriber;
 import org.eclipse.jetty.websocket.api.Session;
@@ -76,18 +69,8 @@ public class CommandWebSocket extends WebSocketAdapter
         endpoint = sess.getRemote().getInetSocketAddress().toString();
         Logger.getLogger(CommandWebSocket.class.getName()).log(Level.FINEST, 
                 "Websocket connected from {0}", endpoint);
-
-        List<String> spl = Configuration.getInstance().getSerialPorts();
         
-        Tag t1 = div
-        (
-            select
-            (
-                each(spl, p -> option(p).withValue(p).condAttr(Configuration.getInstance().getSerialPort().equals(p), "selected",  "selected"))
-            ).withId("serialPort").attr("onChange", "setSerialPort();"),
-            button("Reset").attr("onclick", "resetLayout();")
-        );
-        sub.publish(new Command("header", t1.render()));
+        sub.publish(new Command("header", HeaderTab.generate()));
     }
     
     @Override

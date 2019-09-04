@@ -207,3 +207,13 @@ function setSerialPort()
 {
     rpc.send("setSerialPort", document.getElementById('serialPort').value);
 }
+
+function reloadXTCEFile()
+{
+    rpc.send("reloadXTCEFile", "");
+}
+
+function reloadSerialPorts()
+{
+    rpc.send("reloadSerialPorts", "");
+}
