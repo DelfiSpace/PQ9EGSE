@@ -451,7 +451,7 @@
                             </xtce:MathOperationCalibrator>
                         </xtce:DefaultCalibrator>
                     </xtce:IntegerDataEncoding>
-                    <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
+                    <xtce:ValidRange minExclusive="0.0" maxExclusive="6.0" validRangeAppliesToCalibrated="true"/>
                 </xtce:FloatParameterType>
                 <xtce:IntegerParameterType name="LTCcapacity">
                     <xtce:UnitSet>
