@@ -22,6 +22,7 @@ import static j2html.TagCreator.div;
 import static j2html.TagCreator.each;
 import static j2html.TagCreator.option;
 import static j2html.TagCreator.select;
+import static j2html.TagCreator.span;
 import j2html.tags.Tag;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -40,15 +41,30 @@ public class HeaderTab
             List<String> spl = Configuration.getInstance().getSerialPorts();
 
             Tag t1 = div
-            (
-                select
+            (                
+                div(),    
+                div
                 (
-                    each(spl, p -> option(p).withValue(p).condAttr(Configuration.getInstance().getSerialPort().equals(p), "selected",  "selected"))
-                ).withId("serialPort").attr("onChange", "setSerialPort();"),
-                button("Reset").attr("onclick", "resetLayout();"),
-                button("Reload XTCE File").attr("onclick", "reloadXTCEFile();"),
-                button("Reload Serial ports").attr("onclick", "reloadSerialPorts();")
-            );
+                    span("Serial port: "),
+                    select
+                    (
+                        each(spl, p -> option(p).withValue(p).condAttr(Configuration.getInstance().getSerialPort().equals(p), "selected",  "selected"))
+                    ).withId("serialPort").attr("onChange", "setSerialPort();")
+                ),
+                div
+                (
+                    button("Reload Serial ports").attr("onclick", "reloadSerialPorts();")                    
+                ),
+                div
+                (
+                    button("Reload XTCE File").attr("onclick", "reloadXTCEFile();")
+                ),
+                div
+                (
+                    button("Reset Layout").attr("onclick", "resetLayout();")
+                ),
+                div()
+            ).attr("style","display: flex; justify-content: space-between;");
             return t1.render();
         } catch (Exception ex)
         {
