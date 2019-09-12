@@ -7,6 +7,8 @@ package org.delfispace.pq9debugger.PQ9DataSocket;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -26,13 +28,13 @@ public class TestCOMMS
             
             JSONObject command = new JSONObject();
             command.put("_send_", "GetTelemetry");
-            command.put("Destination", "COMMS");
+            command.put("Destination", "EPS");
             
             double max = 0;
             double min = 1e12;
             double avg = 0;
             double std = 0;
-            int transmitted = 100;
+            int transmitted = 10000;
             int received = 0;
 
             for (int h = 0; h < transmitted; h++) 
@@ -44,10 +46,10 @@ public class TestCOMMS
                 Date before = new Date();
                 client.sendFrame(command);
 
-                JSONObject reply = client.getFrame();
-                
-                if (reply != null)
-                {                    
+                try 
+                {
+                    JSONObject reply = client.getFrame();
+                    
                     Date after = new Date();
                     received++;
                     long delta = after.getTime() - before.getTime();
@@ -61,7 +63,11 @@ public class TestCOMMS
                     }
                     avg += delta;
                     std += delta*delta;
-                }                
+                    
+                } catch (TimeoutException ex) 
+                {
+                    //  nothing to do here
+                }              
             }
             
             avg /= received;

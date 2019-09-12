@@ -1,12 +1,25 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2018 Stefano Speretta
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.delfispace.pq9debugger.PQ9DataSocket;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -25,42 +38,41 @@ public class TestRX
         {
             client.setTimeout(TIMEOUT);
             
-            // the first frame has a timeout of 30s to ease testing
-            JSONObject reply = client.getFrame(30000);
             Date before = new Date();
             
-            if (reply != null)
+            // the first frame has a timeout of 30s to ease testing
+            try 
             {
+                JSONObject reply;
+                
                 double max = 0;
                 double min = 1e12;
                 double avg = 0;
                 double std = 0;
 
-                int received = 1;
+                int received = 0;
 
                 for (int h = 1; h < TO_BE_RECEIVED; h++) 
                 {
                     reply = client.getFrame();
-                    Date after = new Date();
-                        
-                    if (reply != null)
-                    {                    
-                        received++;
-                        long delta = after.getTime() - before.getTime();
-                        if (delta > max)
-                        {
-                            max = delta;
-                        }
-                        if (delta < min)
-                        {
-                            min = delta;
-                        }
-                        avg += delta;
-                        std += delta*delta;
-                    }  
+                    Date after = new Date();                        
+
+                    received++;
+                    long delta = after.getTime() - before.getTime();
+                    if (delta > max)
+                    {
+                        max = delta;
+                    }
+                    if (delta < min)
+                    {
+                        min = delta;
+                    }
+                    avg += delta;
+                    std += delta*delta;
+                      
                     before = after;
                 }
-
+                
                 avg /= received;
                 std = Math.sqrt((std / received) - avg*avg);
 
@@ -71,7 +83,13 @@ public class TestRX
                 System.out.println("Min: " + min);
                 System.out.println("Avg: " + avg);
                 System.out.println("Std: " + std);
+                
+            } catch (TimeoutException ex) 
+            {
+                Logger.getLogger(TestRX.class.getName()).log(Level.SEVERE, null, ex);
             }
+
+
         }
     }
 }
