@@ -10,7 +10,6 @@ var config = {
         {   
           type: "component",
           componentName: "Header",
-          componentState: { label: "H" },
           isClosable: false,
           height: 15
         },
@@ -20,21 +19,18 @@ var config = {
         {
           type: "component",
           componentName: "DataLog",
-          componentState: { label: "A" },
           isClosable: false,
           height: 60
         },
         {
           type: "component",
           componentName: "Uplink",
-          componentState: { label: "A" },
           isClosable: false,
           height: 60
         }]},
         {
           type: "component",
           componentName: "EventLog",
-          componentState: { label: "C" },
           isClosable: false,
           height: 25
         }
@@ -54,19 +50,19 @@ if( savedState !== null )
     myLayout = new GoldenLayout( config );
 }
 
-myLayout.registerComponent("Header", function(container, componentState) 
+myLayout.registerComponent("Header", function(container) 
 {
   container.getElement().html("<div id=\"header\"></div>");
 });
-myLayout.registerComponent("DataLog", function(container, componentState) 
+myLayout.registerComponent("DataLog", function(container) 
 {
   container.getElement().html("<div id=\"datalog\"></div>");
 });
-myLayout.registerComponent("Uplink", function(container, componentState) 
+myLayout.registerComponent("Uplink", function(container) 
 {
   container.getElement().html("<div id=\"uplink\"></div>");
 });
-myLayout.registerComponent("EventLog", function(container, componentState) 
+myLayout.registerComponent("EventLog", function(container) 
 {
   container.getElement().html("<div id=\"log\"></div>");
 });
