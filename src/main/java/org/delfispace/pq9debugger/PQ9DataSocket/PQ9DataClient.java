@@ -66,7 +66,7 @@ public class PQ9DataClient implements Closeable
         outToServer.flush();
     }
     
-    public JSONObject getFrame(int timeout) throws IOException, ParseException
+    public JSONObject getFrame(int timeout) throws IOException, ParseException, TimeoutException
     {
         boolean found = false;
         Date before = new Date();
@@ -86,10 +86,10 @@ public class PQ9DataClient implements Closeable
         {       
             return (JSONObject)parser.parse(inFromServer.readLine());            
         }             
-        return null;                   
+        throw new TimeoutException();                   
     }
     
-    public JSONObject getFrame() throws IOException, ParseException
+    public JSONObject getFrame() throws IOException, ParseException, TimeoutException
     {
         return getFrame(this.timeout);
     }
