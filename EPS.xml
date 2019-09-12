@@ -200,7 +200,7 @@
                 </xtce:EntryList>
             </xtce:SequenceContainer>
             <xtce:SequenceContainer name="HousekeepingHeader" shortDescription="Common Housekeeping frame header">
-                <xtce:LongDescription>This header is used in all housekeeping frames.</xtce:LongDescription>
+                <xtce:LongDescription>Header for all housekeeping frames.</xtce:LongDescription>
                 <xtce:EntryList>
                     <xtce:ParameterRefEntry parameterRef="Uptime"/>
                     <xtce:ParameterRefEntry parameterRef="BootCounter"/>
@@ -208,7 +208,7 @@
                 </xtce:EntryList>
             </xtce:SequenceContainer>
             <xtce:SequenceContainer name="PingRequest" shortDescription="Ping request">
-                <xtce:LongDescription>This message is used to send a ping request to the subsystem.</xtce:LongDescription>
+                <xtce:LongDescription>Ping subsystem.</xtce:LongDescription>
                 <xtce:EntryList>
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
@@ -221,7 +221,7 @@
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
             <xtce:SequenceContainer name="PingReply" shortDescription="Ping reply">
-                <xtce:LongDescription>This message is used to send a ping reply to the master.</xtce:LongDescription>
+                <xtce:LongDescription>Ping reply.</xtce:LongDescription>
                 <xtce:EntryList>
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
@@ -234,7 +234,7 @@
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
             <xtce:SequenceContainer name="HousekeepingRequest" shortDescription="Housekeeping request">
-                <xtce:LongDescription>This message is used to request the housekeeping frame to the subsystem.</xtce:LongDescription>
+                <xtce:LongDescription>Request the subsystem housekeeping frame.</xtce:LongDescription>
                 <xtce:EntryList>&#13;</xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>
@@ -246,7 +246,7 @@
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
             <xtce:SequenceContainer name="HousekeepingReply" shortDescription="Housekeeping reply" abstract="true">
-                <xtce:LongDescription>This message is used to request the housekeeping frame to the subsystem.</xtce:LongDescription>
+                <xtce:LongDescription>Housekeeping reply frame.</xtce:LongDescription>
                 <xtce:EntryList>&#13;</xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>
@@ -1124,91 +1124,6 @@
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
             </xtce:MetaCommandSet>
-        </xtce:CommandMetaData>
-    </xtce:SpaceSystem>
-    <xtce:SpaceSystem name="TEST">
-        <xtce:TelemetryMetaData>
-            <xtce:ParameterSet>
-                <xtce:Parameter name="RxRawCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="RxErrCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="TxOBCCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="RxOBCCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="RxEPSCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="TxEPSCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="RxADBCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="TxADBCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="RxADCSCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="TxADCSCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="RxCOMMSCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="TxCOMMSCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="RxDBGCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="TxDBGCounter" parameterTypeRef="/Delfi-PQ/short"/>
-            </xtce:ParameterSet>
-            <xtce:ContainerSet>
-                <xtce:SequenceContainer name="PACKET_STATS" shortDescription="packet statistics frame">
-                    <xtce:EntryList>
-                        <xtce:ParameterRefEntry parameterRef="RxRawCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="RxErrCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="RxOBCCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="RxEPSCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="RxADBCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="RxADCSCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="RxCOMMSCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="RxDBGCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="TxOBCCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="TxEPSCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="TxADBCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="TxADCSCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="TxCOMMSCounter"/>
-                        <xtce:ParameterRefEntry parameterRef="TxDBGCounter"/>
-                    </xtce:EntryList>
-                    <xtce:BaseContainer containerRef="/Delfi-PQ/PQ9">
-                        <xtce:RestrictionCriteria>
-                            <xtce:ComparisonList>
-                                <xtce:Comparison parameterRef="Service" value="PacketStats"/>
-                                <xtce:Comparison parameterRef="Request" value="Reply"/>
-                            </xtce:ComparisonList>
-                        </xtce:RestrictionCriteria>
-                    </xtce:BaseContainer>
-                </xtce:SequenceContainer>
-            </xtce:ContainerSet>
-        </xtce:TelemetryMetaData>
-        <xtce:CommandMetaData>
-            <!--xtce:ArgumentTypeSet>
-            </xtce:ArgumentTypeSet-->
-            <xtce:MetaCommandSet>
-                <xtce:MetaCommand name="PStats" shortDescription="Packet statistics">
-                    <xtce:LongDescription>Checks the subsystem packet statistics.</xtce:LongDescription>
-                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
-                        <xtce:ArgumentAssignmentList>
-                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
-                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="PacketStats"/>
-                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
-                        </xtce:ArgumentAssignmentList>
-                    </xtce:BaseMetaCommand>
-                    <xtce:CommandContainer name="PStats">
-                        <xtce:EntryList/>
-                    </xtce:CommandContainer>
-                </xtce:MetaCommand>
-
-            <xtce:MetaCommand name="Freeze">
-                 <xtce:LongDescription>Stops a subsystem from working.</xtce:LongDescription>
-                 <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
-                     <xtce:ArgumentAssignmentList>
-                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
-                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Freeze"/>
-                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
-                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Testing"/>
-                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Freeze"/>
-                    </xtce:ArgumentAssignmentList>
-                </xtce:BaseMetaCommand>
-                <xtce:CommandContainer name="Freeze">
-                    <xtce:EntryList/>
-                </xtce:CommandContainer>
-            </xtce:MetaCommand>                        
-           </xtce:MetaCommandSet>
         </xtce:CommandMetaData>
     </xtce:SpaceSystem>
 </xtce:SpaceSystem>
