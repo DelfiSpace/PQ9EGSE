@@ -49,16 +49,16 @@ public class WebpageServlet extends HttpServlet
                 head
                 (
                     title("PQ9 EGSE"),
+                    script().withSrc("/js/jquery-2.1.3.min.js").withType("text/javascript"),
+                    script().withSrc("/js/goldenlayout.js").withType("text/javascript"),
+                    script().withSrc("/js/jsonrpc.js").withType("text/javascript"),
                     link().withRel("stylesheet").withType("text/css").withHref("/css/goldenlayout-base.css"),
                     link().withRel("stylesheet").withType("text/css").withHref("/css/goldenlayout-translucent-theme.css")
                 ),
                 body
                 (
-                    script().withSrc("/js/jquery-1.11.1.min.js").withType("text/javascript"),
-                    script().withSrc("/js/goldenlayout.min.js").withType("text/javascript"),
-                    script().withSrc("/js/jsonrpc.js").withType("text/javascript"),
                     script().withSrc("/js/layoutmanager.js").withType("text/javascript")
-                )
+                ).attr("translate", "no")
             ).render());
     }
 }

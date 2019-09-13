@@ -1,7 +1,12 @@
+// save the layout changes for next session
+var persistentLayout = true;
+
 var config = {
   settings:{
       hasHeaders: true,        
-      showCloseIcon: false
+      showCloseIcon: false,
+      showPopoutIcon: false,
+      showMaximiseIcon: false
     },
   content: [
     {
@@ -11,38 +16,60 @@ var config = {
           type: "component",
           componentName: "Header",
           isClosable: false,
-          height: 15
+          height: 5,
+          id: 'header'
         },
         {
           type: "row",
       content: [
         {
+        type: "column",
+            content: [
+              {   
+                type: "component",
+                componentName: "DownlinkTitle",
+                isClosable: false,
+                id: 'downlinkTitle',
+                height: 5
+              },
+              {
           type: "component",
-          componentName: "DataLog",
+          componentName: "Downlink",
           isClosable: false,
-          height: 60
-        },
+          height: 75,
+          id: 'downlink'
+        }]},
         {
+        type: "column",
+            content: [
+              {   
+                type: "component",
+                componentName: "UplinkTitle",
+                isClosable: false,
+                height: 5,
+                id: 'uplinkTitle'
+              },
+              {
           type: "component",
           componentName: "Uplink",
           isClosable: false,
-          height: 60
-        }]},
+          height: 75,
+          id: 'uplink'
+        }]}]},
         {
           type: "component",
           componentName: "EventLog",
           isClosable: false,
-          height: 25
+          height: 15,
+          id: 'ddd',
         }
-      ]
-    }
   ]
-};
+}]};
  var loadOnce = true;
 
 savedState = localStorage.getItem( 'layoutSavedState' );
 
-if( savedState !== null ) 
+if ((persistentLayout) && ( savedState !== null ))
 {
     myLayout = new GoldenLayout( JSON.parse( savedState ) );
 } else 
@@ -54,9 +81,17 @@ myLayout.registerComponent("Header", function(container)
 {
   container.getElement().html("<div id=\"header\"></div>");
 });
-myLayout.registerComponent("DataLog", function(container) 
+myLayout.registerComponent("DownlinkTitle", function(container) 
+{
+  container.getElement().html("<div><center>Downlink</center></div>");
+});
+myLayout.registerComponent("Downlink", function(container) 
 {
   container.getElement().html("<div id=\"datalog\"></div>");
+});
+myLayout.registerComponent("UplinkTitle", function(container) 
+{
+  container.getElement().html("<div><center>Uplink</center></div>");
 });
 myLayout.registerComponent("Uplink", function(container) 
 {
@@ -66,6 +101,19 @@ myLayout.registerComponent("EventLog", function(container)
 {
   container.getElement().html("<div id=\"log\"></div>");
 });
+
+// remove the header from certain tabs
+myLayout.on( 'componentCreated', function( component )
+{
+    console.log(component.config.componentName);
+    if ((component.config.id == "header") || 
+        (component.config.id == "downlinkTitle") || 
+        (component.config.id == "uplinkTitle"))
+    {
+        component.tab.header.position(false);
+    }
+});
+
 myLayout.init();
 
 var rpc = new jsonRPC("ws://" + location.host + "/wss");
