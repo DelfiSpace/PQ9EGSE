@@ -17,118 +17,125 @@
 package org.delfispace.pq9debugger;
 
 import static j2html.TagCreator.attrs;
-import static j2html.TagCreator.button;
 import static j2html.TagCreator.dd;
 import static j2html.TagCreator.div;
-import static j2html.TagCreator.dl;
 import static j2html.TagCreator.dt;
 import static j2html.TagCreator.each;
 import static j2html.TagCreator.fieldset;
 import static j2html.TagCreator.filter;
-import static j2html.TagCreator.iffElse;
 import static j2html.TagCreator.input;
 import static j2html.TagCreator.label;
 import static j2html.TagCreator.legend;
 import static j2html.TagCreator.link;
-import static j2html.TagCreator.option;
-import static j2html.TagCreator.select;
-import static j2html.TagCreator.textarea;
+import static j2html.TagCreator.table;
+import static j2html.TagCreator.td;
+import static j2html.TagCreator.th;
+import static j2html.TagCreator.tr;
 import j2html.tags.ContainerTag;
 import j2html.tags.Tag;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import org.omg.space.xtce.MetaCommandType;
 import org.omg.space.xtce.MetaCommandType.BaseMetaCommand.ArgumentAssignmentList.ArgumentAssignment;
 import org.xtce.toolkit.XTCEArgument;
+import org.xtce.toolkit.XTCEContainerContentModel;
+import org.xtce.toolkit.XTCEDatabaseException;
+import org.xtce.toolkit.XTCETMContainer;
+import org.xtce.toolkit.XTCETMStream;
 import org.xtce.toolkit.XTCETelecommand;
 
 /**
  *
  * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
-public class UplinkTab 
+public class DownlinkTab 
 {
     private static int tabIndex = 0;
     private static final StringBuilder IDARRAY = new StringBuilder();
     private static final List<String> IDS = new ArrayList();
     
-    public static String generate()
+    public static String generate() 
     {
         try
         {
             List<String[]> numbers = new ArrayList();
-            numbers.add(new String[]{"Uplink:raw:dest", "Destination", "7"});
-            numbers.add(new String[]{"Uplink:raw:src", "Source", "1"});
+            numbers.add(new String[]{"raw:dest", "Destination", "7"});
+            numbers.add(new String[]{"raw:src", "Source", "1"});
 
             tabIndex = 0;
             IDARRAY.setLength(0);
 
-            List<XTCETelecommand> tcs = Configuration.getInstance().getXTCEDatabase().getTelecommands();
+            List<XTCETMStream> ls = Configuration.getInstance().getXTCEDatabase().getStreams();
+            System.out.println("Size " + ls.size());
+            Iterator<XTCETMStream> streamItrator = ls.iterator();
+ 
+List<XTCEContainerContentModel> tlm = new LinkedList();
+while(streamItrator.hasNext()) 
+{
+    XTCETMStream s = streamItrator.next();
+    System.out.println("Stream: " + s.getName());
+    List<XTCETMContainer> c = s.getContainers();
+    Iterator<XTCETMContainer> ic = c.iterator();
+    while(ic.hasNext()) 
+    {
+        XTCETMContainer cc = ic.next();
+               
+        XTCEContainerContentModel cm = new XTCEContainerContentModel(cc, 
+                Configuration.getInstance().getXTCEDatabase().getSpaceSystemTree(), null, false);
+
+        if (!cc.isAbstract())
+        {
+            tlm.add(cm);
+        }
+        }
+    }
+     
+
+System.out.println();
+System.out.println();
+            //List<XTCETelecommand> tcs = Configuration.getInstance().getXTCEDatabase().getTelecommands();
 
             Tag t = div
             (
-                link().withRel("stylesheet").withType("text/css").withHref("/css/uplink.css"),
-                fieldset
-                (                            
-                    legend("Raw Frame"),
-                    dl
-                    (
-                        each(numbers, i -> entry(i[0], i[1], i[2])),
-                        div
-                        (
-                            dt
-                            ( 
-                                label("Data" + ":").attr("for", "raw:data").attr("tabindex", tabIndex)
-                            ), 
-                            dd
-                            (
-                                textarea("17 1").withType("text").withId("Uplink:raw:data").attr("title", 
-                                        "Array of integers between 0 and 255 or hex bytes separated by blanks")
-                            )
-                        )
-                    ),
-                    button("Send").attr("id", "Uplink:SendRaw").attr("onclick", "fetchData(this.id, [" + IDARRAY.toString()+ ", 'Uplink:raw:data'])").attr("tabindex", tabIndex).attr("title", "Raw Frame")
-                ),
-                each(filter(tcs, tc -> tc.isAbstract() != true), tc ->
+                link().withRel("stylesheet").withType("text/css").withHref("/css/uplink.css"),                
+                each(tlm, tl ->
                     fieldset
                     (
-                        legend((tc.getShortDescription().isEmpty() ? tc.getName() : tc.getShortDescription())),
-                        dl
-                        (
-                            each(filter(tc.getArguments(), arg -> !isArgumentRequired(tc, arg)), arg ->
-                            div
+                        legend((tl.getDescription().isEmpty() ? tl.getName() : tl.getDescription())),
+                        table
+                        (                            
+                            each(filter(tl.getContentList(), containerEntry -> containerEntry.getParameter() != null), containerEntry ->
+                            tr
                             (
-                                dt
+                                th
                                 ( 
-                                    label((arg.getShortDescription().isEmpty() ? arg.getName() : arg.getDescription()) + ":")
-                                            .attr("for", tc.getName() + ":" + arg.getName())
-                                            .attr("tabindex", tabIndex++)
-                                            .attr("title", arg.getLongDescription())
+                                    label(containerEntry.getName())
                                 ),
-                                dd
+                                td
                                 (
-                                    iffElse(arg.getEnumerations().isEmpty(), 
-                                        input(attrs("#" + "Uplink:" + tc.getName() + ":" + arg.getName())).withType("text").
-                                                withValue(arg.getInitialValue()).attr("title", 
-                                                arg.getLongDescription()),
-                                        select 
-                                        (
-                                            each(arg.getEnumerations(), e -> 
-                                                 option(e.getShortDescription() == null ? 
-                                                 e.getLabel() : e.getShortDescription()).withValue(e.getLabel()))
-                                        ).withId("Uplink:" + tc.getName() + ":" + arg.getName()).attr("title", 
-                                                arg.getLongDescription())
-                                    )
-                                )   
+                                    label("Data" + ":")
+                                ),                               
+                                td
+                                (
+                                    label(containerEntry.getParameter().getUnits())
+                                )
                             )
-                        )),
-                        button("Send").attr("id", "Uplink:" + tc.getName()).attr("onclick", "fetchData(this.id, [" + getIDs() + "])").attr("tabindex", tabIndex++)
-                    ).attr("title", tc.getLongDescription())
+                        )).attr("style", "width:100%")
+                    ).attr("title", tl.getName())
                 )
             );
+            System.out.println(t.render());
             return t.render();
+        } catch (XTCEDatabaseException ex) {
+            // make sure that, in case of exceptions, the message is printed out
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            ex.printStackTrace(pw);
+            return sw.toString();
         } catch (Exception ex)
         {
             // make sure that, in case of exceptions, the message is printed out
@@ -193,7 +200,7 @@ public class UplinkTab
                 sb.append(", ");
             }
             index++;
-            sb.append("'Uplink:");
+            sb.append("'");
             sb.append(id);
             sb.append("'");
         }

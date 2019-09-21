@@ -65,7 +65,14 @@ var config = {
         }
   ]
 }]};
- var loadOnce = true;
+
+var newItemConfig = {
+    type: 'component',
+    componentName: 'Downlink GUI',
+    id: "downlinkgui"
+};
+
+var loadOnce = true;
 
 savedState = localStorage.getItem( 'layoutSavedState' );
 
@@ -105,7 +112,6 @@ myLayout.registerComponent("EventLog", function(container)
 // remove the header from certain tabs
 myLayout.on( 'componentCreated', function( component )
 {
-    console.log(component.config.componentName);
     if ((component.config.id == "header") || 
         (component.config.id == "downlinkTitle") || 
         (component.config.id == "uplinkTitle"))
@@ -126,6 +132,7 @@ rpc.onopen( function(evt)
     if (loadOnce == true)
     {
         rpc.send("uplink", "");
+        rpc.send("downlinkgui", "");
         loadOnce = false;
     }
     appendToDiv("log", myGetTime() + " Connection established.");
@@ -149,12 +156,26 @@ rpc.onmessage( function(command, data)
             appendToDiv("log", data);
             break;
 
-        case "datalog":
-            appendToDiv("datalog", data);
+        case "downlink":
+            console.log(data);
+            break;
+
+        case "downlinkgui":
+            //appendToDiv("datalog", data);
+setDiv("datalog", data);
             break;
 
         case "uplink":
             setDiv("uplink", data);
+            break;
+
+        case "downlinkgui":
+console.log("downlinkgui");
+console.log(myLayout.root.getItemsById( 'downlink' )[0]);
+myLayout.root.getItemsById( 'downlink' )[0].addChild(newItemConfig );
+console.log(myLayout.root.getItemsById( 'downlink' )[0]);
+myLayout.root.getItemsById( 'downlinkgui' )[0].html("<div id=\"downlinkgui\"></div>");
+            setDiv("downlinkgui", data);
             break;
 
         case "header":
@@ -176,11 +197,10 @@ function handleSend(buttonId)
 function fetchData(id, elm)
 {
     var obj = {};  
-    obj['_send_'] = id;
+    obj['_send_'] = id.split(":")[1];
     for(var i = 0; i < elm.length; i++)
     {   
-        var e = elm[i].split(":");
-        obj[elm[i].split(":")[1]] = document.getElementById(elm[i]).value;
+        obj[elm[i].split(":")[2]] = document.getElementById(elm[i]).value;
     } 
     var s = JSON.stringify(obj);
     rpc.send('SendCommand', s);

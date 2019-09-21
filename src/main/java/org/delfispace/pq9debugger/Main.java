@@ -382,6 +382,7 @@ public class Main implements PQ9Receiver, Subscriber
         sb.append(processFrame(stream, msg.getFrame(), data).replace("\n", "<br>&emsp;&emsp;&emsp;&emsp;").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
         sb.append("</font>");
         srv.send(new Command("datalog", sb.toString()));  
+        srv.send(new Command("downlink", data.toString()));  
         
         if (received)
         {
@@ -456,6 +457,10 @@ public class Main implements PQ9Receiver, Subscriber
 
                 case "uplink":
                     srv.send(new Command("uplink", UplinkTab.generate()));
+                    
+                case "downlinkgui":
+                    srv.send(new Command("downlinkgui", DownlinkTab.generate()));
+                    
                     break;
                 default:
                     handleException(new Exception("Unknown command: " + cmd));
