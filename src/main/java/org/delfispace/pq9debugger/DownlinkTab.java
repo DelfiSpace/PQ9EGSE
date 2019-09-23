@@ -16,37 +16,28 @@
  */
 package org.delfispace.pq9debugger;
 
-import static j2html.TagCreator.attrs;
-import static j2html.TagCreator.dd;
 import static j2html.TagCreator.div;
-import static j2html.TagCreator.dt;
 import static j2html.TagCreator.each;
 import static j2html.TagCreator.fieldset;
 import static j2html.TagCreator.filter;
-import static j2html.TagCreator.input;
-import static j2html.TagCreator.label;
 import static j2html.TagCreator.legend;
 import static j2html.TagCreator.link;
+import static j2html.TagCreator.p;
 import static j2html.TagCreator.table;
 import static j2html.TagCreator.td;
 import static j2html.TagCreator.th;
 import static j2html.TagCreator.tr;
-import j2html.tags.ContainerTag;
 import j2html.tags.Tag;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import org.omg.space.xtce.MetaCommandType;
-import org.omg.space.xtce.MetaCommandType.BaseMetaCommand.ArgumentAssignmentList.ArgumentAssignment;
-import org.xtce.toolkit.XTCEArgument;
 import org.xtce.toolkit.XTCEContainerContentModel;
 import org.xtce.toolkit.XTCEDatabaseException;
 import org.xtce.toolkit.XTCETMContainer;
 import org.xtce.toolkit.XTCETMStream;
-import org.xtce.toolkit.XTCETelecommand;
+import org.xtce.toolkit.XTCETypedObject.EngineeringType;
 
 /**
  *
@@ -54,157 +45,68 @@ import org.xtce.toolkit.XTCETelecommand;
  */
 public class DownlinkTab 
 {
-    private static int tabIndex = 0;
-    private static final StringBuilder IDARRAY = new StringBuilder();
-    private static final List<String> IDS = new ArrayList();
-    
     public static String generate() 
     {
-        try
+        try 
         {
-            List<String[]> numbers = new ArrayList();
-            numbers.add(new String[]{"raw:dest", "Destination", "7"});
-            numbers.add(new String[]{"raw:src", "Source", "1"});
+            List<XTCEContainerContentModel> containers = new LinkedList();
 
-            tabIndex = 0;
-            IDARRAY.setLength(0);
-
-            List<XTCETMStream> ls = Configuration.getInstance().getXTCEDatabase().getStreams();
-            System.out.println("Size " + ls.size());
-            Iterator<XTCETMStream> streamItrator = ls.iterator();
- 
-List<XTCEContainerContentModel> tlm = new LinkedList();
-while(streamItrator.hasNext()) 
-{
-    XTCETMStream s = streamItrator.next();
-    System.out.println("Stream: " + s.getName());
-    List<XTCETMContainer> c = s.getContainers();
-    Iterator<XTCETMContainer> ic = c.iterator();
-    while(ic.hasNext()) 
-    {
-        XTCETMContainer cc = ic.next();
-               
-        XTCEContainerContentModel cm = new XTCEContainerContentModel(cc, 
-                Configuration.getInstance().getXTCEDatabase().getSpaceSystemTree(), null, false);
-
-        if (!cc.isAbstract())
-        {
-            tlm.add(cm);
-        }
-        }
-    }
-     
-
-System.out.println();
-System.out.println();
-            //List<XTCETelecommand> tcs = Configuration.getInstance().getXTCEDatabase().getTelecommands();
+            Iterator<XTCETMStream> s = Configuration.getInstance().getXTCEDatabase().getStreams().iterator();
+            while (s.hasNext())
+            {                
+                Iterator<XTCETMContainer> ic = s.next().getContainers().iterator();
+                while (ic.hasNext()) 
+                {
+                    XTCETMContainer cc = ic.next();
+                    if (!cc.isAbstract()) 
+                    {
+                        containers.add(new XTCEContainerContentModel(cc,
+                                Configuration.getInstance().getXTCEDatabase().getSpaceSystemTree(), null, false));
+                    }
+                }
+            }
 
             Tag t = div
             (
-                link().withRel("stylesheet").withType("text/css").withHref("/css/uplink.css"),                
-                each(tlm, tl ->
+                link().withRel("stylesheet").withType("text/css").withHref("/css/downlink.css"),
+                    div(
+                each(containers, container -> 
                     fieldset
                     (
-                        legend((tl.getDescription().isEmpty() ? tl.getName() : tl.getDescription())),
+                        legend((container.getDescription().isEmpty() ? container.getName() : container.getDescription())),
                         table
-                        (                            
-                            each(filter(tl.getContentList(), containerEntry -> containerEntry.getParameter() != null), containerEntry ->
-                            tr
+                        (
+                            each(filter(container.getContentList(), containerEntry -> (containerEntry.getParameter() != null) && (!containerEntry.getParameter().getEngineeringType().equals(EngineeringType.ARRAY))), containerEntry -> tr
                             (
                                 th
-                                ( 
-                                    label(containerEntry.getName())
+                                (
+                                    p(containerEntry.getName())
                                 ),
+                                td().attr("id", "Downlink:" + container.getName() + ":" + containerEntry.getName()),
                                 td
                                 (
-                                    label("Data" + ":")
-                                ),                               
-                                td
-                                (
-                                    label(containerEntry.getParameter().getUnits())
+                                    p(containerEntry.getParameter().getUnits())
                                 )
-                            )
-                        )).attr("style", "width:100%")
-                    ).attr("title", tl.getName())
-                )
+                            ))
+                        )
+                    ).attr("title", container.getName())
+                )).attr("class", "example-balance")
             );
-            System.out.println(t.render());
             return t.render();
-        } catch (XTCEDatabaseException ex) {
-            // make sure that, in case of exceptions, the message is printed out
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            ex.printStackTrace(pw);
-            return sw.toString();
-        } catch (Exception ex)
+        } catch (XTCEDatabaseException ex) 
         {
             // make sure that, in case of exceptions, the message is printed out
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             ex.printStackTrace(pw);
             return sw.toString();
-        }
-    }
-    
-    private static ContainerTag entry(String id, String description, String value) 
-    {
-        tabIndex++;
-        if (IDARRAY.length() != 0)
+        } catch (Exception ex) 
         {
-            IDARRAY.append(", ");
+            // make sure that, in case of exceptions, the message is printed out
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            ex.printStackTrace(pw);
+            return sw.toString();
         }
-        IDARRAY.append("\'");
-        IDARRAY.append(id);
-        IDARRAY.append("\'");        
-        return div
-        (
-            dt
-            ( 
-                label(description + ":").attr("for", id).attr("tabindex", tabIndex)
-            ), 
-            dd
-            (
-                input(attrs("#" + id)).withType("text").withValue(value).attr("title", "Integer between 0 and 255")
-            )
-        );
-    }
-    
-    private static boolean isArgumentRequired(XTCETelecommand tc, XTCEArgument a)
-    {
-        boolean found = false;
-        List<ArgumentAssignment> ass = tc.getMetaCommandReference().
-                                            getBaseMetaCommand().getArgumentAssignmentList().
-                                            getArgumentAssignment();
-        for (MetaCommandType.BaseMetaCommand.ArgumentAssignmentList.ArgumentAssignment b : ass)
-        {
-            if (a.getName().equals(b.getArgumentName()))
-            {
-                found = true;
-            }
-        }
-        if (!found)
-        {
-            IDS.add(tc.getName() + ":" + a.getName());
-        }
-        return found;
-    }
-    
-    private static String getIDs()
-    {
-        StringBuilder sb = new StringBuilder();
-        int index = 0;
-        for(String id : IDS)
-        {
-            if (index != 0)
-            {
-                sb.append(", ");
-            }
-            index++;
-            sb.append("'");
-            sb.append(id);
-            sb.append("'");
-        }
-        IDS.clear();
-        return sb.toString();
     }
 }

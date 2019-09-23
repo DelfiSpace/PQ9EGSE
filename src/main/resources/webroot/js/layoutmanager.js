@@ -158,6 +158,7 @@ rpc.onmessage( function(command, data)
 
         case "downlink":
             console.log(data);
+dataToGUI(data);
             break;
 
         case "downlinkgui":
@@ -204,6 +205,21 @@ function fetchData(id, elm)
     } 
     var s = JSON.stringify(obj);
     rpc.send('SendCommand', s);
+}
+
+function dataToGUI(data)
+{
+    var elements = JSON.parse(data);
+var packet = elements['_received_'];
+console.log("frame " + packet);
+    for (var elm in elements)
+    {
+        if (elm.substring(0, 1) != "_") 
+        {
+            console.log(elm);
+            document.getElementById('Downlink:' + packet + ":" + elm).innerHTML = elements[elm];
+        }
+    }
 }
 
 function myGetTime()

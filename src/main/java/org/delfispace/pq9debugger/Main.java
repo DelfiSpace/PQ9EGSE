@@ -50,6 +50,7 @@ import org.xtce.toolkit.XTCEFunctions;
 import org.xtce.toolkit.XTCETMStream;
 import org.xtce.toolkit.XTCETelecommand;
 import org.xtce.toolkit.XTCETelecommandContentModel;
+import org.xtce.toolkit.XTCETypedObject;
 import org.xtce.toolkit.XTCEValidRange;
 
 /**
@@ -247,6 +248,8 @@ public class Main implements PQ9Receiver, Subscriber
                 sb.append("\t");
                 sb.append(entry.getParameter().getShortDescription().isEmpty() ? entry.getName() : entry.getParameter().getShortDescription());
                 sb.append(": ");
+                
+               
                 sb.append(val.getCalibratedValue());
                 sb.append(" ");
                 sb.append(entry.getParameter().getUnits());
@@ -367,7 +370,7 @@ public class Main implements PQ9Receiver, Subscriber
         sb.append("&emsp;&emsp;&emsp;&emsp;");
         sb.append(msg.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
         sb.append("</font>");
-        srv.send(new Command("datalog", sb.toString()));
+        //srv.send(new Command("datalog", sb.toString()));
 
         sb.setLength(0);
         if (received)
@@ -381,8 +384,10 @@ public class Main implements PQ9Receiver, Subscriber
         sb.append("&emsp;&emsp;&emsp;&emsp;Decoded frame: ");
         sb.append(processFrame(stream, msg.getFrame(), data).replace("\n", "<br>&emsp;&emsp;&emsp;&emsp;").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
         sb.append("</font>");
-        srv.send(new Command("datalog", sb.toString()));  
-        srv.send(new Command("downlink", data.toString()));  
+        //srv.send(new Command("datalog", sb.toString()));  
+        JSONObject obj=new JSONObject();
+        data.forEach((k,v)->obj.put(k,v));
+        srv.send(new Command("downlink", obj.toJSONString() + "\n"));  
         
         if (received)
         {
@@ -448,6 +453,7 @@ public class Main implements PQ9Receiver, Subscriber
                     loadXTCEFile(XTCE_FILE);
                     // force an update in the Uplink panel
                     srv.send(new Command("uplink", UplinkTab.generate()));
+                    srv.send(new Command("downlinkgui", DownlinkTab.generate()));
                     break;
                     
                 case "ping":

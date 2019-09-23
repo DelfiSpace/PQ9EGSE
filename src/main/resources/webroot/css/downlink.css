@@ -1,0 +1,27 @@
+table {
+  width: 100%;
+  color: inherit;
+}
+p {
+  color: inherit;
+}
+th {
+  color: inherit;
+  text-align: left;
+}
+td {
+  color: inherit;
+  text-align: left;
+}
+.example-balance {
+  -webkit-column-fill: balance;
+  -moz-column-fill: balance;
+  column-fill: balance;
+  margin-bottom: 1em;
+  column-count: 2;
+}
+fieldset {
+-webkit-column-break-inside: avoid;
+          page-break-inside: avoid;
+               break-inside: avoid;
+}
