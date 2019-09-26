@@ -51,44 +51,44 @@ function jsonRPC(address)
                 that.errorHandler("Invalid message: " + evt.data);
             }            
         };
-    }
+    };
 
     jsonRPC.prototype.onopen =  function (f)
     {
         jsonRPC.prototype.openHandler = f;
-    }
+    };
 
     jsonRPC.prototype.onmessage =  function (f)
     {
         jsonRPC.prototype.messageHandler = f;
-    }
+    };
 
     jsonRPC.prototype.onclose =  function (f)
     {
         jsonRPC.prototype.closeHandler = f;
-    }
+    };
 
     jsonRPC.prototype.onerror =  function (f)
     {
         jsonRPC.prototype.errorHandler = f;
-    }
+    };
 
     // default open handler
     jsonRPC.prototype.openHandler = function (evt)
     {
         console.log("jsonRPC.onopen.");
-    }
+    };
 
     // default message handler
     jsonRPC.prototype.messageHandler = function (data)
     {
         console.log("jsonRPC.messageHandler: " + data);
-    }
+    };
 
     // close handler managing reconnection
     jsonRPC.prototype.internalCloseHandler = function (evt)
     {      
-        if (this.reconnectInProgress == false)
+        if (this.reconnectInProgress === false)
         {
             // call the close handler 
             jsonRPC.prototype.closeHandler(evt);
@@ -102,17 +102,17 @@ function jsonRPC(address)
                 this.reconnect(evt);
                 break;
         }        
-    }
+    };
 
     jsonRPC.prototype.closeHandler = function (evt)
     {
         console.log("jsonRPC.closeHandler: " + evt);
-    }
+    };
 
     jsonRPC.prototype.errorHandler = function (err)
     {
         console.log("jsonRPC.errorHandler: " + err);
-    }
+    };
 
     jsonRPC.prototype.internalErrorHandler = function (evt)
     {
@@ -122,9 +122,9 @@ function jsonRPC(address)
                 this.reconnect(evt);
                 break;
             default:
-                if (this.reconnectInProgress == false)
+                if (this.reconnectInProgress === false)
                 {
-                    if (evt.code == undefined)
+                    if (evt.code === undefined)
                     {
                         this.errorHandler("undefined");
                     }
@@ -135,7 +135,7 @@ function jsonRPC(address)
                     break;
                 }
         }        
-    }
+    };
 
     jsonRPC.prototype.reconnect = function(evt)
     {
@@ -145,13 +145,13 @@ function jsonRPC(address)
         {            
             that.open();
         }, this.autoReconnectInterval);
-    }
+    };
 
     jsonRPC.prototype.send = function (command, data)
     {
         if(this.myWebSocket.readyState === this.myWebSocket.OPEN)
         {
-            var obj = {}
+            var obj = {};
             obj["command"] = command;
             obj["data"] = data;
             var s = JSON.stringify(obj);
@@ -161,6 +161,5 @@ function jsonRPC(address)
         {
             this.errorHandler("Send failure, connection lost...");
         }
-    }
+    };
 }
-   
