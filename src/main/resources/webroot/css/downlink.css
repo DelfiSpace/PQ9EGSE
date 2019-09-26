@@ -7,11 +7,9 @@ p {
 }
 th {
   color: inherit;
-  text-align: left;
 }
 td {
   color: inherit;
-  text-align: left;
 }
 .example-balance {
   -webkit-column-fill: balance;
@@ -24,4 +22,15 @@ fieldset {
 -webkit-column-break-inside: avoid;
           page-break-inside: avoid;
                break-inside: avoid;
+}
+.unitsColumn {
+  text-align: left;
+  width: 30px;
+}
+.namesColumn {
+  text-align: left;
+}
+.valuesColumn {
+  text-align: right;
+  padding-right:0.5em;
 }
