@@ -64,7 +64,7 @@
         <dependency>
             <groupId>org.xtce</groupId>
             <artifactId>xtcetools</artifactId>
-            <version>1.1.4</version>
+            <version>1.1.5</version>
         </dependency>
     
         <dependency>
