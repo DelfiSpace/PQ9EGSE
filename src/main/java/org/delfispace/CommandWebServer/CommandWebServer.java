@@ -47,7 +47,7 @@ public class CommandWebServer
         context.setBaseResource(Resource.newResource(url.toURI()));
         server.setHandler(context);
 
-        // Add a servlet (technique #1)
+        // Add a servlet
         ServletHolder holderHello = context.addServlet(WebpageServlet.class,"/");
         holderHello.setInitOrder(0);
 

@@ -27,10 +27,9 @@ import java.io.IOException;
  */
 public class WebSocketErrorHandler extends org.eclipse.jetty.server.handler.ErrorHandler
 {
-	@Override
-	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
-	{
-		response.sendRedirect(request.getContextPath() + "/");
-	}
-
+    @Override
+    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
+    {
+        response.sendRedirect(request.getContextPath() + "/");
+    }
 }
