@@ -61,10 +61,10 @@ var config = {
           componentName: "EventLog",
           isClosable: false,
           height: 15,
-          id: 'ddd'
+          id: 'log'
         }
-  ]
-}]};
+    ]}
+]};
 
 var newItemConfig = {
     type: 'component',
@@ -74,8 +74,20 @@ var newItemConfig = {
 
 var loadOnce = true;
 
-savedState = localStorage.getItem( 'layoutSavedState' );
+// check if the current layout configuration 
+// version corresponds to the stored one
+configVersion = localStorage.getItem( 'configVersion' );
+hash = hashCode(JSON.stringify(config));
+if ((configVersion !== null) && (configVersion !== hash))
+{
+    // version mismatch, to prevent issues clean the current configuration
+    localStorage.removeItem('layoutSavedState');
+}
+// update the stored configuration vrsion
+localStorage.setItem( 'configVersion', hash );
 
+// load the stored layout configuration
+savedState = localStorage.getItem( 'layoutSavedState' );
 if ((persistentLayout) && ( savedState !== null ))
 {
     myLayout = new GoldenLayout( JSON.parse( savedState ) );
@@ -294,4 +306,17 @@ function reloadXTCEFile()
 function reloadSerialPorts()
 {
     rpc.send("reloadSerialPorts", "");
+}
+
+function hashCode(s) 
+{
+    var h = 0, l = s.length, i = 0;
+    if ( l > 0 )
+    {
+        while (i < l)
+        {
+            h = (h << 5) - h + s.charCodeAt(i++) | 0;
+        }
+    }
+    return String(h);
 }
