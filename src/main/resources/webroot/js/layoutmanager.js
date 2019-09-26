@@ -61,7 +61,7 @@ var config = {
           componentName: "EventLog",
           isClosable: false,
           height: 15,
-          id: 'ddd',
+          id: 'ddd'
         }
   ]
 }]};
@@ -94,7 +94,7 @@ myLayout.registerComponent("DownlinkTitle", function(container)
 });
 myLayout.registerComponent("Downlink", function(container) 
 {
-  container.getElement().html("<div id=\"datalog\"></div>");
+  container.getElement().html("<div id=\"downlinkgui\"></div>");
 });
 myLayout.registerComponent("UplinkTitle", function(container) 
 {
@@ -112,9 +112,9 @@ myLayout.registerComponent("EventLog", function(container)
 // remove the header from certain tabs
 myLayout.on( 'componentCreated', function( component )
 {
-    if ((component.config.id == "header") || 
-        (component.config.id == "downlinkTitle") || 
-        (component.config.id == "uplinkTitle"))
+    if ((component.config.id === "header") || 
+        (component.config.id === "downlinkTitle") || 
+        (component.config.id === "uplinkTitle"))
     {
         component.tab.header.position(false);
     }
@@ -129,7 +129,7 @@ rpc.onopen( function(evt)
     // generate the uplink only the first time:
     // if the connection is lost and re-attained, do not
     // update the uplink panel
-    if (loadOnce == true)
+    if (loadOnce === true)
     {
         rpc.send("uplink", "");
         rpc.send("downlinkgui", "");
@@ -157,26 +157,17 @@ rpc.onmessage( function(command, data)
             break;
 
         case "downlink":
-            console.log(data);
-dataToGUI(data);
+            dataToGUI(data);
             break;
 
         case "downlinkgui":
-            //appendToDiv("datalog", data);
-setDiv("datalog", data);
+            setDiv("downlinkgui", data);
+            //myLayout.root.getItemsById( 'downlink' )[0].addChild(newItemConfig );
+            //myLayout.root.getItemsById( 'downlinkgui' )[0].html("<div id=\"downlinkgui\"></div>");
             break;
 
         case "uplink":
             setDiv("uplink", data);
-            break;
-
-        case "downlinkgui":
-console.log("downlinkgui");
-console.log(myLayout.root.getItemsById( 'downlink' )[0]);
-myLayout.root.getItemsById( 'downlink' )[0].addChild(newItemConfig );
-console.log(myLayout.root.getItemsById( 'downlink' )[0]);
-myLayout.root.getItemsById( 'downlinkgui' )[0].html("<div id=\"downlinkgui\"></div>");
-            setDiv("downlinkgui", data);
             break;
 
         case "header":
@@ -208,16 +199,23 @@ function fetchData(id, elm)
 }
 
 function dataToGUI(data)
-{
+{  
     var elements = JSON.parse(data);
-var packet = elements['_received_'];
-console.log("frame " + packet);
+    var packet = elements['_received_'];
     for (var elm in elements)
     {
-        if (elm.substring(0, 1) != "_") 
+        if (elm.substring(0, 1) !== "_") 
         {
-            console.log(elm);
-            document.getElementById('Downlink:' + packet + ":" + elm).innerHTML = elements[elm];
+            values = JSON.parse(elements[elm]);
+            if (values['valid'] === "false")
+            {
+                document.getElementById('Downlink:' + packet + ":" + elm).innerHTML = 
+                        "<strong title=\"Value outside the valid range\"><font color=\"red\">" + values['value'] + "</font></strong>";
+            }
+            else
+            {
+                document.getElementById('Downlink:' + packet + ":" + elm).innerHTML = values['value'];
+            }
         }
     }
 }
@@ -253,7 +251,7 @@ function appendToDiv(id, data)
        
     document.getElementById(id).innerHTML += data + "<br/>\n";
 
-    if (delta == delta1)
+    if (delta === delta1)
     {
         document.getElementById(id).scrollIntoView(false);
     }

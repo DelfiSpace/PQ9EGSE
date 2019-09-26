@@ -51,6 +51,7 @@ import org.xtce.toolkit.XTCETMStream;
 import org.xtce.toolkit.XTCETelecommand;
 import org.xtce.toolkit.XTCETelecommandContentModel;
 import org.xtce.toolkit.XTCETypedObject;
+import org.xtce.toolkit.XTCETypedObject.EngineeringType;
 import org.xtce.toolkit.XTCEValidRange;
 
 /**
@@ -242,8 +243,25 @@ public class Main implements PQ9Receiver, Subscriber
         {
             XTCEContainerEntryValue val = entry.getValue();
             if (val != null) 
-            {
-                values.put(entry.getName(), val.getCalibratedValue());
+            {          
+                String value;
+                if (entry.getParameter().getEngineeringType() == EngineeringType.FLOAT32)
+                {
+                    value = Float.valueOf(val.getCalibratedValue()).toString();
+                }
+                else if (entry.getParameter().getEngineeringType() == EngineeringType.FLOAT64)
+                {
+                    value = Double.valueOf(val.getCalibratedValue()).toString();
+                }
+                else
+                {
+                    value = val.getCalibratedValue();
+                }
+                
+                JSONObject obj=new JSONObject();
+                obj.put("value", value);
+                obj.put("valid", "true");
+                
                 
                 sb.append("\t");
                 sb.append(entry.getParameter().getShortDescription().isEmpty() ? entry.getName() : entry.getParameter().getShortDescription());
@@ -261,11 +279,15 @@ public class Main implements PQ9Receiver, Subscriber
                 {
                     sb.append(" INVALID!");
                     sb.append("\n");
+                    obj.put("valid", "false");
                 }
                 else
                 {
                     sb.append("\n");
+                    obj.put("valid", "true");
                 }
+                
+                values.put(entry.getName(), obj.toJSONString());
             }
         });
         List<String> warnings = model.getWarnings();
@@ -388,7 +410,7 @@ public class Main implements PQ9Receiver, Subscriber
         JSONObject obj=new JSONObject();
         data.forEach((k,v)->obj.put(k,v));
         srv.send(new Command("downlink", obj.toJSONString() + "\n"));  
-        
+
         if (received)
         {
             DatSktSrv.send(data);
@@ -402,8 +424,7 @@ public class Main implements PQ9Receiver, Subscriber
     @Override
     public void received(PQ9 msg) 
     {        
-        Date rxTime = new Date();                         
-        
+        Date rxTime = new Date();                                 
         
         try
         {
@@ -418,8 +439,7 @@ public class Main implements PQ9Receiver, Subscriber
         catch (Exception ex)
         {
             handleException(ex);
-        }
-        
+        }        
     }
 
     /**
@@ -463,10 +483,10 @@ public class Main implements PQ9Receiver, Subscriber
 
                 case "uplink":
                     srv.send(new Command("uplink", UplinkTab.generate()));
+                    break;
                     
                 case "downlinkgui":
-                    srv.send(new Command("downlinkgui", DownlinkTab.generate()));
-                    
+                    srv.send(new Command("downlinkgui", DownlinkTab.generate()));                    
                     break;
                 default:
                     handleException(new Exception("Unknown command: " + cmd));

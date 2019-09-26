@@ -25,7 +25,6 @@ import static j2html.TagCreator.link;
 import static j2html.TagCreator.p;
 import static j2html.TagCreator.table;
 import static j2html.TagCreator.td;
-import static j2html.TagCreator.th;
 import static j2html.TagCreator.tr;
 import j2html.tags.Tag;
 import java.io.PrintWriter;
@@ -61,36 +60,41 @@ public class DownlinkTab
                     if (!cc.isAbstract()) 
                     {
                         containers.add(new XTCEContainerContentModel(cc,
-                                Configuration.getInstance().getXTCEDatabase().getSpaceSystemTree(), null, false));
-                    }
+                                Configuration.getInstance().getXTCEDatabase().getSpaceSystemTree(), null, false));                        
+                    }                    
                 }
             }
 
             Tag t = div
             (
                 link().withRel("stylesheet").withType("text/css").withHref("/css/downlink.css"),
-                    div(
-                each(containers, container -> 
-                    fieldset
-                    (
-                        legend((container.getDescription().isEmpty() ? container.getName() : container.getDescription())),
-                        table
+                div
+                (
+                    each(containers, container -> 
+                        fieldset
                         (
-                            each(filter(container.getContentList(), containerEntry -> (containerEntry.getParameter() != null) && (!containerEntry.getParameter().getEngineeringType().equals(EngineeringType.ARRAY))), containerEntry -> tr
+                            legend((container.getDescription().isEmpty() ? container.getName() : container.getDescription())),
+                            table
                             (
-                                th
+                                each(filter(container.getContentList(), containerEntry -> (containerEntry.getParameter() != null) && (!containerEntry.getParameter().getEngineeringType().equals(EngineeringType.ARRAY))), containerEntry -> tr
                                 (
-                                    p(containerEntry.getName())
-                                ),
-                                td().attr("id", "Downlink:" + container.getName() + ":" + containerEntry.getName()),
-                                td
-                                (
-                                    p(containerEntry.getParameter().getUnits())
-                                )
-                            ))
-                        )
-                    ).attr("title", container.getName())
-                )).attr("class", "example-balance")
+                                    tr
+                                    (
+                                        td
+                                        (
+                                            p(containerEntry.getName())
+                                        ).attr("class", "namesColumn"),
+                                        td().attr("id", "Downlink:" + container.getName() + ":" + containerEntry.getName()).attr("class", "valuesColumn"),
+                                        td
+                                        (
+                                            p(containerEntry.getParameter().getUnits())
+                                        ).attr("class", "unitsColumn")
+                                    )
+                                ))
+                            )
+                        ).attr("title", container.getName())
+                    )
+                ).attr("class", "example-balance")
             );
             return t.render();
         } catch (XTCEDatabaseException ex) 
