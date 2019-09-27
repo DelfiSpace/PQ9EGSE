@@ -84,17 +84,20 @@ public class DownlinkTab
                                         (
                                             p(containerEntry.getName())
                                         ).attr("class", "namesColumn"),
-                                        td().attr("id", "Downlink:" + container.getName() + ":" + containerEntry.getName()).attr("class", "valuesColumn"),
+                                        td
+                                        (
+                                            p("-")
+                                        ).attr("id", "Downlink:" + container.getName() + ":" + containerEntry.getName()).attr("class", "valuesColumn"),
                                         td
                                         (
                                             p(containerEntry.getParameter().getUnits())
                                         ).attr("class", "unitsColumn")
                                     )
                                 ))
-                            )
+                            ).attr("class", "outdatedFrame").attr("id", "Downlink:" + container.getName())
                         ).attr("title", container.getName())
                     )
-                ).attr("class", "example-balance")
+                ).attr("class", "balancedColumns")
             );
             return t.render();
         } catch (XTCEDatabaseException ex) 

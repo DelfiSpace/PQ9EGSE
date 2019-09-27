@@ -214,6 +214,13 @@ function dataToGUI(data)
 {  
     var elements = JSON.parse(data);
     var packet = elements['_received_'];
+    
+    // find the last received message and mark it as outdated
+    changeClass("updatedFrame", "outdatedFrame");
+ 
+    // find invalid values and change color properties
+    changeClass("invalidValue", "valuesColumn");
+
     for (var elm in elements)
     {
         if (elm.substring(0, 1) !== "_") 
@@ -221,15 +228,17 @@ function dataToGUI(data)
             values = JSON.parse(elements[elm]);
             if (values['valid'] === "false")
             {
+                document.getElementById('Downlink:' + packet + ":" + elm).className = "invalidValue";
                 document.getElementById('Downlink:' + packet + ":" + elm).innerHTML = 
-                        "<strong title=\"Value outside the valid range\"><font color=\"red\">" + values['value'] + "</font></strong>";
+                        "<strike title=\"Value outside the valid range\">" + values['value'] + "</strike>";
             }
             else
             {
                 document.getElementById('Downlink:' + packet + ":" + elm).innerHTML = values['value'];
-            }
+            }            
         }
     }
+    document.getElementById('Downlink:' + packet).className = "updatedFrame";
 }
 
 function myGetTime()
@@ -319,4 +328,13 @@ function hashCode(s)
         }
     }
     return String(h);
+}
+
+function changeClass(oldclass, newclass)
+{
+    var updatedValues = document.querySelectorAll("." + oldclass);
+    updatedValues.forEach(function(userItem) 
+    {
+        userItem.className = newclass;
+    });
 }
