@@ -23,6 +23,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -66,6 +70,29 @@ public class PQ9DataClient implements Closeable
         outToServer.flush();
     }
     
+    public void sendFrame2(Frame frame) throws IOException
+    {
+        JSONObject command = new JSONObject();
+        frame.forEach((String k, FrameValue v) ->
+        {
+            if (k.charAt(0) =='_')
+            {
+                // command
+                command.put(k, frame.get(k).getValue());
+            }
+            else
+            {
+                JSONObject value = new JSONObject();
+                value.put("value", v.getValue());
+                value.put("valid", v.isValid());
+                command.put(k, value.toJSONString());
+            }
+        });
+        System.out.println(command.toJSONString());
+        outToServer.writeBytes(command.toJSONString() + "\n");
+        outToServer.flush();
+    }
+    
     public JSONObject getFrame(int timeout) throws IOException, ParseException, TimeoutException
     {
         boolean found = false;
@@ -91,6 +118,27 @@ public class PQ9DataClient implements Closeable
     
     public JSONObject getFrame() throws IOException, ParseException, TimeoutException
     {
+        
         return getFrame(this.timeout);
+    }
+    
+    public Frame getFrame2() throws IOException, ParseException, TimeoutException
+    {        
+        Frame f = new Frame();
+        JSONObject obj = getFrame(this.timeout);
+        obj.forEach((Object k, Object v) -> 
+        {
+            try
+            {
+                String parsed = ((String)v).replace("\\\"", "\"");
+                //System.out.println(parsed);
+                JSONObject subobj = (JSONObject) parser.parse(parsed);
+                f.add((String)k, (String)subobj.get("value"), subobj.get("valid").equals("true"));
+            } catch (ParseException ex)
+            {
+                // todo: fix it somehow
+            }
+        });
+        return f;
     }
 }

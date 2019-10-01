@@ -28,32 +28,32 @@ import org.json.simple.parser.ParseException;
 public class TestEPS
 {
     private final static int TIMEOUT = 300; // in ms
-    private final static StatisticsGenerator[] stats = new StatisticsGenerator[22];
+    private final static StatisticsGenerator[] STATS = new StatisticsGenerator[22];
     
     public static void main(String[] args) throws IOException, InterruptedException, ParseException 
     {
-        stats[0] = new StatisticsGenerator();
-        stats[1] = new StatisticsGenerator();
-        stats[2] = new StatisticsGenerator();
-        stats[3] = new StatisticsGenerator();
-        stats[4] = new StatisticsGenerator();
-        stats[5] = new StatisticsGenerator();
-        stats[6] = new StatisticsGenerator();
-        stats[7] = new StatisticsGenerator();
-        stats[8] = new StatisticsGenerator();
-        stats[9] = new StatisticsGenerator();
-        stats[10] = new StatisticsGenerator();
-        stats[11] = new StatisticsGenerator();
-        stats[12] = new StatisticsGenerator();
-        stats[13] = new StatisticsGenerator();
-        stats[14] = new StatisticsGenerator();
-        stats[15] = new StatisticsGenerator();
-        stats[16] = new StatisticsGenerator();
-        stats[17] = new StatisticsGenerator();
-        stats[18] = new StatisticsGenerator();
-        stats[19] = new StatisticsGenerator();
-        stats[20] = new StatisticsGenerator();
-        stats[21] = new StatisticsGenerator();
+        STATS[0] = new StatisticsGenerator();
+        STATS[1] = new StatisticsGenerator();
+        STATS[2] = new StatisticsGenerator();
+        STATS[3] = new StatisticsGenerator();
+        STATS[4] = new StatisticsGenerator();
+        STATS[5] = new StatisticsGenerator();
+        STATS[6] = new StatisticsGenerator();
+        STATS[7] = new StatisticsGenerator();
+        STATS[8] = new StatisticsGenerator();
+        STATS[9] = new StatisticsGenerator();
+        STATS[10] = new StatisticsGenerator();
+        STATS[11] = new StatisticsGenerator();
+        STATS[12] = new StatisticsGenerator();
+        STATS[13] = new StatisticsGenerator();
+        STATS[14] = new StatisticsGenerator();
+        STATS[15] = new StatisticsGenerator();
+        STATS[16] = new StatisticsGenerator();
+        STATS[17] = new StatisticsGenerator();
+        STATS[18] = new StatisticsGenerator();
+        STATS[19] = new StatisticsGenerator();
+        STATS[20] = new StatisticsGenerator();
+        STATS[21] = new StatisticsGenerator();
 
         
         try (PQ9DataClient client = new PQ9DataClient("localhost", 10000)) 
@@ -64,7 +64,7 @@ public class TestEPS
             command.put("_send_", "GetTelemetry");
             command.put("Destination", "EPS");
             
-            int transmitted = 80;
+            int transmitted = 8000;
             
             for (int h = 0; h < transmitted; h++) 
             {
@@ -77,84 +77,84 @@ public class TestEPS
 
                 try 
                 {
-                    JSONObject reply = client.getFrame();
+                    Frame reply = client.getFrame2();
                     
                     Date after = new Date();
                     long delta = after.getTime() - before.getTime();
-                    stats[0].addPoint(delta);
-                    
-                    if (reply.get("EPS_DC_INA_Status").toString().equals("Working"))
+                    STATS[0].addPoint(delta);
+
+                    if (reply.get("EPS_DC_INA_Status").getValue().equals("Working"))
                     {
-                        stats[1].addPoint(Double.parseDouble(reply.get("IntVoltage").toString()));
-                        stats[2].addPoint(Double.parseDouble(reply.get("IntCurrent").toString()));
+                        STATS[1].addPoint(Double.parseDouble(reply.get("IntVoltage").getValue()));
+                        STATS[2].addPoint(Double.parseDouble(reply.get("IntCurrent").getValue()));
                     }
                     
-                    if (reply.get("EPS_UR_INA_Status").toString().equals("Working"))
+                    if (reply.get("EPS_UR_INA_Status").getValue().equals("Working"))
                     {
-                        stats[3].addPoint(Double.parseDouble(reply.get("URBVoltage").toString()));
-                        stats[4].addPoint(Double.parseDouble(reply.get("URBCurrent").toString()));
+                        STATS[3].addPoint(Double.parseDouble(reply.get("URBVoltage").getValue()));
+                        STATS[4].addPoint(Double.parseDouble(reply.get("URBCurrent").getValue()));
                     }                    
 
                     // bus 1 is working...
-                    if (reply.get("EPS_B1_INA_Status").toString().equals("Working"))
+                    if (reply.get("EPS_B1_INA_Status").getValue().equals("Working"))
                     {
-                        stats[5].addPoint(Double.parseDouble(reply.get("B1_voltage").toString()));
-                        stats[6].addPoint(Double.parseDouble(reply.get("B1_current").toString()));
+                        STATS[5].addPoint(Double.parseDouble(reply.get("B1_voltage").getValue()));
+                        STATS[6].addPoint(Double.parseDouble(reply.get("B1_current").getValue()));
                     }
 
                     // bus 2 is working...
-                    if (reply.get("EPS_B2_INA_Status").toString().equals("Working"))
+                    if (reply.get("EPS_B2_INA_Status").getValue().equals("Working"))
                     {
-                        stats[7].addPoint(Double.parseDouble(reply.get("B2_voltage").toString()));
-                        stats[8].addPoint(Double.parseDouble(reply.get("B2_current").toString()));
+                        STATS[7].addPoint(Double.parseDouble(reply.get("B2_voltage").getValue()));
+                        STATS[8].addPoint(Double.parseDouble(reply.get("B2_current").getValue()));
                     }
                     
                     // bus 3 is working...
-                    if (reply.get("EPS_B3_INA_Status").toString().equals("Working"))
+                    if (reply.get("EPS_B3_INA_Status").getValue().equals("Working"))
                     {
-                        stats[9].addPoint(Double.parseDouble(reply.get("B3_voltage").toString()));
-                        stats[10].addPoint(Double.parseDouble(reply.get("B3_current").toString()));
+                        STATS[9].addPoint(Double.parseDouble(reply.get("B3_voltage").getValue()));
+                        STATS[10].addPoint(Double.parseDouble(reply.get("B3_current").getValue()));
                     }
                     
                     // bus 4 is working...
-                    if (reply.get("EPS_B4_INA_Status").toString().equals("Working"))
+                    if (reply.get("EPS_B4_INA_Status").getValue().equals("Working"))
                     {
-                        stats[11].addPoint(Double.parseDouble(reply.get("B4_voltage").toString()));
-                        stats[12].addPoint(Double.parseDouble(reply.get("B4_current").toString()));
+                        STATS[11].addPoint(Double.parseDouble(reply.get("B4_voltage").getValue()));
+                        STATS[12].addPoint(Double.parseDouble(reply.get("B4_current").getValue()));
                     }
                     
                     // solar array Yp is working...
-                    if (reply.get("SA_YP_INA_Status").toString().equals("Working"))
+                    if (reply.get("SA_YP_INA_Status").getValue().equals("Working"))
                     {
-                        stats[13].addPoint(Double.parseDouble(reply.get("SA_YP_voltage").toString()));
-                        stats[14].addPoint(Double.parseDouble(reply.get("SA_YP_current").toString()));
+                        STATS[13].addPoint(Double.parseDouble(reply.get("SA_YP_voltage").getValue()));
+                        STATS[14].addPoint(Double.parseDouble(reply.get("SA_YP_current").getValue()));
                     }
                     
                     // solar array Ym is working...
-                    if (reply.get("SA_YM_INA_Status").toString().equals("Working"))
+                    if (reply.get("SA_YM_INA_Status").getValue().equals("Working"))
                     {
-                        stats[15].addPoint(Double.parseDouble(reply.get("SA_YM_voltage").toString()));
-                        stats[16].addPoint(Double.parseDouble(reply.get("SA_YM_current").toString()));
+                        STATS[15].addPoint(Double.parseDouble(reply.get("SA_YM_voltage").getValue()));
+                        STATS[16].addPoint(Double.parseDouble(reply.get("SA_YM_current").getValue()));
                     }
                     
                     // solar array Xp is working...
-                    if (reply.get("SA_XP_INA_Status").toString().equals("Working"))
+                    if (reply.get("SA_XP_INA_Status").getValue().equals("Working"))
                     {
-                        stats[17].addPoint(Double.parseDouble(reply.get("SA_XP_voltage").toString()));
-                        stats[18].addPoint(Double.parseDouble(reply.get("SA_XP_current").toString()));
+                        STATS[17].addPoint(Double.parseDouble(reply.get("SA_XP_voltage").getValue()));
+                        STATS[18].addPoint(Double.parseDouble(reply.get("SA_XP_current").getValue()));
                     }
                     
                     // solar array Xm is working...
-                    if (reply.get("SA_XM_INA_Status").toString().equals("Working"))
+                    if (reply.get("SA_XM_INA_Status").getValue().equals("Working"))
                     {
-                        stats[19].addPoint(Double.parseDouble(reply.get("SA_XM_voltage").toString()));
-                        stats[20].addPoint(Double.parseDouble(reply.get("SA_XM_current").toString()));
+                        STATS[19].addPoint(Double.parseDouble(reply.get("SA_XM_voltage").getValue()));
+                        STATS[20].addPoint(Double.parseDouble(reply.get("SA_XM_current").getValue()));
                     }
                     
                     // battery is working...
-                    if (reply.get("EPS_LTC_Status").toString().equals("Working"))
+                    if (reply.get("EPS_LTC_Status").getValue().equals("Working"))
                     {
-                        stats[21].addPoint(Double.parseDouble(reply.get("BattVoltage").toString()));
+                        STATS[21].addPoint(Double.parseDouble(reply.get("BattVoltage").getValue()));
                     }
                 } catch (TimeoutException ex) 
                 {
@@ -164,91 +164,91 @@ public class TestEPS
             
             System.out.println();
             System.out.println("Transmitted: " + transmitted);
-            stats[0].printStatistics();
+            STATS[0].printStatistics();
             
             System.out.println();
             System.out.println("IntVoltage:");
-            stats[1].printStatistics();
+            STATS[1].printStatistics();
             
             System.out.println();
             System.out.println("IntCurrent:");
-            stats[2].printStatistics();
+            STATS[2].printStatistics();
             
             System.out.println();
             System.out.println("URBVoltage:");
-            stats[3].printStatistics();
+            STATS[3].printStatistics();
             
             System.out.println();
             System.out.println("URBCurrent:");
-            stats[4].printStatistics();            
+            STATS[4].printStatistics();            
             
             System.out.println();
             System.out.println("B1Voltage:");
-            stats[5].printStatistics();
+            STATS[5].printStatistics();
             
             System.out.println();
             System.out.println("B1Current:");
-            stats[6].printStatistics();
+            STATS[6].printStatistics();
             
             System.out.println();
             System.out.println("B2Voltage:");
-            stats[7].printStatistics();
+            STATS[7].printStatistics();
             
             System.out.println();
             System.out.println("B2Current:");
-            stats[8].printStatistics();
+            STATS[8].printStatistics();
             
             System.out.println();
             System.out.println("B3Voltage:");
-            stats[9].printStatistics();
+            STATS[9].printStatistics();
             
             System.out.println();
             System.out.println("B3Current:");
-            stats[10].printStatistics();
+            STATS[10].printStatistics();
             
             System.out.println();
             System.out.println("B4Voltage:");
-            stats[11].printStatistics();
+            STATS[11].printStatistics();
             
             System.out.println();
             System.out.println("B4Current:");
-            stats[12].printStatistics();
+            STATS[12].printStatistics();
             
             System.out.println();
             System.out.println("SAYpVoltage:");
-            stats[13].printStatistics();
+            STATS[13].printStatistics();
             
             System.out.println();
             System.out.println("SAYpCurrent:");
-            stats[14].printStatistics();
+            STATS[14].printStatistics();
             
             System.out.println();
             System.out.println("SAYmVoltage:");
-            stats[15].printStatistics();
+            STATS[15].printStatistics();
             
             System.out.println();
             System.out.println("SAYmCurrent:");
-            stats[16].printStatistics();
+            STATS[16].printStatistics();
             
             System.out.println();
             System.out.println("SAXpVoltage:");
-            stats[17].printStatistics();
+            STATS[17].printStatistics();
             
             System.out.println();
             System.out.println("SAXpCurrent:");
-            stats[18].printStatistics();
+            STATS[18].printStatistics();
             
             System.out.println();
             System.out.println("SAXmVoltage:");
-            stats[19].printStatistics();
+            STATS[19].printStatistics();
             
             System.out.println();
             System.out.println("SAXmCurrent:");
-            stats[20].printStatistics();
+            STATS[20].printStatistics();
             
             System.out.println();
             System.out.println("BattVoltage:");
-            stats[21].printStatistics();
+            STATS[21].printStatistics();
         }
     }
 }

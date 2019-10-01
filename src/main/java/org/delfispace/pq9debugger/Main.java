@@ -367,8 +367,8 @@ public class Main implements PQ9Receiver, Subscriber
             }
         }
         sb1.append("]");
-        data.put("_raw_", sb1.toString());
-        data.put("_timestamp_", time.toString());
+        //data.put("_raw_", sb1.toString());
+        //data.put("_timestamp_", time.toString());
         
         if (received)
         {
