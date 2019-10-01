@@ -167,6 +167,7 @@
             <xtce:Parameter name="Source" parameterTypeRef="AddressType"/>
             <xtce:Parameter name="Service" parameterTypeRef="ServiceType"/>
             <xtce:Parameter name="Request" parameterTypeRef="RequestType"/>
+            <xtce:Parameter name="Reset" parameterTypeRef="ResetType"/>
             <xtce:Parameter name="Uptime" parameterTypeRef="SUBSSYSuptime"/>
             <xtce:Parameter name="BootCounter" parameterTypeRef="short"/>
             <xtce:Parameter name="SoftwareBootCounter" parameterTypeRef="byte"/>
@@ -228,6 +229,34 @@
                     <xtce:RestrictionCriteria>
                         <xtce:ComparisonList>
                             <xtce:Comparison parameterRef="Service" value="Ping"/>
+                            <xtce:Comparison parameterRef="Request" value="Reply"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+            <xtce:SequenceContainer name="ResetRequest" shortDescription="Reset request">
+                <xtce:LongDescription>Reset subsystem.</xtce:LongDescription>
+                <xtce:EntryList>
+                    <xtce:ParameterRefEntry parameterRef="Reset"/>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Service" value="Reset"/>
+                            <xtce:Comparison parameterRef="Request" value="Request"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+              <xtce:SequenceContainer name="ResetReply" shortDescription="Reset reply">
+                <xtce:LongDescription>Reset reply.</xtce:LongDescription>
+                <xtce:EntryList>
+                    <xtce:ParameterRefEntry parameterRef="Reset"/>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Service" value="Reset"/>
                             <xtce:Comparison parameterRef="Request" value="Reply"/>
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
