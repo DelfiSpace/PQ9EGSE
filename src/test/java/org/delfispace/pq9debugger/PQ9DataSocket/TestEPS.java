@@ -64,11 +64,11 @@ public class TestEPS
             command.put("_send_", "GetTelemetry");
             command.put("Destination", "EPS");
             
-            int transmitted = 800;
+            int transmitted = 2600;
             
             for (int h = 0; h < transmitted; h++) 
             {
-                if ((h % 1000) == 0)
+                if ((h % 100) == 0)
                 {
                     System.out.println(h);
                 }
@@ -159,6 +159,7 @@ public class TestEPS
                 } catch (TimeoutException ex) 
                 {
                     // nothing to do here
+                    
                 }                                
             }           
             
