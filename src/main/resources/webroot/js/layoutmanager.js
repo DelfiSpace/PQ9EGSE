@@ -60,8 +60,7 @@ var config = {
           type: "component",
           componentName: "EventLog",
           isClosable: false,
-          height: 15,
-          id: 'log'
+          height: 15
         }
     ]}
 ]};
@@ -266,7 +265,8 @@ function appendToDiv(id, data)
     {
         resetLayout();
     }
-    var objDiv = document.getElementById(id).parentNode;    
+console.log(id);
+    var objDiv = document.getElementById(id);    
     var delta = objDiv.offsetHeight + objDiv.scrollTop;
     var delta1 = objDiv.scrollHeight;
        
@@ -299,7 +299,7 @@ function resetLayout()
 {
     // clear the saved layout state
     localStorage.removeItem('layoutSavedState');
-    location.reload(true);
+    //location.reload(true);
 }
 
 function setSerialPort()

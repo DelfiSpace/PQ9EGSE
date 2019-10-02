@@ -43,7 +43,10 @@ public class CommandWebServer
         // Establish ServletContext for all servlets
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
-        URL url = CommandWebServer.class.getClassLoader().getResource("webroot/");               
+        URL url = CommandWebServer.class.getClassLoader().getResource("webroot/"); 
+        System.out.println(url);
+         System.out.println(url.toURI());
+         System.out.println(Resource.newResource(url.toURI()));
         context.setBaseResource(Resource.newResource(url.toURI()));
         server.setHandler(context);
 

@@ -65,7 +65,7 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
                 <xtce:EnumerationList>
-                    <xtce:Enumeration label="Working" value="1"/>
+                    <xtce:Enumeration label="Active" value="1"/>
                     <xtce:Enumeration label="Error" value="0"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
