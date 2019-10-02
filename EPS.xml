@@ -44,7 +44,7 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
-                	<xtce:Enumeration label="Error" value="0"/>
+                    <xtce:Enumeration label="Error" value="0"/>
                     <xtce:Enumeration label="Request" value="1"/>
                     <xtce:Enumeration label="Reply" value="2"/>
                     <xtce:Enumeration label="ACKErrorReply" value="4"/>
@@ -234,7 +234,7 @@
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
-            <xtce:SequenceContainer name="ResetRequest" shortDescription="Reset request">
+            <!--xtce:SequenceContainer name="ResetRequest" shortDescription="Reset request">
                 <xtce:LongDescription>Reset subsystem.</xtce:LongDescription>
                 <xtce:EntryList>
                     <xtce:ParameterRefEntry parameterRef="Reset"/>
@@ -247,9 +247,9 @@
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
-            </xtce:SequenceContainer>
-              <xtce:SequenceContainer name="ResetReply" shortDescription="Reset reply">
-                <xtce:LongDescription>Reset reply.</xtce:LongDescription>
+            </xtce:SequenceContainer-->
+              <xtce:SequenceContainer name="ResetService" shortDescription="Reset Service">
+                <xtce:LongDescription>Reset request and reply.</xtce:LongDescription>
                 <xtce:EntryList>
                     <xtce:ParameterRefEntry parameterRef="Reset"/>
                 </xtce:EntryList>
@@ -257,7 +257,19 @@
                     <xtce:RestrictionCriteria>
                         <xtce:ComparisonList>
                             <xtce:Comparison parameterRef="Service" value="Reset"/>
-                            <xtce:Comparison parameterRef="Request" value="Reply"/>
+                            <xtce:BooleanExpression>
+                                <xtce:ORedConditions>
+                                     <xtce:Condition>
+                                    <xtce:Comparison parameterRef="Request" value="Reply"/>
+                                    </xtce:Condition>
+                                     <xtce:Condition>
+                                    <xtce:Comparison parameterRef="Request" value="Error"/>
+                                    </xtce:Condition>
+                                     <xtce:Condition>
+                                    <xtce:Comparison parameterRef="Request" value="Request"/>
+                                    </xtce:Condition>
+                                </xtce:ORedConditions>
+                            </xtce:BooleanExpression>
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>

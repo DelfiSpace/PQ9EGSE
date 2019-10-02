@@ -106,110 +106,110 @@ public class TestEPS_ADCS
                     
                     if ((h % 2) == 0)
                     {
-                        if (reply.get("EPS_DC_INA_Status").toString().equals("Working"))
+                        if (reply.get("EPS_DC_INA_Status").toString().equals("Active"))
                         {
                             STATS[1].addPoint(Double.parseDouble(reply.get("IntVoltage").toString()));
                             STATS[2].addPoint(Double.parseDouble(reply.get("IntCurrent").toString()));
                         }
 
-                        if (reply.get("EPS_UR_INA_Status").toString().equals("Working"))
+                        if (reply.get("EPS_UR_INA_Status").toString().equals("Active"))
                         {
                             STATS[3].addPoint(Double.parseDouble(reply.get("URBVoltage").toString()));
                             STATS[4].addPoint(Double.parseDouble(reply.get("URBCurrent").toString()));
                         }                    
 
                         // bus 1 is working...
-                        if (reply.get("EPS_B1_INA_Status").toString().equals("Working"))
+                        if (reply.get("EPS_B1_INA_Status").toString().equals("Active"))
                         {
                             STATS[5].addPoint(Double.parseDouble(reply.get("B1_voltage").toString()));
                             STATS[6].addPoint(Double.parseDouble(reply.get("B1_current").toString()));
                         }
 
                         // bus 2 is working...
-                        if (reply.get("EPS_B2_INA_Status").toString().equals("Working"))
+                        if (reply.get("EPS_B2_INA_Status").toString().equals("Active"))
                         {
                             STATS[7].addPoint(Double.parseDouble(reply.get("B2_voltage").toString()));
                             STATS[8].addPoint(Double.parseDouble(reply.get("B2_current").toString()));
                         }
 
                         // bus 3 is working...
-                        if (reply.get("EPS_B3_INA_Status").toString().equals("Working"))
+                        if (reply.get("EPS_B3_INA_Status").toString().equals("Active"))
                         {
                             STATS[9].addPoint(Double.parseDouble(reply.get("B3_voltage").toString()));
                             STATS[10].addPoint(Double.parseDouble(reply.get("B3_current").toString()));
                         }
 
                         // bus 4 is working...
-                        if (reply.get("EPS_B4_INA_Status").toString().equals("Working"))
+                        if (reply.get("EPS_B4_INA_Status").toString().equals("Active"))
                         {
                             STATS[11].addPoint(Double.parseDouble(reply.get("B4_voltage").toString()));
                             STATS[12].addPoint(Double.parseDouble(reply.get("B4_current").toString()));
                         }
 
                         // solar array Yp is working...
-                        if (reply.get("SA_YP_INA_Status").toString().equals("Working"))
+                        if (reply.get("SA_YP_INA_Status").toString().equals("Active"))
                         {
                             STATS[13].addPoint(Double.parseDouble(reply.get("SA_YP_voltage").toString()));
                             STATS[14].addPoint(Double.parseDouble(reply.get("SA_YP_current").toString()));
                         }
 
                         // solar array Ym is working...
-                        if (reply.get("SA_YM_INA_Status").toString().equals("Working"))
+                        if (reply.get("SA_YM_INA_Status").toString().equals("Active"))
                         {
                             STATS[15].addPoint(Double.parseDouble(reply.get("SA_YM_voltage").toString()));
                             STATS[16].addPoint(Double.parseDouble(reply.get("SA_YM_current").toString()));
                         }
 
                         // solar array Xp is working...
-                        if (reply.get("SA_XP_INA_Status").toString().equals("Working"))
+                        if (reply.get("SA_XP_INA_Status").toString().equals("Active"))
                         {
                             STATS[17].addPoint(Double.parseDouble(reply.get("SA_XP_voltage").toString()));
                             STATS[18].addPoint(Double.parseDouble(reply.get("SA_XP_current").toString()));
                         }
 
                         // solar array Xm is working...
-                        if (reply.get("SA_XM_INA_Status").toString().equals("Working"))
+                        if (reply.get("SA_XM_INA_Status").toString().equals("Active"))
                         {
                             STATS[19].addPoint(Double.parseDouble(reply.get("SA_XM_voltage").toString()));
                             STATS[20].addPoint(Double.parseDouble(reply.get("SA_XM_current").toString()));
                         }
 
                         // battery is working...
-                        if (reply.get("EPS_LTC_Status").toString().equals("Working"))
+                        if (reply.get("EPS_LTC_Status").toString().equals("Active"))
                         {
                             STATS[21].addPoint(Double.parseDouble(reply.get("BattVoltage").toString()));
                         }
                     }
                     else
                     {
-                        if (reply.get("TemperatureStatus").toString().equals("Working"))
+                        if (reply.get("TemperatureStatus").toString().equals("Active"))
                         {
                             STATS[22].addPoint(Double.parseDouble(reply.get("Temperature").toString()));
                         }
 
                         // main bus is working
-                        if (reply.get("BusStatus").toString().equals("Working"))
+                        if (reply.get("BusStatus").toString().equals("Active"))
                         {
                             STATS[23].addPoint(Double.parseDouble(reply.get("BusVoltage").toString()));
                             STATS[24].addPoint(Double.parseDouble(reply.get("BusCurrent").toString()));
                         }                    
 
                         // Torquer X is working...
-                        if (reply.get("TorquerXStatus").toString().equals("Working"))
+                        if (reply.get("TorquerXStatus").toString().equals("Active"))
                         {
                             STATS[25].addPoint(Double.parseDouble(reply.get("TorquerXVoltage").toString()));
                             STATS[26].addPoint(Double.parseDouble(reply.get("TorquerXCurrent").toString()));
                         }
 
                         // Torquer Y is working...
-                        if (reply.get("TorquerYStatus").toString().equals("Working"))
+                        if (reply.get("TorquerYStatus").toString().equals("Active"))
                         {
                             STATS[27].addPoint(Double.parseDouble(reply.get("TorquerYVoltage").toString()));
                             STATS[28].addPoint(Double.parseDouble(reply.get("TorquerYCurrent").toString()));
                         }
 
                         // Torquer Z is working...
-                        if (reply.get("TorquerZStatus").toString().equals("Working"))
+                        if (reply.get("TorquerZStatus").toString().equals("Active"))
                         {
                             STATS[29].addPoint(Double.parseDouble(reply.get("TorquerZVoltage").toString()));
                             STATS[30].addPoint(Double.parseDouble(reply.get("TorquerZCurrent").toString()));

@@ -64,7 +64,7 @@ public class TestEPS
             command.put("_send_", "GetTelemetry");
             command.put("Destination", "EPS");
             
-            int transmitted = 80;
+            int transmitted = 800;
             
             for (int h = 0; h < transmitted; h++) 
             {
@@ -83,76 +83,76 @@ public class TestEPS
                     long delta = after.getTime() - before.getTime();
                     STATS[0].addPoint(delta);
 
-                    if (reply.get("EPS_DC_INA_Status").getValue().equals("Working"))
+                    if (reply.get("EPS_DC_INA_Status").getValue().equals("Active"))
                     {
                         STATS[1].addPoint(Double.parseDouble(reply.get("IntVoltage").getValue()));
                         STATS[2].addPoint(Double.parseDouble(reply.get("IntCurrent").getValue()));
                     }
                     
-                    if (reply.get("EPS_UR_INA_Status").getValue().equals("Working"))
+                    if (reply.get("EPS_UR_INA_Status").getValue().equals("Active"))
                     {
                         STATS[3].addPoint(Double.parseDouble(reply.get("URBVoltage").getValue()));
                         STATS[4].addPoint(Double.parseDouble(reply.get("URBCurrent").getValue()));
                     }                    
 
                     // bus 1 is working...
-                    if (reply.get("EPS_B1_INA_Status").getValue().equals("Working"))
+                    if (reply.get("EPS_B1_INA_Status").getValue().equals("Active"))
                     {
                         STATS[5].addPoint(Double.parseDouble(reply.get("B1_voltage").getValue()));
                         STATS[6].addPoint(Double.parseDouble(reply.get("B1_current").getValue()));
                     }
 
                     // bus 2 is working...
-                    if (reply.get("EPS_B2_INA_Status").getValue().equals("Working"))
+                    if (reply.get("EPS_B2_INA_Status").getValue().equals("Active"))
                     {
                         STATS[7].addPoint(Double.parseDouble(reply.get("B2_voltage").getValue()));
                         STATS[8].addPoint(Double.parseDouble(reply.get("B2_current").getValue()));
                     }
                     
                     // bus 3 is working...
-                    if (reply.get("EPS_B3_INA_Status").getValue().equals("Working"))
+                    if (reply.get("EPS_B3_INA_Status").getValue().equals("Active"))
                     {
                         STATS[9].addPoint(Double.parseDouble(reply.get("B3_voltage").getValue()));
                         STATS[10].addPoint(Double.parseDouble(reply.get("B3_current").getValue()));
                     }
                     
                     // bus 4 is working...
-                    if (reply.get("EPS_B4_INA_Status").getValue().equals("Working"))
+                    if (reply.get("EPS_B4_INA_Status").getValue().equals("Active"))
                     {
                         STATS[11].addPoint(Double.parseDouble(reply.get("B4_voltage").getValue()));
                         STATS[12].addPoint(Double.parseDouble(reply.get("B4_current").getValue()));
                     }
                     
                     // solar array Yp is working...
-                    if (reply.get("SA_YP_INA_Status").getValue().equals("Working"))
+                    if (reply.get("SA_YP_INA_Status").getValue().equals("Active"))
                     {
                         STATS[13].addPoint(Double.parseDouble(reply.get("SA_YP_voltage").getValue()));
                         STATS[14].addPoint(Double.parseDouble(reply.get("SA_YP_current").getValue()));
                     }
                     
                     // solar array Ym is working...
-                    if (reply.get("SA_YM_INA_Status").getValue().equals("Working"))
+                    if (reply.get("SA_YM_INA_Status").getValue().equals("Active"))
                     {
                         STATS[15].addPoint(Double.parseDouble(reply.get("SA_YM_voltage").getValue()));
                         STATS[16].addPoint(Double.parseDouble(reply.get("SA_YM_current").getValue()));
                     }
                     
                     // solar array Xp is working...
-                    if (reply.get("SA_XP_INA_Status").getValue().equals("Working"))
+                    if (reply.get("SA_XP_INA_Status").getValue().equals("Active"))
                     {
                         STATS[17].addPoint(Double.parseDouble(reply.get("SA_XP_voltage").getValue()));
                         STATS[18].addPoint(Double.parseDouble(reply.get("SA_XP_current").getValue()));
                     }
                     
                     // solar array Xm is working...
-                    if (reply.get("SA_XM_INA_Status").getValue().equals("Working"))
+                    if (reply.get("SA_XM_INA_Status").getValue().equals("Active"))
                     {
                         STATS[19].addPoint(Double.parseDouble(reply.get("SA_XM_voltage").getValue()));
                         STATS[20].addPoint(Double.parseDouble(reply.get("SA_XM_current").getValue()));
                     }
                     
                     // battery is working...
-                    if (reply.get("EPS_LTC_Status").getValue().equals("Working"))
+                    if (reply.get("EPS_LTC_Status").getValue().equals("Active"))
                     {
                         STATS[21].addPoint(Double.parseDouble(reply.get("BattVoltage").getValue()));
                     }

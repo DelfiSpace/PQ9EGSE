@@ -70,34 +70,34 @@ public class TestADCS
                     long delta = after.getTime() - before.getTime();
                     STATS[0].addPoint(delta);
 
-                    if (reply.get("TemperatureStatus").toString().equals("Working"))
+                    if (reply.get("TemperatureStatus").toString().equals("Active"))
                     {
                         STATS[1].addPoint(Double.parseDouble(reply.get("Temperature").toString()));
                     }
                     
                     // main bus is working
-                    if (reply.get("BusStatus").toString().equals("Working"))
+                    if (reply.get("BusStatus").toString().equals("Active"))
                     {
                         STATS[2].addPoint(Double.parseDouble(reply.get("BusVoltage").toString()));
                         STATS[3].addPoint(Double.parseDouble(reply.get("BusCurrent").toString()));
                     }                    
 
                     // Torquer X is working...
-                    if (reply.get("TorquerXStatus").toString().equals("Working"))
+                    if (reply.get("TorquerXStatus").toString().equals("Active"))
                     {
                         STATS[4].addPoint(Double.parseDouble(reply.get("TorquerXVoltage").toString()));
                         STATS[5].addPoint(Double.parseDouble(reply.get("TorquerXCurrent").toString()));
                     }
 
                     // Torquer Y is working...
-                    if (reply.get("TorquerYStatus").toString().equals("Working"))
+                    if (reply.get("TorquerYStatus").toString().equals("Active"))
                     {
                         STATS[6].addPoint(Double.parseDouble(reply.get("TorquerYVoltage").toString()));
                         STATS[7].addPoint(Double.parseDouble(reply.get("TorquerYCurrent").toString()));
                     }
                     
                     // Torquer Z is working...
-                    if (reply.get("TorquerZStatus").toString().equals("Working"))
+                    if (reply.get("TorquerZStatus").toString().equals("Active"))
                     {
                         STATS[8].addPoint(Double.parseDouble(reply.get("TorquerZVoltage").toString()));
                         STATS[9].addPoint(Double.parseDouble(reply.get("TorquerZCurrent").toString()));
