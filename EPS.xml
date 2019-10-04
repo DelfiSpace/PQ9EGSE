@@ -257,7 +257,8 @@
                     <xtce:RestrictionCriteria>
                         <xtce:ComparisonList>
                             <xtce:Comparison parameterRef="Service" value="Reset"/>
-                            <xtce:BooleanExpression>
+                        </xtce:ComparisonList>
+                        <!--xtce:BooleanExpression>
                                 <xtce:ORedConditions>
                                      <xtce:Condition>
                                     <xtce:Comparison parameterRef="Request" value="Reply"/>
@@ -269,8 +270,7 @@
                                     <xtce:Comparison parameterRef="Request" value="Request"/>
                                     </xtce:Condition>
                                 </xtce:ORedConditions>
-                            </xtce:BooleanExpression>
-                        </xtce:ComparisonList>
+                            </xtce:BooleanExpression-->
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
