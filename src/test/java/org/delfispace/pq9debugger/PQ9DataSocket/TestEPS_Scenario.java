@@ -23,6 +23,9 @@ import java.util.TimerTask;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
+
 
 /**
  *
@@ -36,29 +39,6 @@ public class TestEPS_Scenario {
     
     public static void main(String[] args) throws IOException, InterruptedException, ParseException 
     {
-        STATS[0] = new StatisticsGenerator();
-        STATS[1] = new StatisticsGenerator();
-        STATS[2] = new StatisticsGenerator();
-        STATS[3] = new StatisticsGenerator();
-        STATS[4] = new StatisticsGenerator();
-        STATS[5] = new StatisticsGenerator();
-        STATS[6] = new StatisticsGenerator();
-        STATS[7] = new StatisticsGenerator();
-        STATS[8] = new StatisticsGenerator();
-        STATS[9] = new StatisticsGenerator();
-        STATS[10] = new StatisticsGenerator();
-        STATS[11] = new StatisticsGenerator();
-        STATS[12] = new StatisticsGenerator();
-        STATS[13] = new StatisticsGenerator();
-        STATS[14] = new StatisticsGenerator();
-        STATS[15] = new StatisticsGenerator();
-        STATS[16] = new StatisticsGenerator();
-        STATS[17] = new StatisticsGenerator();
-        STATS[18] = new StatisticsGenerator();
-        STATS[19] = new StatisticsGenerator();
-        STATS[20] = new StatisticsGenerator();
-        STATS[21] = new StatisticsGenerator();
-
         //Timer scheduler = new Timer(); 
         
        // TimerTask nextTask1 = new TaskListItem();
@@ -68,215 +48,62 @@ public class TestEPS_Scenario {
         for (SerialPort item : seenPorts) {
             System.out.println(item);
         }
-        seenPorts[1].openPort(); //note this is device specific
+        String portName;
+        portName = seenPorts[1].getSystemPortName(); //note this is device specific. 
+        System.out.print("Portname = ");
+         System.out.println(portName);
+        String commandString1;
+        commandString1 = "VSET1:4.1"; // this commands sets a new 
         
-        // configure the seriql port parameters
-        seenPorts[1].setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+        SendToTenma(commandString1, portName);
         
-        // try to send something. 
-        
-        String commandString1 = "VSET1:4.2";
-        
-        byte[] writeBuffer = commandString1.getBytes();
-        seenPorts[1].writeBytes(writeBuffer, writeBuffer.length);
-        
-        /*
-        try (PQ9DataClient client = new PQ9DataClient("localhost", 10000)) 
+        SerialPort comPort = SerialPort.getCommPort(portName);
+        /*comPort.openPort();
+        try 
         {
-            client.setTimeout(TIMEOUT);
-            
-            JSONObject command = new JSONObject();
-            command.put("_send_", "GetTelemetry");
-            command.put("Destination", "EPS");
-            
-            int transmitted = 2600;
-            
-            for (int h = 0; h < transmitted; h++) 
+            while (true)
             {
-                if ((h % 100) == 0)
+                while (comPort.bytesAvailable() == 0)
                 {
-                    System.out.println(h);
+                Thread.sleep(20);
+                byte[] readBuffer = new byte[comPort.bytesAvailable()];
+                int numRead = comPort.readBytes(readBuffer, readBuffer.length);
+                System.out.println("Read " + numRead + " bytes.");
                 }
-                Date before = new Date();
-                client.sendFrame(command);
-
-                try 
-                {
-                    Frame reply = client.getFrame2();
-                    
-                    Date after = new Date();
-                    long delta = after.getTime() - before.getTime();
-                    STATS[0].addPoint(delta);
-
-                    if (reply.get("EPS_DC_INA_Status").getValue().equals("Active"))
-                    {
-                        STATS[1].addPoint(Double.parseDouble(reply.get("IntVoltage").getValue()));
-                        STATS[2].addPoint(Double.parseDouble(reply.get("IntCurrent").getValue()));
-                    }
-                    
-                    if (reply.get("EPS_UR_INA_Status").getValue().equals("Active"))
-                    {
-                        STATS[3].addPoint(Double.parseDouble(reply.get("URBVoltage").getValue()));
-                        STATS[4].addPoint(Double.parseDouble(reply.get("URBCurrent").getValue()));
-                    }                    
-
-                    // bus 1 is working...
-                    if (reply.get("EPS_B1_INA_Status").getValue().equals("Active"))
-                    {
-                        STATS[5].addPoint(Double.parseDouble(reply.get("B1_voltage").getValue()));
-                        STATS[6].addPoint(Double.parseDouble(reply.get("B1_current").getValue()));
-                    }
-
-                    // bus 2 is working...
-                    if (reply.get("EPS_B2_INA_Status").getValue().equals("Active"))
-                    {
-                        STATS[7].addPoint(Double.parseDouble(reply.get("B2_voltage").getValue()));
-                        STATS[8].addPoint(Double.parseDouble(reply.get("B2_current").getValue()));
-                    }
-                    
-                    // bus 3 is working...
-                    if (reply.get("EPS_B3_INA_Status").getValue().equals("Active"))
-                    {
-                        STATS[9].addPoint(Double.parseDouble(reply.get("B3_voltage").getValue()));
-                        STATS[10].addPoint(Double.parseDouble(reply.get("B3_current").getValue()));
-                    }
-                    
-                    // bus 4 is working...
-                    if (reply.get("EPS_B4_INA_Status").getValue().equals("Active"))
-                    {
-                        STATS[11].addPoint(Double.parseDouble(reply.get("B4_voltage").getValue()));
-                        STATS[12].addPoint(Double.parseDouble(reply.get("B4_current").getValue()));
-                    }
-                    
-                    // solar array Yp is working...
-                    if (reply.get("SA_YP_INA_Status").getValue().equals("Active"))
-                    {
-                        STATS[13].addPoint(Double.parseDouble(reply.get("SA_YP_voltage").getValue()));
-                        STATS[14].addPoint(Double.parseDouble(reply.get("SA_YP_current").getValue()));
-                    }
-                    
-                    // solar array Ym is working...
-                    if (reply.get("SA_YM_INA_Status").getValue().equals("Active"))
-                    {
-                        STATS[15].addPoint(Double.parseDouble(reply.get("SA_YM_voltage").getValue()));
-                        STATS[16].addPoint(Double.parseDouble(reply.get("SA_YM_current").getValue()));
-                    }
-                    
-                    // solar array Xp is working...
-                    if (reply.get("SA_XP_INA_Status").getValue().equals("Active"))
-                    {
-                        STATS[17].addPoint(Double.parseDouble(reply.get("SA_XP_voltage").getValue()));
-                        STATS[18].addPoint(Double.parseDouble(reply.get("SA_XP_current").getValue()));
-                    }
-                    
-                    // solar array Xm is working...
-                    if (reply.get("SA_XM_INA_Status").getValue().equals("Active"))
-                    {
-                        STATS[19].addPoint(Double.parseDouble(reply.get("SA_XM_voltage").getValue()));
-                        STATS[20].addPoint(Double.parseDouble(reply.get("SA_XM_current").getValue()));
-                    }
-                    
-                    // battery is working...
-                    if (reply.get("EPS_LTC_Status").getValue().equals("Active"))
-                    {
-                        STATS[21].addPoint(Double.parseDouble(reply.get("BattVoltage").getValue()));
-                    }
-                } catch (TimeoutException ex) 
-                {
-                    // nothing to do here
-                    
-                }                                
-            }           
-            
-            System.out.println();
-            System.out.println("Transmitted: " + transmitted);
-            STATS[0].printStatistics();
-            
-            System.out.println();
-            System.out.println("IntVoltage:");
-            STATS[1].printStatistics();
-            
-            System.out.println();
-            System.out.println("IntCurrent:");
-            STATS[2].printStatistics();
-            
-            System.out.println();
-            System.out.println("URBVoltage:");
-            STATS[3].printStatistics();
-            
-            System.out.println();
-            System.out.println("URBCurrent:");
-            STATS[4].printStatistics();            
-            
-            System.out.println();
-            System.out.println("B1Voltage:");
-            STATS[5].printStatistics();
-            
-            System.out.println();
-            System.out.println("B1Current:");
-            STATS[6].printStatistics();
-            
-            System.out.println();
-            System.out.println("B2Voltage:");
-            STATS[7].printStatistics();
-            
-            System.out.println();
-            System.out.println("B2Current:");
-            STATS[8].printStatistics();
-            
-            System.out.println();
-            System.out.println("B3Voltage:");
-            STATS[9].printStatistics();
-            
-            System.out.println();
-            System.out.println("B3Current:");
-            STATS[10].printStatistics();
-            
-            System.out.println();
-            System.out.println("B4Voltage:");
-            STATS[11].printStatistics();
-            
-            System.out.println();
-            System.out.println("B4Current:");
-            STATS[12].printStatistics();
-            
-            System.out.println();
-            System.out.println("SAYpVoltage:");
-            STATS[13].printStatistics();
-            
-            System.out.println();
-            System.out.println("SAYpCurrent:");
-            STATS[14].printStatistics();
-            
-            System.out.println();
-            System.out.println("SAYmVoltage:");
-            STATS[15].printStatistics();
-            
-            System.out.println();
-            System.out.println("SAYmCurrent:");
-            STATS[16].printStatistics();
-            
-            System.out.println();
-            System.out.println("SAXpVoltage:");
-            STATS[17].printStatistics();
-            
-            System.out.println();
-            System.out.println("SAXpCurrent:");
-            STATS[18].printStatistics();
-            
-            System.out.println();
-            System.out.println("SAXmVoltage:");
-            STATS[19].printStatistics();
-            
-            System.out.println();
-            System.out.println("SAXmCurrent:");
-            STATS[20].printStatistics();
-            
-            System.out.println();
-            System.out.println("BattVoltage:");
-            STATS[21].printStatistics();
-        }
-        */
+            }
+        } catch (InterruptedException e){ e.printStackTrace(); }
+        comPort.closePort();*/
+        
+        comPort.openPort();
+        comPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+        comPort.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
+        commandString1 = "*IDN?"; //request ID from Tenma
+         SendToTenma(commandString1, portName); // sends command to tenma
+        comPort.addDataListener(new SerialPortDataListener() { // should trigger event when data is recieved. 
+        @Override
+         public int getListeningEvents() { return SerialPort.LISTENING_EVENT_DATA_RECEIVED; }
+        @Override
+        public void serialEvent(SerialPortEvent event)
+        {
+            byte[] newData = event.getReceivedData();
+            System.out.println("Received data of size: " + newData.length);
+        for (int i = 0; i < newData.length; ++i)
+         System.out.print((char)newData[i]);
+        System.out.println("\n");
+        }});
+        SendToTenma(commandString1, portName);
+    }
+    private static void SendToTenma(String commandString1, String portName){
+        SerialPort tenmaPort = SerialPort.getCommPort(portName);
+        //open the port
+        tenmaPort.openPort(); 
+        //configure the seriql port parameters
+        tenmaPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+        //write string to port.
+        byte[] writeBuffer = commandString1.getBytes();
+        System.out.println(commandString1);
+        tenmaPort.writeBytes(writeBuffer, writeBuffer.length);
+        // if a respons is expected you need to call a reader withing 50 miliseconds
     }
 }
 
