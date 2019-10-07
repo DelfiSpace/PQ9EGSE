@@ -18,13 +18,24 @@ import java.io.OutputStream;
  */
 public class TenmaDriver 
 {
+    // SerialPort Object
     private final SerialPort comPort;
+    // in and output streams
     private final InputStream is;
     private final OutputStream os;
+    // Power Supply Functions. 
     private final static String VERSION = "TENMA 72-2540 V2.1";
     private final static String PING = "*IDN?";
-    private final static String GETVOLTAGE = "VOUT1?";
-    private final static String GETCURRENT = "IOUT1?";
+    private final static String GETVOLTAGE = "VSET1?";
+    private final static String GETCURRENT = "ISET1?";
+    private final static String GETVOLTAGEACT = "VOUT1?";
+    private final static String GETCURRENTACT = "IOUT1?";
+    private final static String GETSTATUS = "STATUS?";
+    // Memory functions
+    
+    
+    // Over current
+    private final static String OVERCURRENT = "OCP1 OCP OPEN";
     
     public TenmaDriver(String port)
     {        
@@ -44,11 +55,39 @@ public class TenmaDriver
         return getResponse(VERSION.length()).endsWith(VERSION);
     }
         
-    public double getVoltage() throws IOException 
+    public double getVoltageSet() throws IOException 
     {
         sendCommand(GETVOLTAGE);
         String tmp = getResponse(5);
         return Double.valueOf(tmp);
+    }
+    
+     public double getVoltageAct() throws IOException 
+    {//Get the actual output voltage
+        sendCommand(GETVOLTAGEACT);
+        String tmp = getResponse(5);
+        return Double.valueOf(tmp);
+    }
+     
+    public double getCurrentSet() throws IOException 
+    {
+        sendCommand(GETCURRENT);
+        String tmp = getResponse(5);
+        return Double.valueOf(tmp);
+    }
+      
+    public double getCurrentAct() throws IOException 
+    {
+        sendCommand(GETCURRENTACT);
+        String tmp = getResponse(5);
+        return Double.valueOf(tmp);
+    }
+       
+    public byte getSTATUS() throws IOException 
+    {
+        sendCommand(GETSTATUS);
+        byte tmp = getResponseByte();
+        return tmp;
     }
     
     private void sendCommand(String cmd) throws IOException
@@ -60,5 +99,10 @@ public class TenmaDriver
     {
         byte[] val = is.readNBytes(length);
         return new String(val);
+    }
+    private byte getResponseByte() throws IOException
+    {
+        byte[] val = is.readNBytes(1);
+        return val[0];
     }
 }

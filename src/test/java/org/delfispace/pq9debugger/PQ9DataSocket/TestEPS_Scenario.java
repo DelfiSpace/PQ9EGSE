@@ -47,13 +47,14 @@ public class TestEPS_Scenario
             System.out.println(item);
         }
         String portName;
-        portName = seenPorts[6].getSystemPortName(); //note this is device specific. 
+        portName = seenPorts[0].getSystemPortName(); //note this is device specific. 
         TenmaDriver ps = new TenmaDriver(portName);
         
-        if (ps.ping())
+        if (ps.ping()) 
         {
-            double v = ps.getVoltage();
-            System.out.println("Voltage: " + v);
+             System.out.println("Connected to Power Supply!");
+            //double v = ps.getVoltage();
+            //System.out.println("Voltage: " + v);
         }
         else
         {
