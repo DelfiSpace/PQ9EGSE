@@ -32,10 +32,8 @@ import com.fazecast.jSerialComm.SerialPortEvent;
  * @author Michael van den Bos
  * mfvandenbos@gmail.com
  */
-public class TestEPS_Scenario {
-    
-    private final static int TIMEOUT = 300; // in ms
-    private final static StatisticsGenerator[] STATS = new StatisticsGenerator[22];
+public class TestEPS_Scenario 
+{
     
     public static void main(String[] args) throws IOException, InterruptedException, ParseException 
     {
@@ -49,61 +47,18 @@ public class TestEPS_Scenario {
             System.out.println(item);
         }
         String portName;
-        portName = seenPorts[1].getSystemPortName(); //note this is device specific. 
-        System.out.print("Portname = ");
-         System.out.println(portName);
-        String commandString1;
-        commandString1 = "VSET1:4.1"; // this commands sets a new 
+        portName = seenPorts[6].getSystemPortName(); //note this is device specific. 
+        TenmaDriver ps = new TenmaDriver(portName);
         
-        SendToTenma(commandString1, portName);
-        
-        SerialPort comPort = SerialPort.getCommPort(portName);
-        /*comPort.openPort();
-        try 
+        if (ps.ping())
         {
-            while (true)
-            {
-                while (comPort.bytesAvailable() == 0)
-                {
-                Thread.sleep(20);
-                byte[] readBuffer = new byte[comPort.bytesAvailable()];
-                int numRead = comPort.readBytes(readBuffer, readBuffer.length);
-                System.out.println("Read " + numRead + " bytes.");
-                }
-            }
-        } catch (InterruptedException e){ e.printStackTrace(); }
-        comPort.closePort();*/
-        
-        comPort.openPort();
-        comPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
-        comPort.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
-        commandString1 = "*IDN?"; //request ID from Tenma
-         SendToTenma(commandString1, portName); // sends command to tenma
-        comPort.addDataListener(new SerialPortDataListener() { // should trigger event when data is recieved. 
-        @Override
-         public int getListeningEvents() { return SerialPort.LISTENING_EVENT_DATA_RECEIVED; }
-        @Override
-        public void serialEvent(SerialPortEvent event)
+            double v = ps.getVoltage();
+            System.out.println("Voltage: " + v);
+        }
+        else
         {
-            byte[] newData = event.getReceivedData();
-            System.out.println("Received data of size: " + newData.length);
-        for (int i = 0; i < newData.length; ++i)
-         System.out.print((char)newData[i]);
-        System.out.println("\n");
-        }});
-        SendToTenma(commandString1, portName);
-    }
-    private static void SendToTenma(String commandString1, String portName){
-        SerialPort tenmaPort = SerialPort.getCommPort(portName);
-        //open the port
-        tenmaPort.openPort(); 
-        //configure the seriql port parameters
-        tenmaPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
-        //write string to port.
-        byte[] writeBuffer = commandString1.getBytes();
-        System.out.println(commandString1);
-        tenmaPort.writeBytes(writeBuffer, writeBuffer.length);
-        // if a respons is expected you need to call a reader withing 50 miliseconds
+            System.out.println("Device not found!");
+        }
     }
 }
 
