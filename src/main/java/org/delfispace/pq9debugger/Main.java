@@ -50,7 +50,6 @@ import org.xtce.toolkit.XTCEFunctions;
 import org.xtce.toolkit.XTCETMStream;
 import org.xtce.toolkit.XTCETelecommand;
 import org.xtce.toolkit.XTCETelecommandContentModel;
-import org.xtce.toolkit.XTCETypedObject;
 import org.xtce.toolkit.XTCETypedObject.EngineeringType;
 import org.xtce.toolkit.XTCEValidRange;
 
@@ -69,6 +68,7 @@ public class Main implements PQ9Receiver, Subscriber
     private XTCETMStream stream;
     private SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss.SSS ");
     private SerialPort comPort = null;
+    private SimpleDateFormat dateFormatJSONSocket = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); 
     
     /**
      *
@@ -367,8 +367,8 @@ public class Main implements PQ9Receiver, Subscriber
             }
         }
         sb1.append("]");
-        //data.put("_raw_", sb1.toString());
-        //data.put("_timestamp_", time.toString());
+        data.put("_raw_", sb1.toString());
+        data.put("_timestamp_", dateFormatJSONSocket.format(time));
         
         if (received)
         {

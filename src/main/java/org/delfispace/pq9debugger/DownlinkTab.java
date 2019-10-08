@@ -76,6 +76,21 @@ public class DownlinkTab
                             legend((container.getDescription().isEmpty() ? container.getName() : container.getDescription())),
                             table
                             (
+                                tr
+                                (
+                                    td
+                                    (
+                                        p("Timestamp")
+                                    ).attr("class", "namesColumn"),
+                                    td
+                                    (
+                                        p("-")
+                                    ).attr("id", "Downlink:" + container.getName() + ":_timestamp_").attr("class", "valuesColumn"),
+                                    td
+                                    (
+                                        p("")
+                                    ).attr("class", "unitsColumn")
+                                ),
                                 each(filter(container.getContentList(), containerEntry -> (containerEntry.getParameter() != null) && (!containerEntry.getParameter().getEngineeringType().equals(EngineeringType.ARRAY))), containerEntry -> tr
                                 (
                                     tr
