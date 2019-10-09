@@ -31,14 +31,24 @@ public class TenmaDriver
     private final static String GETVOLTAGEACT = "VOUT1?";
     private final static String GETCURRENTACT = "IOUT1?";
     private final static String GETSTATUS = "STATUS?";
+    private final static String RECALL = "RCL";
+    private final static String SAVESETTING = "SAV";
+    private final static String ENABLEOUTPUT = "OUT1";
+    private final static String DISABLEOUTPUT = "OUT0";
+    private final static String SETVOLTAGE = "VSET1";
+    private final static String SETCURRENT = "ISET1";
+    private final static double MAXVOLTAGE = 4.4;
     // Memory functions
     
     
     // Over current
     private final static String OVERCURRENT = "OCP1 OCP OPEN";
     
+    private String port_loc;
+    
     public TenmaDriver(String port)
     {        
+        port_loc = port;
         comPort = SerialPort.getCommPort(port);               
         comPort.openPort();
         comPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
@@ -49,11 +59,43 @@ public class TenmaDriver
         
     }
     
+    public String closePort(){
+    // closes 
+        comPort.closePort();
+        return "Port Closed";
+    }
+    
     public boolean ping() throws IOException 
     {
         sendCommand(PING);
         return getResponse(VERSION.length()).endsWith(VERSION);
     }
+    
+    public void sunUP() throws IOException{
+        sendCommand(ENABLEOUTPUT);
+    }
+    
+    public void sunDown() throws IOException{
+        sendCommand(DISABLEOUTPUT);
+    }
+    
+    public void setVoltage(double voltage) throws IOException{
+        if(voltage <= MAXVOLTAGE){
+        String cmd;
+        cmd =  SETVOLTAGE+Double.toString(voltage); 
+        System.out.println(cmd);
+        sendCommand(cmd);
+        }
+        else{System.out.println("Trying to set dangarous voltage, voltage is not changed");}
+    }
+    public void setCurrent(double current) throws IOException{
+        
+        String cmd;
+        cmd =  SETCURRENT+Double.toString(current); 
+        System.out.println(cmd);
+        sendCommand(cmd);
+    }
+    
         
     public double getVoltageSet() throws IOException 
     {
@@ -89,6 +131,21 @@ public class TenmaDriver
         byte tmp = getResponseByte();
         return tmp;
     }
+    private void recallMemory(int setting) throws IOException{
+        String cmd;
+        cmd =  RECALL+Integer.toString(setting); 
+        System.out.println(cmd);
+        sendCommand(cmd);
+    }
+    private void savelMemory(int setting) throws IOException{
+        String cmd;
+        cmd =  SAVESETTING+Integer.toString(setting); 
+        System.out.println(cmd);
+        sendCommand(cmd);
+    }
+    private void overCurrent(int setting){
+        //this command is malfunctioning. 
+    }
     
     private void sendCommand(String cmd) throws IOException
     {
@@ -105,4 +162,10 @@ public class TenmaDriver
         byte[] val = is.readNBytes(1);
         return val[0];
     }
+    
+    @Override
+    protected void finalize(){
+        port_loc = closePort();
+    }
+    
 }

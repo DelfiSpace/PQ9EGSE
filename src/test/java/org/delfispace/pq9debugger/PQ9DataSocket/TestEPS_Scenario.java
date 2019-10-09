@@ -60,6 +60,8 @@ public class TestEPS_Scenario
         {
             System.out.println("Device not found!");
         }
+        String re_close = ps.closePort();
+        
     }
 }
 
