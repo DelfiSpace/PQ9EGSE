@@ -11,6 +11,8 @@ import com.fazecast.jSerialComm.SerialPortEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -35,9 +37,10 @@ public class TenmaDriver
     private final static String SAVESETTING = "SAV";
     private final static String ENABLEOUTPUT = "OUT1";
     private final static String DISABLEOUTPUT = "OUT0";
-    private final static String SETVOLTAGE = "VSET1";
-    private final static String SETCURRENT = "ISET1";
-    private final static double MAXVOLTAGE = 4.4;
+    private final static String SETVOLTAGE = "VSET1:";
+    private final static String SETCURRENT = "ISET1:";
+    private final static double MAXVOLTAGE = 40;
+    //private final static byte
     // Memory functions
     
     
@@ -56,13 +59,12 @@ public class TenmaDriver
         comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 2000, 0);
         is = comPort.getInputStream();
         os = comPort.getOutputStream();
-        
     }
     
-    public String closePort(){
+    public void closePort(){
     // closes 
         comPort.closePort();
-        return "Port Closed";
+       // return "Port Closed";
     }
     
     public boolean ping() throws IOException 
@@ -150,22 +152,39 @@ public class TenmaDriver
     private void sendCommand(String cmd) throws IOException
     {
         os.write(cmd.getBytes());
+        try 
+        {
+            Thread.sleep(100);
+        } catch (InterruptedException ex) 
+        {
+            // ignoring the error
+        }
     }
                 
     private String getResponse(int length) throws IOException
-    {
-        byte[] val = is.readNBytes(length);
-        return new String(val);
+    {      
+        //try{
+            byte[] val = is.readNBytes(length);
+            return new String(val);
+       // }catch(IOException ex){
+       //     ex.printStackTrace();
+       //     byte[] val0 = null;
+       //    for(int i=0; i<length; i++){
+        //    val0[i] = 0;
+        //    }
+        //    return new String(val0);
+        //}
     }
     private byte getResponseByte() throws IOException
     {
         byte[] val = is.readNBytes(1);
         return val[0];
+      
     }
     
     @Override
     protected void finalize(){
-        port_loc = closePort();
+        closePort();
     }
     
 }

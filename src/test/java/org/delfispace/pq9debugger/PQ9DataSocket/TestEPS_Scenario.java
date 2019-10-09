@@ -25,6 +25,8 @@ import org.json.simple.parser.ParseException;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -47,20 +49,14 @@ public class TestEPS_Scenario
             System.out.println(item);
         }
         String portName;
-        portName = seenPorts[0].getSystemPortName(); //note this is device specific. 
-        TenmaDriver ps = new TenmaDriver(portName);
+        portName = seenPorts[1].getSystemPortName(); //note this is device specific. 
+       
+        try {
+            TaskList taskList = new TaskList(1, portName);
+        } catch (IOException ex) {
+            Logger.getLogger(CrunchifyTimerTaskExample.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
-        if (ps.ping()) 
-        {
-             System.out.println("Connected to Power Supply!");
-            //double v = ps.getVoltage();
-            //System.out.println("Voltage: " + v);
-        }
-        else
-        {
-            System.out.println("Device not found!");
-        }
-        String re_close = ps.closePort();
         
     }
 }
