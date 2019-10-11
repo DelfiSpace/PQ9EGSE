@@ -38,7 +38,7 @@ public class BK8500Driver {
             The last byte of the packet is a checksum. The checksum number is
             the arithmetic sum of each of the bytes modulo 256.
             */
-// Initialize port 
+    // Initialize port and object
     {        
         comPort = SerialPort.getCommPort(port);               
         comPort.openPort();
@@ -48,18 +48,17 @@ public class BK8500Driver {
         is = comPort.getInputStream();
         os = comPort.getOutputStream();
     }
-//remember to close the port only one object can use the same port.     
-    public void closePort(){
+    //remember to close the port only one object can use the same port.     
+    public void closePort()
+    {
     // closes 
         comPort.closePort();
-       // return "Port Closed";
     }
        
-    public int checkSum(int[] cmd){
+    public int checkSum(int[] cmd)
+    {
         // This method calculates the checksum. 
-        // The check sum 
         int sum =0;
-        
         for(int i = 0; i<cmd.length;i++)
         {  
             System.out.println(cmd[i]);
@@ -72,20 +71,22 @@ public class BK8500Driver {
         return (extra&sum);
     }
     
-    public static String byteToString(byte b) {
+    public static String byteToString(byte b) 
+    {
         // call this method to show cmd byte including all leading zeros. 
         // this is useful for checking the cmd when adding new command function.
-    byte[] masks = { -128, 64, 32, 16, 8, 4, 2, 1 };
-    StringBuilder builder = new StringBuilder();
-    for (byte m : masks) {
-        if ((b & m) == m) {
-            builder.append('1');
-        } else {
-            builder.append('0');
+        byte[] masks = { -128, 64, 32, 16, 8, 4, 2, 1 };
+        StringBuilder builder = new StringBuilder();
+        for (byte m : masks) {
+            if ((b & m) == m) {
+                builder.append('1');
+            } else {
+                builder.append('0');
+            }
         }
+        return builder.toString();
     }
-    return builder.toString();
-}
+    
     public void startRemoteOperation() throws IOException{
         //enable remote mode
         byte[] cmd = new byte[26];
@@ -107,8 +108,8 @@ public class BK8500Driver {
         cmd[25]=(byte)checkSum(cmdp);
         // now we are ready to send the command
         System.out.println("Print Command Stream");
-        for(int item = 0; item<cmd.length; item++){
-            
+        for(int item = 0; item<cmd.length; item++)
+        {  
             System.out.println(byteToString(cmd[item]));
         }
         sendCommand(cmd);
@@ -120,10 +121,8 @@ public class BK8500Driver {
     
     private void sendCommand(byte[] cmd) throws IOException
     {
-        //for(int item = 0; item<cmd.length; item++){
-            System.out.println("I am sending");
-           os.write(cmd);
-        //}
+        System.out.println("I am sending");
+        os.write(cmd);
         try 
         {
             Thread.sleep(200);
@@ -136,25 +135,28 @@ public class BK8500Driver {
     private byte[] getResponseByte() throws IOException
     {
        // byte[] val = is.readNBytes(26); // a packet is always 26 bytes. 
-        byte[] val = is.readNBytes(2); 
-// a packet is always 26 bytes.
-               
+        byte[] val = is.readNBytes(26); 
+        // a packet is always 26 bytes.         
         return val;
-      
     }
     
-     public static void main(String args[]) throws IOException {
-        // gain serial port. 
+     public static void main(String args[]) throws IOException 
+    {
+        // find serial port. 
          SerialPort[] seenPorts = SerialPort.getCommPorts();
-        
-        for (SerialPort item : seenPorts) {
+        // show serial ports 
+        for (SerialPort item : seenPorts) 
+        {
             System.out.println(item);
         }
         String portName;
+        // show descriptive port names. 
         portName = seenPorts[0].getSystemPortName(); //note this is device specific. 
         System.out.println("port 1 = " + seenPorts[0].getDescriptivePortName() );
         System.out.println("port 2 = " + seenPorts[1].getDescriptivePortName() );
         System.out.println("port 3 = " + seenPorts[2].getDescriptivePortName() );
+        // note that COM10 comes before COM2 in the array. 
+        // start new driver
         BK8500Driver TestDriver = new BK8500Driver(portName);
         System.out.println("Start Remote Operation");
         TestDriver.startRemoteOperation();
