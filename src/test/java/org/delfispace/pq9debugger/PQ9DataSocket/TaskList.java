@@ -102,7 +102,7 @@ public class TaskList {
             } catch (IOException ex) 
             {
                 ex.printStackTrace();
-                timer.cancel(); // Terminate the timer thread
+                 //timer.cancel(); // Terminate the timer thread
                  //timer.cancel(); // Terminate the timer thread
             }
         }
