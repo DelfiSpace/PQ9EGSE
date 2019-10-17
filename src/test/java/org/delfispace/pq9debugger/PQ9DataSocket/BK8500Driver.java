@@ -143,18 +143,29 @@ public class BK8500Driver {
         System.out.println();
         sendCommand(cmd);
     }
-    public void setCurrentLim() throws IOException{
+    public void setCurrentLim(double currentlimit) throws IOException{
         byte[] cmd = new byte[26]; // cmd byte
         // set all command bytes to 0
         for(int item : cmd){
             cmd[item] = 0x00;
         }
-        System.out.println("printing empty command");
-        System.out.println(Arrays.toString(cmd));
         cmd[0]=(byte)0xAA;
         cmd[2]=(byte)0x24;
-        cmd[3]=(byte)0xE0;
-        cmd[4]=(byte)0x79;
+        // now calculate the bytes setting the current;
+        long lendian;
+        lendian = (long)(currentlimit*10000);
+        
+         for(int item = 0; item<cmd.length; item++)
+        {  
+            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
+        }
+        System.out.println();
+        byte[] lendiantobyte = longToByte(lendian);
+        cmd[3]=lendiantobyte[0];
+        cmd[4]=lendiantobyte[1];
+        // it may be required to set these bytes as well. 
+        cmd[5]=lendiantobyte[2];
+        cmd[6]=lendiantobyte[3];
         cmd[25]=(byte)checkSum(cmd);
         // now we are ready to send the command
         System.out.println("Print Command Stream");
@@ -163,7 +174,7 @@ public class BK8500Driver {
             System.out.print(String.format("%02X ", cmd[item] & 0xFF));
         }
         System.out.println();
-        sendCommand(cmd);
+        //sendCommand(cmd);
     }
      public void setPowerLim(double powerlimit) throws IOException{
         byte[] cmd = new byte[26]; // cmd byte
@@ -209,7 +220,7 @@ public class BK8500Driver {
         System.out.println();
         sendCommand(cmd);
     }
-       public double getValues() throws IOException{
+       public double getValues() throws IOException, Bk8500CException{
         byte[] cmd = new byte[26]; // cmd byte
         // set all command bytes to 0
         for(int item : cmd){
@@ -229,14 +240,40 @@ public class BK8500Driver {
         }
         System.out.println();
         sendCommand(cmd);
+        
+        byte[] response = getAnyResponse();// throws IOException, Bk8500CException;
+        byte[] VoltageResponse = {0x00, 0x00, 0x00, 0x00}; 
+        byte[] CurrentResponse = {0x00, 0x00, 0x00, 0x00}; 
+        System.arraycopy(response, 3, VoltageResponse, 0, 4);
+        System.arraycopy(response, 7, VoltageResponse, 0, 4);
         return 0.0001;
     }
     public void setMode() throws IOException{
         
     }
     
-    public void endRemoteOperation(){
-        
+    public void endRemoteOperation() throws IOException{
+            //enable remote mode
+        byte[] cmd = new byte[26];
+
+        // set all command bytes to 0
+        for(int item : cmd){
+            cmd[item] = 0x00;
+        }
+        System.out.println("printing empty command");
+        System.out.println(Arrays.toString(cmd));
+        cmd[0]=(byte) 0xAA;
+        cmd[2]=(byte) 0x20;
+        cmd[3]=(byte) 0;
+        cmd[25]=(byte)checkSum(cmd);
+        // now we are ready to send the command
+        System.out.println("Print Command Stream");
+        for(int item = 0; item<cmd.length; item++)
+        {  
+            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
+        }
+        System.out.println();
+        sendCommand(cmd);
     }
     
     public void setMinVoltageBatteryTest(float minV){
@@ -298,13 +335,28 @@ public class BK8500Driver {
             // ignoring the error
         }
         byte[] val = is.readNBytes(26); // a packet is always 26 bytes. 
+        System.out.println("Returned array ");
+         for(int item = 0; item<val.length; item++)
+        {  
+            System.out.print(String.format("%02X ", val[item] & 0xFF));
+        }System.out.println();
         //byte[] val = is.readAllBytes(); 
-        // a packet is always 26 bytes.         
+        // a packet is always 26 bytes.  
+        // run a packet check
+        if(packetCheck(val)){};//everthing is going well if true
+        return val;
+    }
+    
+    private boolean packetCheck(byte[]val) throws Bk8500CException
+    {
         if(val[3]==0x80){}
         else 
             {
-                if(val[0]==0xAA){
-                switch ((((int)val[3]) & 0xFF)){
+                System.out.println("I am here");
+                if(0xAA==val[0]){
+                    System.out.println("i am here too");
+                    System.out.print(String.format("%02X ", val[3] & 0xFF));
+                    switch ((((int)val[3]) & 0xFF)){
                     case 0x90:
                         throw new Bk8500CException("CheckSum Incorrect");
                     case 0xA0:
@@ -315,19 +367,44 @@ public class BK8500Driver {
                          throw new Bk8500CException("Invalid Command"); 
                     default:
                           throw new Bk8500CException("Unknown problem"); 
+                    }
                 }
-                }
-                byte[] val2 = val;
-                val2[26] = 0x00;
+                byte[] val2 = Arrays.copyOf(val, 26);
+                val2[25] = 0x00;
+                     System.out.println("val2 ");
+                 for(int item = 0; item<val.length; item++)
+                {     
+                System.out.print(String.format("%02X ", val[item] & 0xFF));
+                }System.out.println();
                 int checksumR = checkSum(val2);
-                if(val[26]!=checksumR){
+                if(val[25]!=checksumR){
                     throw new Bk8500CException("Response from device has been scrambled"); 
                 }         
             }
-        return val;
+        return true;
+    }
+    private byte[] longToByte(long lendian){
+        byte[] lendiantobyte = new byte[8];
+        lendiantobyte[0] = (byte)lendian;
+        lendiantobyte[1] = (byte) (lendian >> 8);
+        lendiantobyte[2] = (byte) (lendian >> 16);
+        lendiantobyte[3] = (byte) (lendian >> 24);
+        lendiantobyte[4] = (byte) (lendian >> 32);
+        lendiantobyte[5] = (byte) (lendian >> 40);
+        lendiantobyte[6] = (byte) (lendian >> 48);
+        lendiantobyte[7] = (byte) (lendian >> 56);
+        return lendiantobyte;
     }
     
-     public static void main(String args[]) throws IOException 
+    private long byteToLong(byte[] b){
+        if (b.length!=4){
+            System.out.println("give me 4 bytes");
+        }
+        long l = ((long) b[3] & 0xff) << 24 | ((long) b[2] & 0xff) << 16 | ((long) b[1] & 0xff) << 8 | ((long) b[0] & 0xff);
+        return l;
+    }
+    
+     public static void main(String args[]) throws IOException, Bk8500CException, InterruptedException 
     {
         // find serial port. 
          SerialPort[] seenPorts = SerialPort.getCommPorts();
@@ -345,11 +422,17 @@ public class BK8500Driver {
         System.out.println("Start Remote Operation");
         TestDriver.startRemoteOperation();
         System.out.println("get Response");
-        byte[] response =  TestDriver.getAnyResponse();
+       
+        byte[] response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
+  
         for(int item = 0; item<response.length; item++)
         {  
             System.out.print(String.format("%02X ", response[item] & 0xFF));
         }
         System.out.println();
+         TestDriver.setCurrentLim(3.12);
+         Thread.sleep(20000);
+         TestDriver.endRemoteOperation();
+         
     }   
 }

@@ -44,7 +44,7 @@ public class TaskList {
         ps = new TenmaDriver(port);
         System.out.println(ps.ping());
         ps.setVoltage(4.20);
-        ps.setCurrent(1.0);
+        ps.setCurrent(0.5);
         ps.sunUP();
         
         command.put("_send_", "GetTelemetry");
