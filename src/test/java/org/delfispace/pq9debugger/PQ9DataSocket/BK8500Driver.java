@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import javax.swing.JOptionPane;
 import org.delfispace.pq9debugger.PQ9DataSocket.Bk8500CException;
 
 /**
@@ -63,6 +64,19 @@ public class BK8500Driver {
             throw new IOException("In or outputstream fail");
         }
     }
+    /*
+        List of functions in class
+        checkSum // calculates checksum
+        closePort // closes Port
+        byteToString // call this method to show cmd byte including all leading zeros. 
+        startRemoteOperation // allows for remote operation 
+        endRemoteOperation // ends remote operation 
+    
+        private
+        commandHandler(byte, byte)  // function to construct command bytes, also starts comm
+        commandHandler(byte) // returns byte array to fill
+    */
+    
     //remember to close the port only one object can use the same port.     
     public void closePort()
     {
@@ -96,77 +110,117 @@ public class BK8500Driver {
         }
         return builder.toString();
     }
+        
     // start remote operation
     public void startRemoteOperation() throws IOException{
         //enable remote mode
-        byte[] cmd = new byte[26];
-
-        // set all command bytes to 0
-        for(int item : cmd){
-            cmd[item] = 0x00;
-        }
-        System.out.println("printing empty command");
-        System.out.println(Arrays.toString(cmd));
-        cmd[0]=(byte) 0xAA;
-        cmd[2]=(byte) 0x20;
-        cmd[3]=(byte) 1;
-        cmd[25]=(byte)checkSum(cmd);
-        // now we are ready to send the command
-        System.out.println("Print Command Stream");
-        for(int item = 0; item<cmd.length; item++)
-        {  
-            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
-        }
-        System.out.println();
+        byte[]cmd;
+        cmd = commandHandler((byte)0x20, (byte)0x01);
         sendCommand(cmd);
     }
-    // set voltage limit
-    public void setVoltageLim() throws IOException{
-        byte[] cmd = new byte[26]; // cmd byte
-        // set all command bytes to 0
-        for(int item : cmd){
-            cmd[item] = 0x00;
-        }
-        System.out.println("printing empty command");
-        System.out.println(Arrays.toString(cmd));
-        cmd[0]=(byte) 0xAA;
-        cmd[2]=(byte) 0x22;
-        cmd[3]=(byte) 0x66;
-        cmd[4]=(byte) 0x3f;
-        cmd[25]=(byte)checkSum(cmd);
-        // now we are ready to send the command
-        System.out.println("Print Command Stream");
-        for(int item = 0; item<cmd.length; item++)
-        {  
-            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
-        }
-        System.out.println();
+    
+     public void endRemoteOperation() throws IOException{
+        //disable remote mode
+        byte[]cmd;
+        cmd = commandHandler((byte)0x20, (byte)0x00);
         sendCommand(cmd);
     }
-    public void setCurrentLim(double currentlimit) throws IOException{
-        byte[] cmd = new byte[26]; // cmd byte
-        // set all command bytes to 0
-        for(int item : cmd){
-            cmd[item] = 0x00;
+    
+    // get model number from device
+    public void getModel() throws IOException{
+        // add a return or print to this method. For sake of completeness
+        byte[]cmd;
+        cmd = commandHandler((byte)0x6A, (byte)0x00);
+        sendCommand(cmd);
+    }
+    
+    // set either CC CV CR or CW mode
+    public void setMode(String mode) throws IOException, Bk8500CException{
+        byte[]cmd;
+        switch (mode) {
+            case "CC":
+                cmd = commandHandler((byte)0x28, (byte)0x00);
+                break;
+            case "CV":
+                cmd = commandHandler((byte)0x28, (byte)0x01);
+                break;
+            case "CW":
+                cmd = commandHandler((byte)0x28, (byte)0x02);
+                break;
+            case "CR":
+                cmd = commandHandler((byte)0x28, (byte)0x03);
+                break;
+            default:
+                throw new Bk8500CException("Mode selector unknown");              
         }
-        cmd[0]=(byte)0xAA;
-        cmd[2]=(byte)0x24;
-        // now calculate the bytes setting the current;
-        long lendian;
-        lendian = (long)(currentlimit*10000);
-        
-         for(int item = 0; item<cmd.length; item++)
-        {  
-            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
+        sendCommand(cmd);
+    }
+    
+    // set function, either FIXED, SHORT, TRANSIENT, LIST, BATTERY 
+    public void setFunction(String sFunction) throws IOException, Bk8500CException{
+        byte[]cmd;
+        switch (sFunction) {
+            case "FIXED":
+                cmd = commandHandler((byte)0x5D, (byte)0x00);
+                break;
+            case "SHORT":
+                cmd = commandHandler((byte)0x5D, (byte)0x01);
+                break;
+            case "TRANSIENT":
+                cmd = commandHandler((byte)0x5D, (byte)0x02);
+                break;
+            case "LIST":
+                cmd = commandHandler((byte)0x5D, (byte)0x03);
+                break;
+             case "BATTERY":
+                cmd = commandHandler((byte)0x5D, (byte)0x04);
+                break;    
+            default:
+                throw new Bk8500CException("Function selector unknown");              
         }
-        System.out.println();
-        byte[] lendiantobyte = longToByte(lendian);
-        cmd[3]=lendiantobyte[0];
-        cmd[4]=lendiantobyte[1];
-        // it may be required to set these bytes as well. 
-        cmd[5]=lendiantobyte[2];
+        sendCommand(cmd);
+    }
+    
+    public void turnLoadON() throws IOException{
+        //turn the load on
+        byte[]cmd;
+        cmd = commandHandler((byte)0x21, (byte)0x01);
+        sendCommand(cmd);
+    }
+    
+    public void turnLoadOFF() throws IOException{
+        //turn the load off
+        byte[]cmd;
+        cmd = commandHandler((byte)0x21, (byte)0x00);
+        sendCommand(cmd);
+    }      
+   
+    public String getOperationMode() throws IOException{
+        byte[]cmd;
+        cmd = commandHandler((byte)0x29, (byte)0x00);
+        sendCommand(cmd);
+        return "still to do";
+    }
+    
+    public String returnStatus() throws IOException{
+        byte[]cmd;
+        cmd = commandHandler((byte)0x12, (byte)0x00);
+        sendCommand(cmd);
+        return "still to do";
+    }
+    
+    // set voltage limit for all operations
+    public void setVoltageLim(double voltageLimV) throws IOException{
+        byte[] cmd; // new byte[]
+        cmd = commandHandler((byte)0x22); //basic array fill
+        long lendian; // new long
+        lendian = (long)(voltageLimV*1000); // voltage to mV integer;
+        byte[] lendiantobyte = longToByte(lendian); // long gets transformed into Byte array. 
+        cmd[3]=lendiantobyte[0]; // it is little endian
+        cmd[4]=lendiantobyte[1]; // second byte    
+        cmd[5]=lendiantobyte[2]; // it may be required to set these bytes as well. 
         cmd[6]=lendiantobyte[3];
-        cmd[25]=(byte)checkSum(cmd);
+        cmd[25]=(byte)checkSum(cmd); // calculate checksum
         // now we are ready to send the command
         System.out.println("Print Command Stream");
         for(int item = 0; item<cmd.length; item++)
@@ -176,61 +230,18 @@ public class BK8500Driver {
         System.out.println();
         //sendCommand(cmd);
     }
-     public void setPowerLim(double powerlimit) throws IOException{
-        byte[] cmd = new byte[26]; // cmd byte
-        // set all command bytes to 0
-        for(int item : cmd){
-            cmd[item] = 0x00;
-        }
-        System.out.println("printing empty command");
-        System.out.println(Arrays.toString(cmd));
-        cmd[0]=(byte)0xAA;
-        cmd[2]=(byte)0x26;
-        // finih
-        cmd[3]=(byte)powerlimit; // does this work? 
-        cmd[4]=(byte)0x00; // should be checked
-        cmd[5]=(byte)0x00;
-        cmd[25]=(byte)checkSum(cmd);
-        // now we are ready to send the command
-        System.out.println("Print Command Stream");
-        for(int item = 0; item<cmd.length; item++)
-        {  
-            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
-        }
-        System.out.println();
-        sendCommand(cmd);
-    }
-    public void getModel() throws IOException{
-        byte[] cmd = new byte[26]; // cmd byte
-        // set all command bytes to 0
-        for(int item : cmd){
-            cmd[item] = 0x00;
-        }
-        System.out.println("printing empty command");
-        System.out.println(Arrays.toString(cmd));
-        cmd[0]=(byte)0xAA;
-        cmd[2]=(byte)0x6A;
-        cmd[25]=(byte)checkSum(cmd);
-        // now we are ready to send the command
-        System.out.println("Print Command Stream");
-        for(int item = 0; item<cmd.length; item++)
-        {  
-            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
-        }
-        System.out.println();
-        sendCommand(cmd);
-    }
-       public double getValues() throws IOException, Bk8500CException{
-        byte[] cmd = new byte[26]; // cmd byte
-        // set all command bytes to 0
-        for(int item : cmd){
-            cmd[item] = 0x00;
-        }
-        System.out.println("printing empty command");
-        System.out.println(Arrays.toString(cmd));
-        cmd[0]=(byte)0xAA;
-        cmd[2]=(byte)0x5F; // datasheet
     
+    // set current limit for all operations
+    public void setCurrentLim(double currentLimA) throws IOException{
+        byte[] cmd; // new byte[]
+        cmd = commandHandler((byte)0x24); //basic array fill
+        long lendian; // new long
+        lendian = (long)(currentLimA*10000); // now calculate the bytes setting the current
+        byte[] lendiantobyte = longToByte(lendian);// long gets transformed into Byte array. 
+        cmd[3]=lendiantobyte[0]; // it is little endian
+        cmd[4]=lendiantobyte[1];
+        cmd[5]=lendiantobyte[2]; // it may be required to set these bytes as well. 
+        cmd[6]=lendiantobyte[3];
         cmd[25]=(byte)checkSum(cmd);
         // now we are ready to send the command
         System.out.println("Print Command Stream");
@@ -240,30 +251,104 @@ public class BK8500Driver {
         }
         System.out.println();
         sendCommand(cmd);
-        
-        byte[] response = getAnyResponse();// throws IOException, Bk8500CException;
+    }
+    
+    // set power limit for all operations
+     public void setPowerLim(double powerLimWatt) throws IOException{
+        byte[] cmd; // new byte[]
+        cmd = commandHandler((byte)0x26); //basic array fill
+        long lendian; // new long
+        lendian = (long)(powerLimWatt*1000); // now calculate the bytes setting the current
+        byte[] lendiantobyte = longToByte(lendian);// long gets transformed into Byte array. 
+        cmd[3]=lendiantobyte[0]; // it is little endian
+        cmd[4]=lendiantobyte[1];
+        cmd[5]=lendiantobyte[2]; // it may be required to set these bytes as well. 
+        cmd[6]=lendiantobyte[3];
+       
+        cmd[25]=(byte)checkSum(cmd);
+        // now we are ready to send the command
+        System.out.println("Print Command Stream");
+        for(int item = 0; item<cmd.length; item++)
+        {  
+            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
+        }
+        System.out.println();
+        sendCommand(cmd);
+    }
+     
+    // set current for CC operation
+    public void setCurrentCC(double currentCCA) throws IOException{
+        byte[] cmd; // new byte[]
+        cmd = commandHandler((byte)0x2A); //basic array fill
+        long lendian; // new long
+        lendian = (long)(currentCCA*10000); // now calculate the bytes setting the current
+        byte[] lendiantobyte = longToByte(lendian);// long gets transformed into Byte array. 
+        cmd[3]=lendiantobyte[0]; // it is little endian
+        cmd[4]=lendiantobyte[1];
+        cmd[5]=lendiantobyte[2]; // it may be required to set these bytes as well. 
+        cmd[6]=lendiantobyte[3];
+        cmd[25]=(byte)checkSum(cmd);
+        // now we are ready to send the command
+        System.out.println("Print Command Stream");
+        for(int item = 0; item<cmd.length; item++)
+        {  
+            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
+        }
+        System.out.println();
+        sendCommand(cmd); 
+    }
+    
+     public void setMinVoltageBatteryTest(float minV) throws IOException{
+        byte[] cmd; // new byte[]
+        cmd = commandHandler((byte)0x4E); //basic array fill 
+        long minVolt = (long)minV*1000; 
+        byte[] cmdbyte = longToByte(minVolt);
+        cmd[3]=(byte) cmdbyte[0];//least important bits go first. 
+        cmd[4]=cmdbyte[1];
+        cmd[5]=cmdbyte[2];
+        cmd[6]=cmdbyte[3];
+        cmd[25]=(byte)checkSum(cmd);
+        // now we are ready to send the command
+        System.out.println("Print Command Stream setMinVoltageBatteryTest");
+        for(int item = 0; item<cmd.length; item++)
+        {  
+            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
+        }
+        System.out.println();
+        sendCommand(cmd);
+    }
+    
+    // get display values 
+    public double[] getValues() throws IOException, Bk8500CException{
+        byte[] cmd;
+        cmd = commandHandler((byte)0x5F, (byte)0x00); // sends command to get values. 
+        sendCommand(cmd);
+        byte[] response;
+        response = getAnyResponse(false);// throws IOException, Bk8500CException;
         byte[] VoltageResponse = {0x00, 0x00, 0x00, 0x00}; 
         byte[] CurrentResponse = {0x00, 0x00, 0x00, 0x00}; 
+        byte[] PowerResponse = {0x00, 0x00, 0x00, 0x00};
+        byte[] DemandStateResponse = {0x00, 0x00, 0x00, 0x00};
         System.arraycopy(response, 3, VoltageResponse, 0, 4);
-        System.arraycopy(response, 7, VoltageResponse, 0, 4);
-        return 0.0001;
-    }
-    public void setMode() throws IOException{
-        
+        System.arraycopy(response, 7, CurrentResponse, 0, 4);
+        System.arraycopy(response, 11, PowerResponse, 0, 4);
+        System.arraycopy(response, 16, DemandStateResponse, 0, 2);
+        double[] results = {0.0, 0.0, 0.0, 0.0};
+        results[0] = (double)byteToLong(VoltageResponse)/1000;
+        results[1] = (double)byteToLong(CurrentResponse)/10000;
+        results[2] = (double)byteToLong(PowerResponse)/1000;
+        results[3] = (double)response[15];
+//        results[4] = (double)byteToLong(DemandStateResponse);
+        return results;
     }
     
-    public void endRemoteOperation() throws IOException{
-            //enable remote mode
-        byte[] cmd = new byte[26];
-
-        // set all command bytes to 0
-        for(int item : cmd){
-            cmd[item] = 0x00;
-        }
-        System.out.println("printing empty command");
-        System.out.println(Arrays.toString(cmd));
-        cmd[0]=(byte) 0xAA;
-        cmd[2]=(byte) 0x20;
+    // battery test 
+    public void startBatteryTest(double endVoltage, double testCurrent) throws IOException{
+        //Excecute a batter test in CurrentControlled mode
+        byte[] cmd = new byte[26]; // instantiate new cmd array
+        for(int item : cmd){cmd[item] = 0x00;}// set all command bytes to 0
+        cmd[0]=(byte) 0xAA; // first byte is always 0xAA
+        cmd[2]=(byte) 0x20; // 
         cmd[3]=(byte) 0;
         cmd[25]=(byte)checkSum(cmd);
         // now we are ready to send the command
@@ -276,14 +361,33 @@ public class BK8500Driver {
         sendCommand(cmd);
     }
     
-    public void setMinVoltageBatteryTest(float minV){
-        
+   
+    // this function translates commands into byte[]
+    // useful for the mode functions
+    private byte[] commandHandler(byte b2Cmd, byte b3Cmd) throws IOException{
+        byte[] cmd = new byte[26]; // instantiate new cmd array
+        for(int item : cmd){cmd[item] = 0x00;}// set all command bytes to 0
+        cmd[0]=(byte) 0xAA; // first byte is always 0xAA
+        cmd[2]=(byte) b2Cmd; // command byte
+        cmd[3]=(byte) b3Cmd; // command value
+        cmd[25]=(byte)checkSum(cmd);
+        // now we are ready to send the command
+        System.out.println("Print Command Stream");
+        for(int item = 0; item<cmd.length; item++)
+        {  
+            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
+        }
+        System.out.println();
+        return(cmd);
     }
-    public void selectBatteryTest(){
-        
-    }
-    public String getTestType(){
-        return "still to do";
+    // overloaded function translates commands into byte[]
+    // useful for the set functions. 
+     private byte[] commandHandler(byte b2Cmd){
+        byte[] cmd = new byte[26]; // instantiate new cmd array
+        for(int item : cmd){cmd[item] = 0x00;}// set all command bytes to 0
+        cmd[0]=(byte) 0xAA; // first byte is always 0xAA
+        cmd[2]=(byte) b2Cmd; // command byte
+        return cmd;
     }
     
     private void sendCommand(byte[] cmd) throws IOException
@@ -335,21 +439,48 @@ public class BK8500Driver {
             // ignoring the error
         }
         byte[] val = is.readNBytes(26); // a packet is always 26 bytes. 
-        System.out.println("Returned array ");
+        /*System.out.println("Returned array ");
          for(int item = 0; item<val.length; item++)
         {  
             System.out.print(String.format("%02X ", val[item] & 0xFF));
         }System.out.println();
+        */
         //byte[] val = is.readAllBytes(); 
         // a packet is always 26 bytes.  
         // run a packet check
         if(packetCheck(val)){};//everthing is going well if true
         return val;
     }
+      private byte[] getAnyResponse(boolean pcheck) throws IOException, Bk8500CException
+    {
+        try 
+        {
+            Thread.sleep(10);
+        } catch (InterruptedException ex) 
+        {
+            // ignoring the error
+        }
+        byte[] val = is.readNBytes(26); // a packet is always 26 bytes. 
+        System.out.println("Returned array ");
+         for(int item = 0; item<val.length; item++)
+        {  
+            System.out.print(String.format("%02X ", val[item] & 0xFF));
+        }System.out.println();
+       
+        //byte[] val = is.readAllBytes(); 
+        // a packet is always 26 bytes.  
+        // run a packet check
+        if(pcheck){
+        if(packetCheck(val)){};//everthing is going well if true
+        }
+        
+        return val;
+    }
     
     private boolean packetCheck(byte[]val) throws Bk8500CException
     {
-        if(val[3]==0x80){}
+        byte testval1 = (byte)0x80;
+        if(val[3] == testval1){}
         else 
             {
                 System.out.println("I am here");
@@ -421,18 +552,177 @@ public class BK8500Driver {
         BK8500Driver TestDriver = new BK8500Driver(portName);
         System.out.println("Start Remote Operation");
         TestDriver.startRemoteOperation();
-        System.out.println("get Response");
-       
-        byte[] response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
+            System.out.println("get Response (remote operation)");
+            byte[] response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
   
-        for(int item = 0; item<response.length; item++)
-        {  
-            System.out.print(String.format("%02X ", response[item] & 0xFF));
-        }
-        System.out.println();
-         TestDriver.setCurrentLim(3.12);
-         Thread.sleep(20000);
+            for(int item = 0; item<response.length; item++)
+            {  
+                System.out.print(String.format("%02X ", response[item] & 0xFF));
+            }
+            System.out.println();
+            
+            boolean go = true;
+            int counter = 0; 
+            do{
+            double[] display;
+            display = TestDriver.getValues();
+            System.out.println("Voltage: " +  display[0] + " V, Current: " + display[1] + "A");
+            Thread.sleep(500);
+            counter++;
+            if(counter > 100){
+                go = false;
+                int res = JOptionPane.showConfirmDialog(null,
+			      "Would you like to continue?",
+			      "end",
+			      JOptionPane.YES_NO_OPTION,
+			      JOptionPane.QUESTION_MESSAGE);
+		if (res == JOptionPane.NO_OPTION){
+                    TestDriver.endRemoteOperation();
+                    System.exit(0);
+	          }
+                else if(res==JOptionPane.YES_OPTION){
+                counter = 0;
+                go = true;}
+            }
+            }while(go);
+            
+            
+            /*
+        System.out.println("Set current limit");    
+        TestDriver.setCurrentLim(1.0);
+            System.out.println("get Response(Current Limit)");
+            response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
+            for(int item = 0; item<response.length; item++)
+            {  
+                System.out.print(String.format("%02X ", response[item] & 0xFF));
+            }
+            System.out.println();
+         //JOPtion pane stack
+         int res = JOptionPane.showConfirmDialog(null,
+			      "Current limit is set, Would you like to continue?",
+			      "end",
+			      JOptionPane.YES_NO_OPTION,
+			      JOptionPane.QUESTION_MESSAGE);
+		if (res == JOptionPane.NO_OPTION){
+                    TestDriver.endRemoteOperation();
+	    	 // System.exit(0);
+	          }
+	    else {}
+         System.out.println("Set CC");        
+         TestDriver.setMode("CC");
+         System.out.println("get Response (CC mode)");
+            response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
+            for(int item = 0; item<response.length; item++)
+            {  
+                System.out.print(String.format("%02X ", response[item] & 0xFF));
+            }
+            System.out.println();
+         //JOPtion pane stack
+         res = JOptionPane.showConfirmDialog(null,
+			      "mode is CC, Would you like to continue?",
+			      "end",
+			      JOptionPane.YES_NO_OPTION,
+			      JOptionPane.QUESTION_MESSAGE);
+		if (res == JOptionPane.NO_OPTION){
+                     TestDriver.endRemoteOperation();
+	    	 //System.exit(0);
+	          }
+	    else {}
+                
+         System.out.println("Test Current");        
+         TestDriver.setCurrentCC(0.3);
+         System.out.println("get Response (current set)");
+            response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
+            for(int item = 0; item<response.length; item++)
+            {  
+                System.out.print(String.format("%02X ", response[item] & 0xFF));
+            }
+            System.out.println();
+     
+         System.out.println("Set Battery");        
+         TestDriver.setFunction("BATTERY");
+         System.out.println("get Response (set battery function)");
+            response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
+            for(int item = 0; item<response.length; item++)
+            {  
+                System.out.print(String.format("%02X ", response[item] & 0xFF));
+            }
+            System.out.println();
+         //JOPtion pane stack
+         res = JOptionPane.showConfirmDialog(null,
+			      "Battery function set, Would you like to continue?",
+			      "end",
+			      JOptionPane.YES_NO_OPTION,
+			      JOptionPane.QUESTION_MESSAGE);
+		if (res == JOptionPane.NO_OPTION){
+                    TestDriver.endRemoteOperation();
+                   // System.exit(0);
+	        } else {}
+         System.out.println("Set Battery minimum voltage"); 
+          TestDriver.setMinVoltageBatteryTest((float)2.9);
+         System.out.println("get Response (set battery end voltage)");
+            response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
+            for(int item = 0; item<response.length; item++)
+            {  
+                System.out.print(String.format("%02X ", response[item] & 0xFF));
+            }
+            System.out.println();
+            //JOPtion pane stack
+         res = JOptionPane.showConfirmDialog(null,
+			      "Battery end point set, Would you like to continue?",
+			      "end",
+			      JOptionPane.YES_NO_OPTION,
+			      JOptionPane.QUESTION_MESSAGE);
+		if (res == JOptionPane.NO_OPTION){
+                    TestDriver.endRemoteOperation();
+                  //System.exit(0);
+	        }else{}
+                
+            
+         res = JOptionPane.showConfirmDialog(null,
+			      "Would you like to turn on the system?",
+			      "end",
+			      JOptionPane.YES_NO_OPTION,
+			      JOptionPane.QUESTION_MESSAGE);
+		if (res == JOptionPane.NO_OPTION){
+                    TestDriver.endRemoteOperation();
+                    System.exit(0);
+                }else {}
+        TestDriver.turnLoadON();
+        System.out.println("get Response (Turn On)");
+            response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
+            for(int item = 0; item<response.length; item++)
+            {  
+                System.out.print(String.format("%02X ", response[item] & 0xFF));
+            }
+            System.out.println();
+          //JOPtion pane stack
+        boolean go;
+        go = false;
+          do{
+         res = JOptionPane.showConfirmDialog(null,
+			      "Would you like to turn off the system?",
+			      "end",
+			      JOptionPane.YES_NO_OPTION,
+			      JOptionPane.QUESTION_MESSAGE);
+		if(res == JOptionPane.YES_OPTION){
+                    TestDriver.turnLoadOFF();
+                    go = false;
+                }
+         
+         if (res == JOptionPane.NO_OPTION){
+             go = true;
+	          }
+	    else {}
+         Thread.sleep(2000);
+        }while(go);
+        
+         
+         //Thread.sleep(20000);
          TestDriver.endRemoteOperation();
+        System.exit(0);
+         
+         */
          
     }   
 }
