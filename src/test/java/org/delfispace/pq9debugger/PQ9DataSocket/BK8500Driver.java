@@ -7,10 +7,13 @@ package org.delfispace.pq9debugger.PQ9DataSocket;
 
 
 import com.fazecast.jSerialComm.SerialPort;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import org.delfispace.pq9debugger.PQ9DataSocket.Bk8500CException;
 
@@ -24,6 +27,7 @@ public class BK8500Driver {
     // in and output streams
     private final InputStream is;
     private final OutputStream os;
+      
     // Power Supply Functions. 
 
     public BK8500Driver(String port) throws IOException
@@ -267,12 +271,12 @@ public class BK8500Driver {
        
         cmd[25]=(byte)checkSum(cmd);
         // now we are ready to send the command
-        System.out.println("Print Command Stream");
+        //System.out.println("Print Command Stream");
         for(int item = 0; item<cmd.length; item++)
         {  
-            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
+           // System.out.print(String.format("%02X ", cmd[item] & 0xFF));
         }
-        System.out.println();
+        //System.out.println();
         sendCommand(cmd);
     }
      
@@ -372,12 +376,12 @@ public class BK8500Driver {
         cmd[3]=(byte) b3Cmd; // command value
         cmd[25]=(byte)checkSum(cmd);
         // now we are ready to send the command
-        System.out.println("Print Command Stream");
+        //System.out.println("Print Command Stream");
         for(int item = 0; item<cmd.length; item++)
         {  
-            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
+            //System.out.print(String.format("%02X ", cmd[item] & 0xFF));
         }
-        System.out.println();
+        //System.out.println();
         return(cmd);
     }
     // overloaded function translates commands into byte[]
@@ -399,7 +403,7 @@ public class BK8500Driver {
         {
             // ignoring the error
         }
-        System.out.println("I am sending " + os);
+        //System.out.println("I am sending " + os);
         os.write(cmd);
         os.flush();
         try 
@@ -461,11 +465,11 @@ public class BK8500Driver {
             // ignoring the error
         }
         byte[] val = is.readNBytes(26); // a packet is always 26 bytes. 
-        System.out.println("Returned array ");
+        //System.out.println("Returned array ");
          for(int item = 0; item<val.length; item++)
         {  
-            System.out.print(String.format("%02X ", val[item] & 0xFF));
-        }System.out.println();
+          //  System.out.print(String.format("%02X ", val[item] & 0xFF));
+        }//System.out.println();
        
         //byte[] val = is.readAllBytes(); 
         // a packet is always 26 bytes.  
@@ -537,6 +541,9 @@ public class BK8500Driver {
     
      public static void main(String args[]) throws IOException, Bk8500CException, InterruptedException 
     {
+        Date start = new Date();
+        long starttime = start.getTime();
+        PrintStream writer;
         // find serial port. 
          SerialPort[] seenPorts = SerialPort.getCommPorts();
         // show serial ports 
@@ -549,44 +556,40 @@ public class BK8500Driver {
         //System.out.println("port 3 = " + seenPorts[2].getDescriptivePortName() );
         // note that COM10 comes before COM2 in the array. 
         // start new driver
+        writer = new PrintStream(new FileOutputStream("BKDATA.txt", true));
         BK8500Driver TestDriver = new BK8500Driver(portName);
         System.out.println("Start Remote Operation");
         TestDriver.startRemoteOperation();
-            System.out.println("get Response (remote operation)");
-            byte[] response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
-  
+        System.out.println("get Response (remote operation)");
+        byte[] response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException
             for(int item = 0; item<response.length; item++)
             {  
                 System.out.print(String.format("%02X ", response[item] & 0xFF));
             }
             System.out.println();
-            
-            boolean go = true;
-            int counter = 0; 
-            do{
-            double[] display;
-            display = TestDriver.getValues();
-            System.out.println("Voltage: " +  display[0] + " V, Current: " + display[1] + "A");
-            Thread.sleep(500);
-            counter++;
-            if(counter > 100){
-                go = false;
-                int res = JOptionPane.showConfirmDialog(null,
-			      "Would you like to continue?",
-			      "end",
-			      JOptionPane.YES_NO_OPTION,
-			      JOptionPane.QUESTION_MESSAGE);
-		if (res == JOptionPane.NO_OPTION){
-                    TestDriver.endRemoteOperation();
-                    System.exit(0);
-	          }
-                else if(res==JOptionPane.YES_OPTION){
-                counter = 0;
-                go = true;}
-            }
-            }while(go);
-            
-            
+        TestDriver.setCurrentLim(1.0);    
+        TestDriver.setMode("CC");   
+        TestDriver.setCurrentCC(0.3);    
+        TestDriver.setFunction("BATTERY");   
+        TestDriver.setMinVoltageBatteryTest((float)2.9);   
+        boolean go = true;
+        boolean go2 = false;
+        do{
+        StringBuilder sb = new StringBuilder();
+                Date now = new Date(); //gets local computer time
+                double[] reply = TestDriver.getValues();
+                sb.append((now.getTime()-starttime) + ", " + reply[0]+ ", " + reply[1]);
+                writer.println(sb.toString());
+                writer.flush();
+                System.out.println(sb.toString());
+                if(reply[0]<2.9 && go2){go = false;}
+                if(reply[1]<0.001 ){go2 = true;}
+                Thread.sleep(750);
+                if(reply[1]>0.01){go2 = false;}
+        }while(go);
+        
+        TestDriver.endRemoteOperation();
+        TestDriver.closePort();
             /*
         System.out.println("Set current limit");    
         TestDriver.setCurrentLim(1.0);
