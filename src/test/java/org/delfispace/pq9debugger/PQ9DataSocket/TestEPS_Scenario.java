@@ -54,7 +54,7 @@ public class TestEPS_Scenario
         try {
             TaskList taskList = new TaskList(1, portName);
         } catch (IOException ex) {
-            Logger.getLogger(CrunchifyTimerTaskExample.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TaskList.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
