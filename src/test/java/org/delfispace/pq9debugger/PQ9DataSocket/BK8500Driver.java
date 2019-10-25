@@ -27,6 +27,7 @@ public class BK8500Driver {
     // in and output streams
     private final InputStream is;
     private final OutputStream os;
+    private boolean RemoteOperation; 
       
     // Power Supply Functions. 
 
@@ -46,6 +47,7 @@ public class BK8500Driver {
             */
     // Initialize port and object
     {        
+        RemoteOperation = false;
         comPort = SerialPort.getCommPort(port);               
         comPort.openPort();
         if(comPort.isOpen()){
@@ -75,6 +77,10 @@ public class BK8500Driver {
         byteToString // call this method to show cmd byte including all leading zeros. 
         startRemoteOperation // allows for remote operation 
         endRemoteOperation // ends remote operation 
+        getModel // asks BK8500 to return model and make
+        setMode // sets operational Mode CC = current control CV = voltage control CW  is power control CR is resistance control
+        setFunction // sets functeional charachter 
+        
     
         private
         commandHandler(byte, byte)  // function to construct command bytes, also starts comm
@@ -349,23 +355,11 @@ public class BK8500Driver {
     // battery test 
     public void startBatteryTest(double endVoltage, double testCurrent) throws IOException{
         //Excecute a batter test in CurrentControlled mode
-        byte[] cmd = new byte[26]; // instantiate new cmd array
-        for(int item : cmd){cmd[item] = 0x00;}// set all command bytes to 0
-        cmd[0]=(byte) 0xAA; // first byte is always 0xAA
-        cmd[2]=(byte) 0x20; // 
-        cmd[3]=(byte) 0;
-        cmd[25]=(byte)checkSum(cmd);
-        // now we are ready to send the command
-        System.out.println("Print Command Stream");
-        for(int item = 0; item<cmd.length; item++)
-        {  
-            System.out.print(String.format("%02X ", cmd[item] & 0xFF));
-        }
-        System.out.println();
-        sendCommand(cmd);
+        //check if remote connection is established. 
+        
+        // packetCheck needs improving. 
     }
-    
-   
+  
     // this function translates commands into byte[]
     // useful for the mode functions
     private byte[] commandHandler(byte b2Cmd, byte b3Cmd) throws IOException{
@@ -375,13 +369,6 @@ public class BK8500Driver {
         cmd[2]=(byte) b2Cmd; // command byte
         cmd[3]=(byte) b3Cmd; // command value
         cmd[25]=(byte)checkSum(cmd);
-        // now we are ready to send the command
-        //System.out.println("Print Command Stream");
-        for(int item = 0; item<cmd.length; item++)
-        {  
-            //System.out.print(String.format("%02X ", cmd[item] & 0xFF));
-        }
-        //System.out.println();
         return(cmd);
     }
     // overloaded function translates commands into byte[]
@@ -390,7 +377,8 @@ public class BK8500Driver {
         byte[] cmd = new byte[26]; // instantiate new cmd array
         for(int item : cmd){cmd[item] = 0x00;}// set all command bytes to 0
         cmd[0]=(byte) 0xAA; // first byte is always 0xAA
-        cmd[2]=(byte) b2Cmd; // command byte
+        cmd[2]=(byte) b2Cmd; // command byte 
+        // Checksum is not called because the packet is not yet finished. 
         return cmd;
     }
     
@@ -455,7 +443,7 @@ public class BK8500Driver {
         if(packetCheck(val)){};//everthing is going well if true
         return val;
     }
-      private byte[] getAnyResponse(boolean pcheck) throws IOException, Bk8500CException
+      public byte[] getAnyResponse(boolean pcheck) throws IOException, Bk8500CException
     {
         try 
         {
@@ -539,193 +527,5 @@ public class BK8500Driver {
         return l;
     }
     
-     public static void main(String args[]) throws IOException, Bk8500CException, InterruptedException 
-    {
-        Date start = new Date();
-        long starttime = start.getTime();
-        PrintStream writer;
-        // find serial port. 
-         SerialPort[] seenPorts = SerialPort.getCommPorts();
-        // show serial ports 
-        for (SerialPort item : seenPorts){System.out.println(item);}
-        String portName;
-        // show descriptive port names. 
-        portName = "COM10";//seenPorts[0].getSystemPortName(); //note this is device specific. 
-        //System.out.println("port 1 = " + seenPorts[0].getDescriptivePortName() );
-        //System.out.println("port 2 = " + seenPorts[1].getDescriptivePortName() );
-        //System.out.println("port 3 = " + seenPorts[2].getDescriptivePortName() );
-        // note that COM10 comes before COM2 in the array. 
-        // start new driver
-        writer = new PrintStream(new FileOutputStream("BKDATA.txt", true));
-        BK8500Driver TestDriver = new BK8500Driver(portName);
-        System.out.println("Start Remote Operation");
-        TestDriver.startRemoteOperation();
-        System.out.println("get Response (remote operation)");
-        byte[] response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException
-            for(int item = 0; item<response.length; item++)
-            {  
-                System.out.print(String.format("%02X ", response[item] & 0xFF));
-            }
-            System.out.println();
-        TestDriver.setCurrentLim(1.0);    
-        TestDriver.setMode("CC");   
-        TestDriver.setCurrentCC(0.3);    
-        TestDriver.setFunction("BATTERY");   
-        TestDriver.setMinVoltageBatteryTest((float)2.9);   
-        boolean go = true;
-        boolean go2 = false;
-        do{
-        StringBuilder sb = new StringBuilder();
-                Date now = new Date(); //gets local computer time
-                double[] reply = TestDriver.getValues();
-                sb.append((now.getTime()-starttime) + ", " + reply[0]+ ", " + reply[1]);
-                writer.println(sb.toString());
-                writer.flush();
-                System.out.println(sb.toString());
-                if(reply[0]<2.9 && go2){go = false;}
-                if(reply[1]<0.001 ){go2 = true;}
-                Thread.sleep(750);
-                if(reply[1]>0.01){go2 = false;}
-        }while(go);
-        
-        TestDriver.endRemoteOperation();
-        TestDriver.closePort();
-            /*
-        System.out.println("Set current limit");    
-        TestDriver.setCurrentLim(1.0);
-            System.out.println("get Response(Current Limit)");
-            response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
-            for(int item = 0; item<response.length; item++)
-            {  
-                System.out.print(String.format("%02X ", response[item] & 0xFF));
-            }
-            System.out.println();
-         //JOPtion pane stack
-         int res = JOptionPane.showConfirmDialog(null,
-			      "Current limit is set, Would you like to continue?",
-			      "end",
-			      JOptionPane.YES_NO_OPTION,
-			      JOptionPane.QUESTION_MESSAGE);
-		if (res == JOptionPane.NO_OPTION){
-                    TestDriver.endRemoteOperation();
-	    	 // System.exit(0);
-	          }
-	    else {}
-         System.out.println("Set CC");        
-         TestDriver.setMode("CC");
-         System.out.println("get Response (CC mode)");
-            response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
-            for(int item = 0; item<response.length; item++)
-            {  
-                System.out.print(String.format("%02X ", response[item] & 0xFF));
-            }
-            System.out.println();
-         //JOPtion pane stack
-         res = JOptionPane.showConfirmDialog(null,
-			      "mode is CC, Would you like to continue?",
-			      "end",
-			      JOptionPane.YES_NO_OPTION,
-			      JOptionPane.QUESTION_MESSAGE);
-		if (res == JOptionPane.NO_OPTION){
-                     TestDriver.endRemoteOperation();
-	    	 //System.exit(0);
-	          }
-	    else {}
-                
-         System.out.println("Test Current");        
-         TestDriver.setCurrentCC(0.3);
-         System.out.println("get Response (current set)");
-            response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
-            for(int item = 0; item<response.length; item++)
-            {  
-                System.out.print(String.format("%02X ", response[item] & 0xFF));
-            }
-            System.out.println();
-     
-         System.out.println("Set Battery");        
-         TestDriver.setFunction("BATTERY");
-         System.out.println("get Response (set battery function)");
-            response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
-            for(int item = 0; item<response.length; item++)
-            {  
-                System.out.print(String.format("%02X ", response[item] & 0xFF));
-            }
-            System.out.println();
-         //JOPtion pane stack
-         res = JOptionPane.showConfirmDialog(null,
-			      "Battery function set, Would you like to continue?",
-			      "end",
-			      JOptionPane.YES_NO_OPTION,
-			      JOptionPane.QUESTION_MESSAGE);
-		if (res == JOptionPane.NO_OPTION){
-                    TestDriver.endRemoteOperation();
-                   // System.exit(0);
-	        } else {}
-         System.out.println("Set Battery minimum voltage"); 
-          TestDriver.setMinVoltageBatteryTest((float)2.9);
-         System.out.println("get Response (set battery end voltage)");
-            response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
-            for(int item = 0; item<response.length; item++)
-            {  
-                System.out.print(String.format("%02X ", response[item] & 0xFF));
-            }
-            System.out.println();
-            //JOPtion pane stack
-         res = JOptionPane.showConfirmDialog(null,
-			      "Battery end point set, Would you like to continue?",
-			      "end",
-			      JOptionPane.YES_NO_OPTION,
-			      JOptionPane.QUESTION_MESSAGE);
-		if (res == JOptionPane.NO_OPTION){
-                    TestDriver.endRemoteOperation();
-                  //System.exit(0);
-	        }else{}
-                
-            
-         res = JOptionPane.showConfirmDialog(null,
-			      "Would you like to turn on the system?",
-			      "end",
-			      JOptionPane.YES_NO_OPTION,
-			      JOptionPane.QUESTION_MESSAGE);
-		if (res == JOptionPane.NO_OPTION){
-                    TestDriver.endRemoteOperation();
-                    System.exit(0);
-                }else {}
-        TestDriver.turnLoadON();
-        System.out.println("get Response (Turn On)");
-            response =  TestDriver.getAnyResponse();// throws IOException, Bk8500CException;
-            for(int item = 0; item<response.length; item++)
-            {  
-                System.out.print(String.format("%02X ", response[item] & 0xFF));
-            }
-            System.out.println();
-          //JOPtion pane stack
-        boolean go;
-        go = false;
-          do{
-         res = JOptionPane.showConfirmDialog(null,
-			      "Would you like to turn off the system?",
-			      "end",
-			      JOptionPane.YES_NO_OPTION,
-			      JOptionPane.QUESTION_MESSAGE);
-		if(res == JOptionPane.YES_OPTION){
-                    TestDriver.turnLoadOFF();
-                    go = false;
-                }
-         
-         if (res == JOptionPane.NO_OPTION){
-             go = true;
-	          }
-	    else {}
-         Thread.sleep(2000);
-        }while(go);
-        
-         
-         //Thread.sleep(20000);
-         TestDriver.endRemoteOperation();
-        System.exit(0);
-         
-         */
-         
-    }   
+    
 }
