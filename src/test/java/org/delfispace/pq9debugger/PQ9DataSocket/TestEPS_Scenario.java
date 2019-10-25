@@ -49,10 +49,10 @@ public class TestEPS_Scenario
             System.out.println(item);
         }
         String portName;
-        portName = "COM9";seenPorts[2].getSystemPortName(); //note this is device specific. 
+        portName = "COM4";seenPorts[2].getSystemPortName(); //note this is device specific. 
        
         try {
-            TaskList taskList = new TaskList(1, portName);
+            TaskList taskList = new TaskList(1, "COM4");
         } catch (IOException ex) {
             Logger.getLogger(TaskList.class.getName()).log(Level.SEVERE, null, ex);
         }

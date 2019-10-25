@@ -27,9 +27,10 @@ public class BK8500TestDriver {
         for (SerialPort item : seenPorts){System.out.println(item);}
         String portName;
         // show descriptive port names. 
+        // portName = "COM10";//seenPorts[0].getSystemPortName(); //note this is device specific. 
+        System.out.println("port 1 = " + seenPorts[0].getDescriptivePortName() );
+        System.out.println("port 2 = " + seenPorts[1].getDescriptivePortName() );
         portName = "COM10";//seenPorts[0].getSystemPortName(); //note this is device specific. 
-        //System.out.println("port 1 = " + seenPorts[0].getDescriptivePortName() );
-        //System.out.println("port 2 = " + seenPorts[1].getDescriptivePortName() );
         //System.out.println("port 3 = " + seenPorts[2].getDescriptivePortName() );
         // note that COM10 comes before COM2 in the array. 
         // start new driver

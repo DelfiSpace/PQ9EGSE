@@ -477,7 +477,7 @@
                     	<xtce:Unit>mAh</xtce:Unit>
                     </xtce:UnitSet>
                     <xtce:IntegerDataEncoding sizeInBits="16" />
-                    <xtce:ValidRange minInclusive="0" maxInclusive="2000" validRangeAppliesToCalibrated="true"/>
+                    <xtce:ValidRange minInclusive="0" maxInclusive="32000" validRangeAppliesToCalibrated="true"/>
                 </xtce:IntegerParameterType>
             </xtce:ParameterTypeSet>
             <xtce:ParameterSet>

@@ -49,7 +49,7 @@ public class TenmaDriver
     
     private String port_loc;
     
-    public TenmaDriver(String port)
+    public TenmaDriver(String port) throws IOException
     {        
         port_loc = port;
         comPort = SerialPort.getCommPort(port);               
@@ -59,6 +59,8 @@ public class TenmaDriver
         comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 2000, 0);
         is = comPort.getInputStream();
         os = comPort.getOutputStream();
+        //if(is == null || os == null){
+          //  throw new IOException("In or outputstream fail");}
     }
     
     public void closePort(){

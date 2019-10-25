@@ -33,6 +33,7 @@ public class TaskList {
     private static long starttime; 
     
     JSONObject command = new JSONObject();
+    JSONObject command0 = new JSONObject();
     PQ9DataClient client = new PQ9DataClient("localhost", 10000);
            
  
@@ -44,13 +45,31 @@ public class TaskList {
         ps = new TenmaDriver(port);
         System.out.println(ps.ping());
         ps.setVoltage(4.20);
-        ps.setCurrent(0.5);
+        ps.setCurrent(0.3);
         ps.sunUP();
         
-        command.put("_send_", "GetTelemetry");
-        command.put("Destination", "EPS");
+        
+        
+        command0.put("Destination", "EPS");
         client.setTimeout(TIMEOUT);
         
+        //set counter to 0
+        /* */
+       command0.put("SendRFFrame", "0 2");
+       client.sendFrame(command0);
+       try{
+        Frame reply = client.getFrame2();
+        } catch (TimeoutException ex) 
+                {
+                    // nothing to do here
+                    writer.println();
+                    ex.printStackTrace();
+                } catch (ParseException ex) {
+                    ex.printStackTrace();
+                }   
+          /* */
+        command.put("Destination", "EPS");
+        command.put("_send_", "GetTelemetry");
         timer = new Timer();
         timer.scheduleAtFixedRate(new ReminderOne(), 0, seconds * 1000);
         //timer.scheduleAtFixedRate(new ReminderTwo(), 500, seconds * 5000);
