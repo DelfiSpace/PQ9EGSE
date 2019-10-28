@@ -16,6 +16,11 @@ import java.util.Date;
  * @author micha
  */
 public class BK8500TestDriver {
+       protected final static double stopVoltage = 2.999;
+       protected final static double testCurrent = 0.400;
+    
+    
+    
      public static void main(String args[]) throws IOException, Bk8500CException, InterruptedException 
     {
         Date start = new Date();
@@ -23,18 +28,15 @@ public class BK8500TestDriver {
         PrintStream writer;
         // find serial port. 
          SerialPort[] seenPorts = SerialPort.getCommPorts();
-        // show serial ports 
+        // show serial ports // note that COM10 comes before COM2 in the array. 
         for (SerialPort item : seenPorts){System.out.println(item);}
         String portName;
-        // show descriptive port names. 
-        // portName = "COM10";//seenPorts[0].getSystemPortName(); //note this is device specific. 
-        System.out.println("port 1 = " + seenPorts[0].getDescriptivePortName() );
-        System.out.println("port 2 = " + seenPorts[1].getDescriptivePortName() );
-        portName = "COM10";//seenPorts[0].getSystemPortName(); //note this is device specific. 
-        //System.out.println("port 3 = " + seenPorts[2].getDescriptivePortName() );
-        // note that COM10 comes before COM2 in the array. 
+        portName = "COM5"; //note this is device specific. 
         // start new driver
-        writer = new PrintStream(new FileOutputStream("BKDATA.txt", true));
+        String fileString; 
+        int testCur = (int)(testCurrent*1000);
+        fileString = "BKDATA_TEST_" + String.valueOf(testCur)+".txt";
+        writer = new PrintStream(new FileOutputStream(fileString, true));
         BK8500Driver TestDriver = new BK8500Driver(portName);
         System.out.println("Start Remote Operation");
         TestDriver.startRemoteOperation();
@@ -47,11 +49,9 @@ public class BK8500TestDriver {
                 System.out.print(String.format("%02X ", response[item] & 0xFF));
             }
             System.out.println();
-        TestDriver.setCurrentLim(1.0);    
-        TestDriver.setMode("CC");   
-        TestDriver.setCurrentCC(0.3);    
-        TestDriver.setFunction("BATTERY");   
-        TestDriver.setMinVoltageBatteryTest((float)2.9);   
+     
+            
+        TestDriver.startBatteryTest(stopVoltage, testCurrent);
         boolean go = true;
         boolean go2 = false;
         do{
@@ -62,10 +62,20 @@ public class BK8500TestDriver {
                 writer.println(sb.toString());
                 writer.flush();
                 System.out.println(sb.toString());
+                if(reply[1]>testCurrent+0.1 ){
+                    byte[] bugCheck;
+                    bugCheck = TestDriver.getAnyResponse(false);
+                    System.out.println("Something has gone wrong");
+                    for(int item = 0; item<bugCheck.length; item++)
+                    {  
+                      System.out.print(String.format("%02X ", bugCheck[item] & 0xFF));
+                    }System.out.println();
+                }
+                
                 if(reply[0]<2.9 && go2){go = false;}
                 if(reply[1]<0.001 ){go2 = true;}
-                Thread.sleep(750);
                 if(reply[1]>0.01){go2 = false;}
+                Thread.sleep(750);
         }while(go);
         
         TestDriver.endRemoteOperation();

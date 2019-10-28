@@ -37,15 +37,15 @@ public class TaskList {
     PQ9DataClient client = new PQ9DataClient("localhost", 10000);
            
  
-    public TaskList(int seconds, String port) throws FileNotFoundException, IOException, InterruptedException 
+    public TaskList(int seconds, String port, String filename, double currentLim) throws FileNotFoundException, IOException, InterruptedException 
     {
         Date start = new Date();
         starttime = start.getTime();
-        writer = new PrintStream(new FileOutputStream("filename.txt", true));
+        writer = new PrintStream(new FileOutputStream(filename, true));
         ps = new TenmaDriver(port);
         System.out.println(ps.ping());
         ps.setVoltage(4.20);
-        ps.setCurrent(0.3);
+        ps.setCurrent(currentLim);
         ps.sunUP();
         
         
@@ -54,8 +54,8 @@ public class TaskList {
         client.setTimeout(TIMEOUT);
         
         //set counter to 0
-        /* */
-       command0.put("SendRFFrame", "0 2");
+        /* 
+       command0.put("SendRaw", "0 2");
        client.sendFrame(command0);
        try{
         Frame reply = client.getFrame2();

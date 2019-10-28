@@ -14,6 +14,8 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.delfispace.pq9debugger.PQ9DataSocket.Bk8500CException;
 
@@ -308,10 +310,10 @@ public class BK8500Driver {
         sendCommand(cmd); 
     }
     
-     public void setMinVoltageBatteryTest(float minV) throws IOException{
+     public void setMinVoltageBatteryTest(double minV) throws IOException{
         byte[] cmd; // new byte[]
         cmd = commandHandler((byte)0x4E); //basic array fill 
-        long minVolt = (long)minV*1000; 
+        long minVolt = (long)(minV*1000); 
         byte[] cmdbyte = longToByte(minVolt);
         cmd[3]=(byte) cmdbyte[0];//least important bits go first. 
         cmd[4]=cmdbyte[1];
@@ -353,13 +355,23 @@ public class BK8500Driver {
     }
     
     // battery test 
-    public void startBatteryTest(double endVoltage, double testCurrent) throws IOException{
+    public void startBatteryTest(double endVoltage, double testCurrent) throws IOException, Bk8500CException{
         //Excecute a batter test in CurrentControlled mode
         //check if remote connection is established. 
-        
+        setCurrentLim(1.0);    
+        setMode("CC");   
+        setCurrentCC(testCurrent);    
+        setFunction("BATTERY");   
+        // min voltage seems to have an overshoot
+        setMinVoltageBatteryTest(endVoltage);   
+        try {
+            Thread.sleep(1500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(BK8500Driver.class.getName()).log(Level.SEVERE, null, ex);
+            }
         // packetCheck needs improving. 
     }
-  
+
     // this function translates commands into byte[]
     // useful for the mode functions
     private byte[] commandHandler(byte b2Cmd, byte b3Cmd) throws IOException{

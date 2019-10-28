@@ -49,10 +49,12 @@ public class TestEPS_Scenario
             System.out.println(item);
         }
         String portName;
-        portName = "COM4";seenPorts[2].getSystemPortName(); //note this is device specific. 
-       
+        portName = "COM4"; //seenPorts[2].getSystemPortName(); //note this is device specific. 
+       String chargeTest;
+       double currentLimit = 0.4;
+       chargeTest = "ChargeTest_" + String.valueOf(currentLimit*1000)+".txt";
         try {
-            TaskList taskList = new TaskList(1, "COM4");
+            TaskList taskList = new TaskList(1, "COM4", chargeTest, currentLimit);
         } catch (IOException ex) {
             Logger.getLogger(TaskList.class.getName()).log(Level.SEVERE, null, ex);
         }
