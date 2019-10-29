@@ -48,7 +48,7 @@ public class DownlinkTab
     {
         try 
         {
-            List<XTCEContainerContentModel> containers = new LinkedList();
+            List<XTCEContainerContentModel> containers = new LinkedList<>();
 
             Iterator<XTCETMStream> s = Configuration.getInstance().getXTCEDatabase().getStreams().iterator();
             while (s.hasNext())

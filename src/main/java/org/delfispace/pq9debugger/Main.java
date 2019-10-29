@@ -154,7 +154,7 @@ public class Main implements PQ9Receiver, Subscriber
     {
         SerialPort[] sp = SerialPort.getCommPorts();
 
-        List<String> spl = new ArrayList();
+        List<String> spl = new ArrayList<>();
         spl.add(NULL_PORT_NAME);
         for (SerialPort sp1 : sp) 
         {
