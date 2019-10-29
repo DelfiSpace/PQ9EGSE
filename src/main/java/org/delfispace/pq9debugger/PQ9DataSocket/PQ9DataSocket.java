@@ -96,6 +96,28 @@ public class PQ9DataSocket extends Thread
     
     /**
      *
+     * @param data
+     */
+    public void send(Frame data)
+    {
+        if (outputStream != null)
+        {
+            try 
+            {
+                JSONObject obj=new JSONObject();
+                data.forEach((k,v)->obj.put(k,v));
+                System.out.println(obj.toJSONString());
+                outputStream.writeBytes(obj.toJSONString() + "\n");
+                outputStream.flush();
+            } catch (IOException ex) 
+            {   
+                // ignore error
+            }
+        }
+    }
+    
+    /**
+     *
      * @throws IOException
      */
     public void close() throws IOException
