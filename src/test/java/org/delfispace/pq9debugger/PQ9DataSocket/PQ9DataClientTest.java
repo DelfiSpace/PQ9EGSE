@@ -1,27 +1,32 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2019 Stefano Speretta
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.delfispace.pq9debugger.PQ9DataSocket;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  *
- * @author stefanosperett
+ * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
 public class PQ9DataClientTest 
 {
@@ -137,7 +142,7 @@ public class PQ9DataClientTest
         f.add("three", "COMMS", false);
         HashMap<String, String> hmap = new HashMap<>();
         hmap.put("one", "{\\\"valid\\\":\\\"true\\\",\\\"value\\\":\\\"OBC\\\"}");
-        hmap.put("two", "{\\\"valid\\\":\\\"true\\\",\\\"value\\\":\\\"EPS\\\"}");
+        hmap.put("two", "{\\\"value\\\":\\\"EPS\\\"}");
         hmap.put("three", "{\\\"valid\\\":\\\"false\\\",\\\"value\\\":\\\"COMMS\\\"}");
         srv.send(hmap);
 

@@ -23,10 +23,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.function.BiConsumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -133,7 +129,16 @@ public class PQ9DataClient implements Closeable
                 String parsed = ((String)v).replace("\\\"", "\"");
                 //System.out.println(parsed);
                 JSONObject subobj = (JSONObject) parser.parse(parsed);
-                f.add((String)k, (String)subobj.get("value"), subobj.get("valid").equals("true"));
+                
+                // check if the valid field is present: if not, default is true
+                if (subobj.get("valid") != null)
+                {
+                    f.add((String)k, (String)subobj.get("value"), subobj.get("valid").equals("true"));
+                }
+                else
+                {
+                    f.add((String)k, (String)subobj.get("value"));
+                }
             } catch (ParseException ex)
             {
                 // todo: fix it somehow
