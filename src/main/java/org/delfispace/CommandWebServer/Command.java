@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Stefano Speretta
+ * Copyright (C) 2019 Stefano Speretta
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  */
 package org.delfispace.CommandWebServer;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 /**
  *
@@ -45,10 +45,10 @@ public class Command
     
     public String toJSON()
     {
-        JSONObject obj=new JSONObject();    
+        JSONObject obj = new JSONObject();    
         obj.put("command", this.command);    
         obj.put("data",this.data);  
-        return obj.toJSONString();
+        return obj.toString();
     }
     
     @Override
