@@ -34,6 +34,8 @@ public class TaskList {
     
     JSONObject command = new JSONObject();
     JSONObject command0 = new JSONObject();
+    JSONObject command1 = new JSONObject();
+    JSONObject command2 = new JSONObject();
     PQ9DataClient client = new PQ9DataClient("localhost", 10000);
            
  

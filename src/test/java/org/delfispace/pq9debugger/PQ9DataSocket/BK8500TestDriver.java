@@ -17,7 +17,7 @@ import java.util.Date;
  */
 public class BK8500TestDriver {
        protected final static double stopVoltage = 2.999;
-       protected final static double testCurrent = 0.400;
+       protected final static double testCurrent = 0.500;
     
     
     

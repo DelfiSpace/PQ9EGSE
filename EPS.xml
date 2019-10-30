@@ -602,7 +602,7 @@
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
                 </xtce:SequenceContainer>
-                <xtce:SequenceContainer name="SendEPSHousekeepingRequest" shortDescription="Send EPS Housekeeping frame request">
+           <!-- <xtce:SequenceContainer name="SendEPSHousekeepingRequest" shortDescription="Send EPS Housekeeping frame request">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="EPSHousekeepingContainer"/>                        
                     </xtce:EntryList>
@@ -613,7 +613,7 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
-                </xtce:SequenceContainer>                
+                </xtce:SequenceContainer>  -->              
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
         <xtce:CommandMetaData>
@@ -756,7 +756,7 @@
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
                 </xtce:SequenceContainer>
-                <xtce:SequenceContainer name="SendOBCHousekeepingRequest" shortDescription="Send OBC Housekeeping frame request">
+            <!--<xtce:SequenceContainer name="SendOBCHousekeepingRequest" shortDescription="Send OBC Housekeeping frame request">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="OBCHousekeepingContainer"/>                        
                     </xtce:EntryList>
@@ -767,7 +767,7 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
-                </xtce:SequenceContainer>   
+                </xtce:SequenceContainer>  --> 
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
     </xtce:SpaceSystem>
@@ -825,7 +825,7 @@
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
                 </xtce:SequenceContainer>
-                <xtce:SequenceContainer name="SendADCSHousekeepingRequest" shortDescription="Send ADCS Housekeeping frame request">
+            <!--<xtce:SequenceContainer name="SendADCSHousekeepingRequest" shortDescription="Send ADCS Housekeeping frame request">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="ADCSHousekeepingContainer"/>                        
                     </xtce:EntryList>
@@ -836,7 +836,7 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
-                </xtce:SequenceContainer>
+                </xtce:SequenceContainer>-->
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
         <!--xtce:CommandMetaData>
@@ -926,7 +926,7 @@
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
                 </xtce:SequenceContainer>
-                <xtce:SequenceContainer name="SendADBHousekeepingRequest" shortDescription="Send ADB Housekeeping frame request">
+            <!--<xtce:SequenceContainer name="SendADBHousekeepingRequest" shortDescription="Send ADB Housekeeping frame request">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="ADBHousekeepingContainer"/>                        
                     </xtce:EntryList>
@@ -937,7 +937,7 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
-                </xtce:SequenceContainer>
+                </xtce:SequenceContainer>-->
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
         <xtce:CommandMetaData>
@@ -1089,7 +1089,7 @@
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
                 </xtce:SequenceContainer>
-                <xtce:SequenceContainer name="SendCOMMSHousekeepingRequest" shortDescription="Send COMMS Housekeeping frame request">
+            <!--<xtce:SequenceContainer name="SendCOMMSHousekeepingRequest" shortDescription="Send COMMS Housekeeping frame request">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="COMMSHousekeepingContainer"/>                        
                     </xtce:EntryList>
@@ -1100,7 +1100,7 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
-                </xtce:SequenceContainer>
+                </xtce:SequenceContainer>-->
                 <xtce:SequenceContainer name="RXData" shortDescription="COMMS RX data">
                     <xtce:EntryList>
                         <xtce:ArrayParameterRefEntry parameterRef="Data">

@@ -51,7 +51,7 @@ public class TestEPS_Scenario
         String portName;
         portName = "COM4"; //seenPorts[2].getSystemPortName(); //note this is device specific. 
        String chargeTest;
-       double currentLimit = 0.4;
+       double currentLimit = 0.6;
        chargeTest = "ChargeTest_" + String.valueOf(currentLimit*1000)+".txt";
         try {
             TaskList taskList = new TaskList(1, "COM4", chargeTest, currentLimit);
