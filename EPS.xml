@@ -31,6 +31,7 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
+                    <xtce:Enumeration label="Execute" value="1"/>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
                     <xtce:Enumeration label="Ackownledgment" value="4"/>
                     <xtce:Enumeration label="PacketStats" value="6"/>
@@ -299,7 +300,7 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
-                    <xtce:Enumeration label="GetSetParam" value="1"/>
+                    <xtce:Enumeration label="Execute" value="1"/>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
                     <xtce:Enumeration label="Verification" value="4"/>
                     <xtce:Enumeration label="PacketStats" value="6"/>
@@ -477,9 +478,15 @@
                 <xtce:Parameter name="SA_XM_temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
                 <xtce:Parameter name="BattVoltage" parameterTypeRef="LTCvoltage"/>
                 <xtce:Parameter name="BattCapacity" parameterTypeRef="LTCcapacity"/>
-                <xtce:Parameter name="BattTemperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
-                <xtce:Parameter name="BusSwitchesSetting" parameterTypeRef="/Delfi-PQ/bitStatusArray"/>
-                <xtce:Parameter name="BusSwitchesStatus" parameterTypeRef="/Delfi-PQ/bitStatusArray"/>
+                <xtce:Parameter name="BattTemperature" parameterTypeRef="/Delfi-PQ/Temperature"/>                
+                <xtce:Parameter name="B4_state" parameterTypeRef="/Delfi-PQ/bitStatus"/>
+                <xtce:Parameter name="B3_state" parameterTypeRef="/Delfi-PQ/bitStatus"/>
+                <xtce:Parameter name="B2_state" parameterTypeRef="/Delfi-PQ/bitStatus"/>
+                <xtce:Parameter name="B1_state" parameterTypeRef="/Delfi-PQ/bitStatus"/>                                
+                <xtce:Parameter name="B4_status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="B3_status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="B2_status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="B1_status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>                                
                 <xtce:Parameter name="IntCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="IntVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="URBCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
@@ -528,20 +535,17 @@
                         <xtce:ParameterRefEntry parameterRef="BattVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="BattCapacity"/>
                         <xtce:ParameterRefEntry parameterRef="BattTemperature"/>
-                        <xtce:ArrayParameterRefEntry parameterRef="BusSwitchesSetting">
-                            <xtce:DimensionList>
-                                <xtce:Size>
-                                    <xtce:FixedValue>4</xtce:FixedValue>
-                                </xtce:Size>
-                            </xtce:DimensionList>
-                        </xtce:ArrayParameterRefEntry>
-                        <xtce:ArrayParameterRefEntry parameterRef="BusSwitchesStatus">
-                            <xtce:DimensionList>
-                                <xtce:Size>
-                                    <xtce:FixedValue>4</xtce:FixedValue>
-                                </xtce:Size>
-                            </xtce:DimensionList>
-                        </xtce:ArrayParameterRefEntry>
+                        
+                        <xtce:ParameterRefEntry parameterRef="B4_status"/>
+                        <xtce:ParameterRefEntry parameterRef="B3_status"/>
+                        <xtce:ParameterRefEntry parameterRef="B2_status"/>
+                        <xtce:ParameterRefEntry parameterRef="B1_status"/>  
+                                              
+                        <xtce:ParameterRefEntry parameterRef="B4_state"/>
+                        <xtce:ParameterRefEntry parameterRef="B3_state"/>
+                        <xtce:ParameterRefEntry parameterRef="B2_state"/>
+                        <xtce:ParameterRefEntry parameterRef="B1_state"/>
+                        
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/MCUTemp"/>
                         <xtce:ParameterRefEntry parameterRef="IntCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="IntVoltage"/>
@@ -595,10 +599,10 @@
                     <xtce:UnitSet/>
                     <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                     <xtce:EnumerationList>
-                        <xtce:Enumeration label="Bus1Sw" value="43" shortDescription="1"/>
-                        <xtce:Enumeration label="Bus2Sw" value="44" shortDescription="2"/>
-                        <xtce:Enumeration label="Bus3Sw" value="45" shortDescription="3"/>
-                        <xtce:Enumeration label="Bus4Sw" value="46" shortDescription="4"/>
+                        <xtce:Enumeration label="Bus1Sw" value="1" shortDescription="1"/>
+                        <xtce:Enumeration label="Bus2Sw" value="2" shortDescription="2"/>
+                        <xtce:Enumeration label="Bus3Sw" value="3" shortDescription="3"/>
+                        <xtce:Enumeration label="Bus4Sw" value="4" shortDescription="4"/>
                     </xtce:EnumerationList>
                 </xtce:EnumeratedArgumentType>
                 <xtce:EnumeratedArgumentType name="EPSBusSwitchParameterType" shortDescription="Status">
@@ -618,8 +622,8 @@
                             <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
                             <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
-                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="Execute"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                         </xtce:ArgumentAssignmentList>
                     </xtce:BaseMetaCommand>
                     <xtce:ArgumentList>
@@ -630,28 +634,6 @@
                         <xtce:EntryList>
                             <xtce:ArgumentRefEntry argumentRef="EPSParam"/>
                             <xtce:ArgumentRefEntry argumentRef="state"/>
-                        </xtce:EntryList>
-                    </xtce:CommandContainer>
-                </xtce:MetaCommand>
-                <xtce:MetaCommand name="EPSSetParam" shortDescription="Set EPS parameter">
-                    <xtce:LongDescription>Set EPS parameter</xtce:LongDescription>
-                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
-                        <xtce:ArgumentAssignmentList>
-                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
-                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
-                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
-                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
-                        </xtce:ArgumentAssignmentList>
-                    </xtce:BaseMetaCommand>
-                    <xtce:ArgumentList>
-                        <xtce:Argument name="Param1" argumentTypeRef="EPSParameterType"/>
-                        <xtce:Argument name="Param2" argumentTypeRef="/Delfi-PQ/byte"/>
-                    </xtce:ArgumentList>
-                    <xtce:CommandContainer name="EPSSetParam">
-                        <xtce:EntryList>
-                            <xtce:ArgumentRefEntry argumentRef="Param1"/>
-                            <xtce:ArgumentRefEntry argumentRef="Param2"/>
                         </xtce:EntryList>
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
