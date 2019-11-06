@@ -52,13 +52,13 @@ public class UplinkTab
 {
     private static int tabIndex = 0;
     private static final StringBuilder IDARRAY = new StringBuilder();
-    private static final List<String> IDS = new ArrayList();
+    private static final List<String> IDS = new ArrayList<>();
     
     public static String generate()
     {
         try
         {
-            List<String[]> numbers = new ArrayList();
+            List<String[]> numbers = new ArrayList<>();
             numbers.add(new String[]{"Uplink:raw:dest", "Destination", "7"});
             numbers.add(new String[]{"Uplink:raw:src", "Source", "1"});
 

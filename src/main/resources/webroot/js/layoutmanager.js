@@ -213,7 +213,7 @@ function dataToGUI(data)
 {  
     var elements = JSON.parse(data);
     var packet = elements['_received_'];
-    
+
     // find the last received message and mark it as outdated
     changeClass("updatedFrame", "outdatedFrame");
  
@@ -237,6 +237,10 @@ function dataToGUI(data)
             }            
         }
     }
+    var timestamp =  new Date(Date.parse(elements['_timestamp_']));    
+    var formatted_date = timestamp.getHours() + ":" + timestamp.getMinutes() + ":" 
+            + timestamp.getSeconds() + "." + timestamp.getMilliseconds();    
+    document.getElementById('Downlink:' + packet + ":_timestamp_").innerHTML = formatted_date;
     document.getElementById('Downlink:' + packet).className = "updatedFrame";
 }
 

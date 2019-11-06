@@ -16,50 +16,34 @@
  */
 package org.delfispace.CommandWebServer;
 
-import org.json.JSONObject;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
  * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
-public class Command 
+public class CommandTest 
 {
-    private final String command;
-    private final String data;
-    
-    public Command(String command, String data)
+    @Test
+    public void testgetters()
     {
-        this.command = command;
-        this.data = data;
+        Command cmd = new Command("A", "B");
+        Assert.assertEquals("A", cmd.getCommand()); 
+        Assert.assertEquals("B", cmd.getData()); 
     }
     
-    public String getData()
+    @Test
+    public void testEncoding()
     {
-        return this.data;
+        Command cmd = new Command("A", "B");
+        Assert.assertEquals("{\"data\":\"B\",\"command\":\"A\"}", cmd.toJSON());        
     }
     
-    public String getCommand()
+    @Test
+    public void testtoString() 
     {
-        return this.command;
-    }
-    
-    public String toJSON()
-    {
-        JSONObject obj = new JSONObject();    
-        obj.put("command", this.command);    
-        obj.put("data",this.data);  
-        return obj.toString();
-    }
-    
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Command: \"");
-        sb.append(this.command);
-        sb.append("\", Data: \"");
-        sb.append(this.data);
-        sb.append("\"");
-        return sb.toString();
+        Command cmd = new Command("A", "B");
+        Assert.assertEquals("Command: \"A\", Data: \"B\"", cmd.toString());
     }
 }
