@@ -47,6 +47,7 @@ public class PowerBusTest {
         //String data = command0.getData();
         
         try{
+            // does this command have a reply? 
             Frame reply = client.getFrame2();
         } catch (TimeoutException ex) 
                 {

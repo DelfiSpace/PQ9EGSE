@@ -64,7 +64,7 @@ public class TestEPS
             command.put("_send_", "GetTelemetry");
             command.put("Destination", "EPS");
             
-            int transmitted = 2600;
+            int transmitted = 300;
             
             for (int h = 0; h < transmitted; h++) 
             {

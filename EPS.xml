@@ -614,8 +614,8 @@
                     <xtce:EnumerationList>
                         <xtce:Enumeration label="Bus1Sw" value="1" shortDescription="1"/>
                         <xtce:Enumeration label="Bus2Sw" value="2" shortDescription="2"/>
-                        <xtce:Enumeration label="Bus3Sw" value="3" shortDescription="3"/>
-                        <xtce:Enumeration label="Bus4Sw" value="4" shortDescription="4"/>
+                        <xtce:Enumeration label="Bus3Sw" value="4" shortDescription="3"/>
+                        <xtce:Enumeration label="Bus4Sw" value="8" shortDescription="4"/>
                     </xtce:EnumerationList>
                 </xtce:EnumeratedArgumentType>
                 <xtce:EnumeratedArgumentType name="EPSBusSwitchParameterType" shortDescription="Status">

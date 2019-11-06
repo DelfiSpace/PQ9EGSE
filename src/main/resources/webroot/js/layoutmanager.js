@@ -206,6 +206,7 @@ function fetchData(id, elm)
         obj[elm[i].split(":")[2]] = document.getElementById(elm[i]).value;
     } 
     var s = JSON.stringify(obj);
+    console.log(s);
     rpc.send('SendCommand', s);
 }
 

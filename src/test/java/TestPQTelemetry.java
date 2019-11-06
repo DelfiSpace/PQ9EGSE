@@ -72,13 +72,13 @@ public class TestPQTelemetry
 
         XTCEContainerContentModel pingRequestDecoded = 
                 stream.processStream( pingRequest.getFrame() );
-        Assert.assertEquals("PingRequest", pingRequestDecoded.getName());
+        Assert.assertEquals("PingService", pingRequestDecoded.getName());
         
         PQ9 pingResponse = new PQ9(1, 1, new byte[]{(byte)0x11, (byte)0x02});
         
         XTCEContainerContentModel pingResponseDecoded = 
                 stream.processStream( pingResponse.getFrame() );
-        Assert.assertEquals("PingReply", pingResponseDecoded.getName());        
+        Assert.assertEquals("PingService", pingResponseDecoded.getName());        
     }
 
     @Test
