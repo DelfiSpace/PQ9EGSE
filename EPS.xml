@@ -45,7 +45,7 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
-                	<xtce:Enumeration label="Error" value="0"/>
+                    <xtce:Enumeration label="Error" value="0"/>
                     <xtce:Enumeration label="Request" value="1"/>
                     <xtce:Enumeration label="Reply" value="2"/>
                     <xtce:Enumeration label="ACKErrorReply" value="4"/>
@@ -66,7 +66,7 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
                 <xtce:EnumerationList>
-                    <xtce:Enumeration label="Working" value="1"/>
+                    <xtce:Enumeration label="Active" value="1"/>
                     <xtce:Enumeration label="Error" value="0"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
@@ -168,6 +168,7 @@
             <xtce:Parameter name="Source" parameterTypeRef="AddressType"/>
             <xtce:Parameter name="Service" parameterTypeRef="ServiceType"/>
             <xtce:Parameter name="Request" parameterTypeRef="RequestType"/>
+            <xtce:Parameter name="Reset" parameterTypeRef="ResetType"/>
             <xtce:Parameter name="Uptime" parameterTypeRef="SUBSSYSuptime"/>
             <xtce:Parameter name="BootCounter" parameterTypeRef="short"/>
             <xtce:Parameter name="SoftwareBootCounter" parameterTypeRef="byte"/>
@@ -208,7 +209,7 @@
                     <xtce:ParameterRefEntry parameterRef="SoftwareBootCounter"/>
                 </xtce:EntryList>
             </xtce:SequenceContainer>
-            <xtce:SequenceContainer name="PingRequest" shortDescription="Ping request">
+            <xtce:SequenceContainer name="PingService" shortDescription="Ping Service">
                 <xtce:LongDescription>Ping subsystem.</xtce:LongDescription>
                 <xtce:EntryList>
                 </xtce:EntryList>
@@ -216,20 +217,19 @@
                     <xtce:RestrictionCriteria>
                         <xtce:ComparisonList>
                             <xtce:Comparison parameterRef="Service" value="Ping"/>
-                            <xtce:Comparison parameterRef="Request" value="Request"/>
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
-            <xtce:SequenceContainer name="PingReply" shortDescription="Ping reply">
-                <xtce:LongDescription>Ping reply.</xtce:LongDescription>
+            <xtce:SequenceContainer name="ResetService" shortDescription="Reset Service">
+                <xtce:LongDescription>Reset request and reply.</xtce:LongDescription>
                 <xtce:EntryList>
+                    <xtce:ParameterRefEntry parameterRef="Reset"/>
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>
                         <xtce:ComparisonList>
-                            <xtce:Comparison parameterRef="Service" value="Ping"/>
-                            <xtce:Comparison parameterRef="Request" value="Reply"/>
+                            <xtce:Comparison parameterRef="Service" value="Reset"/>
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
@@ -437,7 +437,7 @@
                     	<xtce:Unit>mAh</xtce:Unit>
                     </xtce:UnitSet>
                     <xtce:IntegerDataEncoding sizeInBits="16" />
-                    <xtce:ValidRange minInclusive="0" maxInclusive="2000" validRangeAppliesToCalibrated="true"/>
+                    <xtce:ValidRange minInclusive="0" maxInclusive="32000" validRangeAppliesToCalibrated="true"/>
                 </xtce:IntegerParameterType>
             </xtce:ParameterTypeSet>
             <xtce:ParameterSet>
@@ -564,19 +564,7 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
-                </xtce:SequenceContainer>
-                <xtce:SequenceContainer name="SendEPSHousekeepingRequest" shortDescription="Send EPS Housekeeping frame request">
-                    <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="EPSHousekeepingContainer"/>                        
-                    </xtce:EntryList>
-                    <xtce:BaseContainer containerRef="/Delfi-PQ/SendRFFrame">
-                        <xtce:RestrictionCriteria>
-                            <xtce:ComparisonList>
-                                <xtce:Comparison parameterRef="Source" value="EPS"/>
-                            </xtce:ComparisonList>
-                        </xtce:RestrictionCriteria>
-                    </xtce:BaseContainer>
-                </xtce:SequenceContainer>                
+                </xtce:SequenceContainer>           
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
         <xtce:CommandMetaData>
@@ -697,18 +685,6 @@
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
                 </xtce:SequenceContainer>
-                <xtce:SequenceContainer name="SendOBCHousekeepingRequest" shortDescription="Send OBC Housekeeping frame request">
-                    <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="OBCHousekeepingContainer"/>                        
-                    </xtce:EntryList>
-                    <xtce:BaseContainer containerRef="/Delfi-PQ/SendRFFrame">
-                        <xtce:RestrictionCriteria>
-                            <xtce:ComparisonList>
-                                <xtce:Comparison parameterRef="Source" value="OBC"/>
-                            </xtce:ComparisonList>
-                        </xtce:RestrictionCriteria>
-                    </xtce:BaseContainer>
-                </xtce:SequenceContainer>   
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
     </xtce:SpaceSystem>
@@ -759,18 +735,6 @@
                         <xtce:ContainerRefEntry containerRef="ADCSHousekeepingContainer"/>                        
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/HousekeepingReply">
-                        <xtce:RestrictionCriteria>
-                            <xtce:ComparisonList>
-                                <xtce:Comparison parameterRef="Source" value="ADCS"/>
-                            </xtce:ComparisonList>
-                        </xtce:RestrictionCriteria>
-                    </xtce:BaseContainer>
-                </xtce:SequenceContainer>
-                <xtce:SequenceContainer name="SendADCSHousekeepingRequest" shortDescription="Send ADCS Housekeeping frame request">
-                    <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="ADCSHousekeepingContainer"/>                        
-                    </xtce:EntryList>
-                    <xtce:BaseContainer containerRef="/Delfi-PQ/SendRFFrame">
                         <xtce:RestrictionCriteria>
                             <xtce:ComparisonList>
                                 <xtce:Comparison parameterRef="Source" value="ADCS"/>
@@ -860,18 +824,6 @@
                         <xtce:ContainerRefEntry containerRef="ADBHousekeepingContainer"/>                        
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/HousekeepingReply">
-                        <xtce:RestrictionCriteria>
-                            <xtce:ComparisonList>
-                                <xtce:Comparison parameterRef="Source" value="ADB"/>
-                            </xtce:ComparisonList>
-                        </xtce:RestrictionCriteria>
-                    </xtce:BaseContainer>
-                </xtce:SequenceContainer>
-                <xtce:SequenceContainer name="SendADBHousekeepingRequest" shortDescription="Send ADB Housekeeping frame request">
-                    <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="ADBHousekeepingContainer"/>                        
-                    </xtce:EntryList>
-                    <xtce:BaseContainer containerRef="/Delfi-PQ/SendRFFrame">
                         <xtce:RestrictionCriteria>
                             <xtce:ComparisonList>
                                 <xtce:Comparison parameterRef="Source" value="ADB"/>
@@ -1023,18 +975,6 @@
                         <xtce:ContainerRefEntry containerRef="COMMSHousekeepingContainer"/>                        
                     </xtce:EntryList>
                     <xtce:BaseContainer containerRef="/Delfi-PQ/HousekeepingReply">
-                        <xtce:RestrictionCriteria>
-                            <xtce:ComparisonList>
-                                <xtce:Comparison parameterRef="Source" value="COMMS"/>
-                            </xtce:ComparisonList>
-                        </xtce:RestrictionCriteria>
-                    </xtce:BaseContainer>
-                </xtce:SequenceContainer>
-                <xtce:SequenceContainer name="SendCOMMSHousekeepingRequest" shortDescription="Send COMMS Housekeeping frame request">
-                    <xtce:EntryList>
-                        <xtce:ContainerRefEntry containerRef="COMMSHousekeepingContainer"/>                        
-                    </xtce:EntryList>
-                    <xtce:BaseContainer containerRef="/Delfi-PQ/SendRFFrame">
                         <xtce:RestrictionCriteria>
                             <xtce:ComparisonList>
                                 <xtce:Comparison parameterRef="Source" value="COMMS"/>
