@@ -1,4 +1,19 @@
-
+/*
+ * Copyright (C) 2018 Stefano Speretta
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 import java.io.File;
 import org.delfispace.protocols.pq9.PQ9;
 import org.delfispace.protocols.pq9.PQ9Exception;
@@ -13,15 +28,9 @@ import org.xtce.toolkit.XTCEDatabase;
 import org.xtce.toolkit.XTCEDatabaseException;
 import org.xtce.toolkit.XTCETMStream;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  *
- * @author stefanosperett
+ * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
 public class TestPQTelemetry 
 {
@@ -72,13 +81,13 @@ public class TestPQTelemetry
 
         XTCEContainerContentModel pingRequestDecoded = 
                 stream.processStream( pingRequest.getFrame() );
-        Assert.assertEquals("PingRequest", pingRequestDecoded.getName());
+        Assert.assertEquals("PingService", pingRequestDecoded.getName());
         
         PQ9 pingResponse = new PQ9(1, 1, new byte[]{(byte)0x11, (byte)0x02});
         
         XTCEContainerContentModel pingResponseDecoded = 
                 stream.processStream( pingResponse.getFrame() );
-        Assert.assertEquals("PingReply", pingResponseDecoded.getName());        
+        Assert.assertEquals("PingService", pingResponseDecoded.getName());        
     }
 
     @Test
