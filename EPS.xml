@@ -209,7 +209,7 @@
                     <xtce:ParameterRefEntry parameterRef="SoftwareBootCounter"/>
                 </xtce:EntryList>
             </xtce:SequenceContainer>
-            <xtce:SequenceContainer name="PingRequest" shortDescription="Ping request">
+            <xtce:SequenceContainer name="PingService" shortDescription="Ping Service">
                 <xtce:LongDescription>Ping subsystem.</xtce:LongDescription>
                 <xtce:EntryList>
                 </xtce:EntryList>
@@ -217,39 +217,11 @@
                     <xtce:RestrictionCriteria>
                         <xtce:ComparisonList>
                             <xtce:Comparison parameterRef="Service" value="Ping"/>
-                            <xtce:Comparison parameterRef="Request" value="Request"/>
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
-            <xtce:SequenceContainer name="PingReply" shortDescription="Ping reply">
-                <xtce:LongDescription>Ping reply.</xtce:LongDescription>
-                <xtce:EntryList>
-                </xtce:EntryList>
-                <xtce:BaseContainer containerRef="PQ9">
-                    <xtce:RestrictionCriteria>
-                        <xtce:ComparisonList>
-                            <xtce:Comparison parameterRef="Service" value="Ping"/>
-                            <xtce:Comparison parameterRef="Request" value="Reply"/>
-                        </xtce:ComparisonList>
-                    </xtce:RestrictionCriteria>
-                </xtce:BaseContainer>
-            </xtce:SequenceContainer>
-            <!--xtce:SequenceContainer name="ResetRequest" shortDescription="Reset request">
-                <xtce:LongDescription>Reset subsystem.</xtce:LongDescription>
-                <xtce:EntryList>
-                    <xtce:ParameterRefEntry parameterRef="Reset"/>
-                </xtce:EntryList>
-                <xtce:BaseContainer containerRef="PQ9">
-                    <xtce:RestrictionCriteria>
-                        <xtce:ComparisonList>
-                            <xtce:Comparison parameterRef="Service" value="Reset"/>
-                            <xtce:Comparison parameterRef="Request" value="Request"/>
-                        </xtce:ComparisonList>
-                    </xtce:RestrictionCriteria>
-                </xtce:BaseContainer>
-            </xtce:SequenceContainer-->
-              <xtce:SequenceContainer name="ResetService" shortDescription="Reset Service">
+            <xtce:SequenceContainer name="ResetService" shortDescription="Reset Service">
                 <xtce:LongDescription>Reset request and reply.</xtce:LongDescription>
                 <xtce:EntryList>
                     <xtce:ParameterRefEntry parameterRef="Reset"/>
