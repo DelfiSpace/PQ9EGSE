@@ -214,7 +214,7 @@ function dataToGUI(data)
 {  
     var elements = JSON.parse(data);
     var packet = elements['_received_'];
-
+    console.log(data);
     // find the last received message and mark it as outdated
     changeClass("updatedFrame", "outdatedFrame");
  
