@@ -20,7 +20,8 @@ import org.delfispace.protocols.pq9.PQ9Exception;
  *
  * @author LocalAdmin
  */
-public class PingTestCase1{
+public class PingTestCase1
+{
             private final static int TIMEOUT = 300; // in ms
             JSONObject reply;
             JSONObject commandP;
@@ -30,51 +31,38 @@ public class PingTestCase1{
     public static void BeforePingTestClass() throws IOException, ParseException, TimeoutException {
         System.out.println("Initializer of PingTestClass ");
     }
+    
     @Before
-    public void setup(){
-        // do nothing
+    public void setup() throws IOException
+    {
+        caseClient = new PQ9DataClient("localhost", 10000);
+        caseClient.setTimeout(TIMEOUT);    
+        commandP = new JSONObject();
+        commandP.put("_send_", "Ping");
+        commandP.put("Destination", "EPS");
+    }
+    
+    @Test(timeout=1000)
+    @SuppressWarnings("unchecked")
+    public void testPing() throws Exception, IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException
+    {       
+       caseClient.sendFrame(commandP);  
+       reply = caseClient.getFrame();
+       Assert.assertEquals("PingService", reply.get("_received_").toString()); 
     }
     
     @Test(timeout=1000)
             @SuppressWarnings("unchecked")
-    public void testPing() throws Exception, IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException{
-       caseClient = new PQ9DataClient("localhost", 10000);
-       caseClient.setTimeout(TIMEOUT);    
-       commandP = new JSONObject();
-       commandP.put("_send_", "Ping");
-       commandP.put("Destination", "EPS");
+    public void testPing2() throws Exception, IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException
+    {
        caseClient.sendFrame(commandP);  
-       try{
        reply = caseClient.getFrame();
        Assert.assertEquals("PingService", reply.get("_received_").toString()); 
-       } catch (TimeoutException ex) 
-                {
-                   // Assert.assertEquals(true, false); 
-                }     
-      
-    }
-    
-    @Test(timeout=1000)
-            @SuppressWarnings("unchecked")
-    public void testPing2() throws Exception, IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException{
-       caseClient = new PQ9DataClient("localhost", 10000);
-       caseClient.setTimeout(TIMEOUT);    
-       commandP = new JSONObject();
-       commandP.put("_send_", "Ping");
-       commandP.put("Destination", "EPS");
-       caseClient.sendFrame(commandP);  
-       try{
-       reply = caseClient.getFrame();
-       Assert.assertEquals("PingService", reply.get("_received_").toString()); 
-       } catch (TimeoutException ex) 
-                {
-                  Assert.assertEquals(true, false); 
-                }     
-      
     }
     
     @After
-    public void tearDown(){
-        System.out.println("Single Ping EPS Test Run");
+    public void tearDown() throws IOException
+    {
+        caseClient.close();
     }
 }
