@@ -73,8 +73,6 @@ public class PingTestCase1{
       
     }
     
-    
-    
     @After
     public void tearDown(){
         System.out.println("Single Ping EPS Test Run");

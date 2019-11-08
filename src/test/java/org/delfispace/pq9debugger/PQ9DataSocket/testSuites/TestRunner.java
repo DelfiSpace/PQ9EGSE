@@ -19,7 +19,7 @@ import org.xtce.toolkit.XTCEDatabaseException;
 
 /**
  *
- * @author LocalAdmin
+ * @author MFvandenBos
  */
 public class TestRunner {
    @SuppressWarnings("unchecked")
