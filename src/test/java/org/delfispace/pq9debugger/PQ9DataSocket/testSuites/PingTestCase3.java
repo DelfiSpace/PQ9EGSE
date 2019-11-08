@@ -20,7 +20,7 @@ public class PingTestCase3 {
     }
    
    @Test
-    public void testPing(){
+    public void testPingVVV(){
         assertEquals(expected, "Reply");  
     }
 }

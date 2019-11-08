@@ -14,22 +14,21 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Assert;
 import org.junit.Test;
-import org.xtce.toolkit.XTCEDatabaseException;
-import org.delfispace.protocols.pq9.PQ9Exception;
 /**
  *
  * @author LocalAdmin
  */
 public class PingTestCase1
 {
-            private final static int TIMEOUT = 300; // in ms
-            JSONObject reply;
-            JSONObject commandP;
-            static PQ9DataClient caseClient;
+    private final static int TIMEOUT = 300; // in ms
+    JSONObject reply;
+    JSONObject commandP;
+    static PQ9DataClient caseClient;
                 
     @BeforeClass 
-    public static void BeforePingTestClass() throws IOException, ParseException, TimeoutException {
-        System.out.println("Initializer of PingTestClass ");
+    public static void BeforePingTestClass() 
+    {
+        System.out.println("Initializer of PingTestClass1 ");
     }
     
     @Before
@@ -39,12 +38,11 @@ public class PingTestCase1
         caseClient.setTimeout(TIMEOUT);    
         commandP = new JSONObject();
         commandP.put("_send_", "Ping");
-        commandP.put("Destination", "EPS");
+        commandP.put("Destination", "COMMS");
     }
     
     @Test(timeout=1000)
-    @SuppressWarnings("unchecked")
-    public void testPing() throws Exception, IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException
+    public void testPing() throws IOException, ParseException, TimeoutException
     {       
        caseClient.sendFrame(commandP);  
        reply = caseClient.getFrame();
@@ -52,8 +50,7 @@ public class PingTestCase1
     }
     
     @Test(timeout=1000)
-            @SuppressWarnings("unchecked")
-    public void testPing2() throws Exception, IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException
+    public void testPing2() throws IOException, ParseException, TimeoutException
     {
        caseClient.sendFrame(commandP);  
        reply = caseClient.getFrame();

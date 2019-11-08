@@ -13,32 +13,27 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  *
  * @author LocalAdmin
  */
-public class PingTestCase2 {
+public class PingTestCase2 
+{
      private final static int TIMEOUT = 300; // in ms
             Frame reply;
             
-            
-            
-            @SuppressWarnings("unchecked")
-    public PingTestCase2() throws IOException, ParseException, TimeoutException {
-        PQ9DataClient client = new PQ9DataClient("localhost", 10000);
-        client.setTimeout(TIMEOUT);
-        JSONObject command = new JSONObject();
-            command.put("_send_", "Ping");
-            command.put("Destination", "EPS");
-        client.sendFrame(command);    
-        reply = client.getFrame2();
-            //String replyService = ;
-        
-    }
+      @BeforeClass 
+    public static void BeforePingTestClass() throws IOException, ParseException, TimeoutException {
+        System.out.println("Initializer of PingTestClass2 ");
+    }              
+    
     @Test
-    public void testPing(){
+    public void testPingSSS()
+    {
+        System.out.println("test of PingTestClass2 ");
         Assert.assertEquals("Reply", reply.get("Service").getValue());  
     }
 }

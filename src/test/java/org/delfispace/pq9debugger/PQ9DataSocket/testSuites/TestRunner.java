@@ -21,28 +21,14 @@ import org.xtce.toolkit.XTCEDatabaseException;
  *
  * @author MFvandenBos
  */
-public class TestRunner {
-   @SuppressWarnings("unchecked")
-   public static void main(String[]args)throws IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException {
-            int TIMEOUT = 300; // in ms            
-            PQ9DataClient TestClient = new PQ9DataClient("localhost", 10000); 
-            JSONObject commandT = new JSONObject();
-            commandT.put("_send_", "Ping");
-            commandT.put("Destination", "EPS");
-            TestClient.setTimeout(TIMEOUT);
-            TestClient.sendFrame(commandT);    
-            JSONObject reply;
-            reply = TestClient.getFrame();
-            System.out.println(reply.get("_received_").toString());
-        try{
-       Result result = JUnitCore.runClasses(PingTestSuite.class);
-        for (Failure failure : result.getFailures()) {
-         System.out.println(failure.toString());
-      }
-		
-      System.out.println(result.wasSuccessful());
-        }catch(Exception ex){
-        System.out.println(ex.getMessage());}
-      
+public class TestRunner 
+{
+   public static void main(String[]args)throws IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException 
+   {
+        Result result = JUnitCore.runClasses(PingTestSuite.class);
+        result.getFailures().forEach((failure) -> 
+        {
+            System.out.println(failure.toString());
+        });		     
    }
 }  	

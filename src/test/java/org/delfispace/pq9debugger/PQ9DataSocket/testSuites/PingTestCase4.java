@@ -44,7 +44,7 @@ public class PingTestCase4 {
     }
     @Test
     @SuppressWarnings("unchecked")
-    public void testPing() throws IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException{
+    public void testPingJJJ() throws IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException{
         command = new JSONObject();
             command.put("_send_", "Ping");
             command.put("Destination", "EPS");
