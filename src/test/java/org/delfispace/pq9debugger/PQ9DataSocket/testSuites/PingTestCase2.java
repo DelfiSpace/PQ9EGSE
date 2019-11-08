@@ -39,6 +39,6 @@ public class PingTestCase2 {
     }
     @Test
     public void testPing(){
-        Assert.assertEquals(reply.get("Service").getValue(), "Reply");  
+        Assert.assertEquals("Reply", reply.get("Service").getValue());  
     }
 }
