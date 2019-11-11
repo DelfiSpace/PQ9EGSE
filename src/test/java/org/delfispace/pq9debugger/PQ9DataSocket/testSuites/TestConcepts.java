@@ -77,6 +77,20 @@ public class TestConcepts {
                 LocalTime afterLocal =  LocalTime.from(after.atZone(LOCALZ));
                 String timestamp = (String)reply.get("_timestamp_");
                 String[] arrOfStr = timestamp.split(":");
+                int relevantpart = arrOfStr.length;
+                System.out.println("lenght of timestamp array" + relevantpart);
+                for(int i= 0; i<relevantpart; i++){
+                    System.out.print(arrOfStr[i]+" ");
+                }System.out.println();
+                String String2 = arrOfStr[relevantpart-1];
+                System.out.println(String2);
+                String[] arrOfStr2 = String2.split("\\.");
+             
+                int secondsAfter = Integer.parseInt(arrOfStr2[0]);
+                System.out.println("seconds of after "+secondsAfter);
+                int millisAfter = Integer.parseInt(arrOfStr2[1]);
+                System.out.println("millis of after "+millisAfter);
+                System.out.print("Local date time: ");
                 System.out.println(LocalDateTime.ofInstant(after, LOCALZ));
                 //String formatted_date = after.getHours() + ":" + after.getMinutes() + ":" + after.getSeconds() + "." + after.getTime()%1000;
                     //System.out.println("After = "+formatted_date);
