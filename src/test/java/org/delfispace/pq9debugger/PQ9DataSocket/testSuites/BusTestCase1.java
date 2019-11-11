@@ -17,12 +17,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Assert;
 import org.junit.Test;
+import junit.runner.Version;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 /**
  *
 /**
  *
- * @author micha
+ * @author michael van den Bos
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BusTestCase1 {
     private final static int TIMEOUT = 5000; // in ms
     JSONObject reply;
@@ -31,6 +35,7 @@ public class BusTestCase1 {
     static PQ9DataClient caseClient;
     private final String busIsOn = "{\"valid\":\"true\",\"value\":\"ON\"}";
     private final String busIsOff = "{\"valid\":\"true\",\"value\":\"OFF\"}";
+    private static StringBuilder output = new StringBuilder("");
     
     
     @BeforeClass 
@@ -54,8 +59,10 @@ public class BusTestCase1 {
     }
     
     @Test(timeout=1500)
-    public void testBus4() throws IOException, ParseException, TimeoutException, InterruptedException
+   // @order(1)
+    public void atestBus4() throws IOException, ParseException, TimeoutException, InterruptedException
     {       
+       output.append("a");
        commandP.put("EPSParam", "Bus4Sw"); 
        commandP.put("_send_", "EPSBusSW");
        commandP.put("state", "BUSSwOn");
@@ -70,8 +77,9 @@ public class BusTestCase1 {
     
     
     @Test(timeout=1500)
-    public void testBus3() throws IOException, ParseException, TimeoutException, InterruptedException
+    public void btestBus3() throws IOException, ParseException, TimeoutException, InterruptedException
     {
+        output.append("b");
        commandP.put("EPSParam", "Bus3Sw");  
        caseClient.sendFrame(commandP);  
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
@@ -84,8 +92,9 @@ public class BusTestCase1 {
     }
     
     @Test(timeout=5000)
-    public void testBus2() throws IOException, ParseException, TimeoutException, InterruptedException
+    public void ctestBus2() throws IOException, ParseException, TimeoutException, InterruptedException
     {
+        output.append("c");
        commandP.put("EPSParam", "Bus2Sw");  
        caseClient.sendFrame(commandP);  
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
@@ -98,8 +107,9 @@ public class BusTestCase1 {
     }
     
      @Test(timeout=1500)
-    public void testBus4Inv() throws IOException, ParseException, TimeoutException, InterruptedException
+    public void dtestBus4Inv() throws IOException, ParseException, TimeoutException, InterruptedException
     {       
+         output.append("d");
        commandP.put("EPSParam", "Bus4Sw"); 
        commandP.put("state", "BUSSwOff");
        caseClient.sendFrame(commandP);  
@@ -113,8 +123,9 @@ public class BusTestCase1 {
     }
     
     @Test(timeout=1500)
-    public void testBus3Inv() throws IOException, ParseException, TimeoutException, InterruptedException
+    public void etestBus3Inv() throws IOException, ParseException, TimeoutException, InterruptedException
     {
+         output.append("e");
        commandP.put("EPSParam", "Bus3Sw");  
        commandP.put("state", "BUSSwOff");
        caseClient.sendFrame(commandP);  
@@ -128,8 +139,9 @@ public class BusTestCase1 {
     }
     
     @Test(timeout=1500)
-    public void testBus2Inv() throws IOException, ParseException, TimeoutException, InterruptedException
+    public void ftestBus2Inv() throws IOException, ParseException, TimeoutException, InterruptedException
     {
+         output.append("f");
        commandP.put("EPSParam", "Bus2Sw");  
        commandP.put("state", "BUSSwOff");
        caseClient.sendFrame(commandP);  
@@ -143,8 +155,9 @@ public class BusTestCase1 {
     }
     
     @Test(timeout=10500)
-    public void testBus2Dup() throws IOException, ParseException, TimeoutException, InterruptedException
+    public void gtestBus2Dup() throws IOException, ParseException, TimeoutException, InterruptedException
     {
+         output.append("g");
         commandP.put("EPSParam", "Bus2Sw");  
         commandP.put("state", "BUSSwOn");
         caseClient.sendFrame(commandP);  
@@ -163,8 +176,9 @@ public class BusTestCase1 {
     }
     
     @Test(timeout=15500)
-    public void testBus3Dup() throws IOException, ParseException, TimeoutException, InterruptedException
+    public void htestBus3Dup() throws IOException, ParseException, TimeoutException, InterruptedException
     {
+         output.append("h");
         commandP.put("EPSParam", "Bus2Sw");  
         commandP.put("state", "BUSSwOn");
         caseClient.sendFrame(commandP);  
@@ -181,18 +195,126 @@ public class BusTestCase1 {
         Thread.sleep(50);// MCU seems to need 50 ms to respond
         }
         //
-        Thread.sleep(10);
+        Thread.sleep(949);// housekeeping data is refreshed every 1000 miliseconds.  
         caseClient.sendFrame(commandR);
         reply = caseClient.getFrame();
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
         Assert.assertEquals(busIsOff, reply.get("B2_state").toString()); 
+    }
+     
+    
+       @Test(timeout=2500)
+    public void itestBusAllTime() throws IOException, ParseException, TimeoutException, InterruptedException
+    {   
+        // BUS2
+        commandP.put("EPSParam", "Bus2Sw");  
+        commandP.put("state", "BUSSwOff");
+        caseClient.sendFrame(commandP);  
+          Thread.sleep(50);
+        //BUS3
+        commandP.put("EPSParam", "Bus3Sw");  
+        commandP.put("state", "BUSSwOff");
+        caseClient.sendFrame(commandP); 
+          Thread.sleep(50);
+        //BUS4
+        commandP.put("EPSParam", "Bus4Sw");  
+        commandP.put("state", "BUSSwOff");
+        caseClient.sendFrame(commandP); 
+          Thread.sleep(50);
+        //WAIT
+        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
+         output.append("i");
+        //GET HOUSEKEEPING
+        caseClient.sendFrame(commandR);
+        reply = caseClient.getFrame();
+        Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
+        Assert.assertEquals(busIsOff, reply.get("B2_state").toString()); 
+        Assert.assertEquals(busIsOff, reply.get("B3_state").toString()); 
+        Assert.assertEquals(busIsOff, reply.get("B4_state").toString()); 
+        // Begin TEST
+         output.append("j");
+        // BUS2
+        commandP.put("EPSParam", "Bus2Sw");  
+        commandP.put("state", "BUSSwOn");
+        caseClient.sendFrame(commandP);  
+        Thread.sleep(50);
+        //BUS3
+        commandP.put("EPSParam", "Bus3Sw");  
+        commandP.put("state", "BUSSwOn");
+        caseClient.sendFrame(commandP); 
+        Thread.sleep(50);
+        //BUS4
+        commandP.put("EPSParam", "Bus4Sw");  
+        commandP.put("state", "BUSSwOn");
+        caseClient.sendFrame(commandP); 
+        //WAIT
+        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
+        //GET HOUSEKEEPING
+        caseClient.sendFrame(commandR);
+        reply = caseClient.getFrame();
+        Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
+        Assert.assertEquals(busIsOn, reply.get("B2_state").toString()); 
+        Assert.assertEquals(busIsOn, reply.get("B3_state").toString()); 
+        Assert.assertEquals(busIsOn, reply.get("B4_state").toString()); 
+    }
+     @Test(timeout=1500)
+    public void jtestBusAll() throws IOException, ParseException, TimeoutException, InterruptedException
+    {   
+        // BUS2
+        commandP.put("EPSParam", "Bus2Sw");  
+        commandP.put("state", "BUSSwOff");
+        caseClient.sendFrame(commandP);  
+          Thread.sleep(50);
+        //BUS3
+        commandP.put("EPSParam", "Bus3Sw");  
+        commandP.put("state", "BUSSwOff");
+        caseClient.sendFrame(commandP); 
+          Thread.sleep(50);
+        //BUS4
+        commandP.put("EPSParam", "Bus4Sw");  
+        commandP.put("state", "BUSSwOff");
+        caseClient.sendFrame(commandP); 
+          Thread.sleep(50);
+        //WAIT
+        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
+         output.append("i");
+        //GET HOUSEKEEPING
+        caseClient.sendFrame(commandR);
+        reply = caseClient.getFrame();
+        Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
+        Assert.assertEquals(busIsOff, reply.get("B2_state").toString()); 
+        Assert.assertEquals(busIsOff, reply.get("B3_state").toString()); 
+        Assert.assertEquals(busIsOff, reply.get("B4_state").toString()); 
+        // Begin TEST
+        // BUS2
+        commandP.put("EPSParam", "Bus2Sw");  
+        commandP.put("state", "BUSSwOn");
+        caseClient.sendFrame(commandP);  
+        //BUS3
+        commandP.put("EPSParam", "Bus3Sw");  
+        commandP.put("state", "BUSSwOn");
+        caseClient.sendFrame(commandP); 
+        //BUS4
+        commandP.put("EPSParam", "Bus4Sw");  
+        commandP.put("state", "BUSSwOn");
+        caseClient.sendFrame(commandP); 
+        //WAIT
+        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
+        //GET HOUSEKEEPING
+        caseClient.sendFrame(commandR);
+        reply = caseClient.getFrame();
+        Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
+        Assert.assertEquals(busIsOn, reply.get("B2_state").toString()); 
+        Assert.assertEquals(busIsOn, reply.get("B3_state").toString()); 
+        Assert.assertEquals(busIsOn, reply.get("B4_state").toString()); 
     }
     
     
     @After
     public void tearDown() throws IOException
     {
-        System.out.print("test complete");
+        System.out.println("test complete");
+        System.out.println(output);
     }
     
     @AfterClass
