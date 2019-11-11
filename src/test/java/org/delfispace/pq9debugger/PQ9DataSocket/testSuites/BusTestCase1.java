@@ -36,7 +36,7 @@ public class BusTestCase1 {
     private final String busIsOn = "{\"valid\":\"true\",\"value\":\"ON\"}";
     private final String busIsOff = "{\"valid\":\"true\",\"value\":\"OFF\"}";
     private static StringBuilder output = new StringBuilder("");
-    private final int testtimepar = 45; //wait time in miliseconds
+    private final int testtimepar = 43; //wait time in miliseconds
     
     
     @BeforeClass 
@@ -164,7 +164,7 @@ public class BusTestCase1 {
         caseClient.sendFrame(commandP);  
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
         for(int i=0; i<10; i++){
-            Thread.sleep(10);
+            Thread.sleep(testtimepar);
             caseClient.sendFrame(commandP);  
         Thread.sleep(testtimepar);// MCU seems to need testtimepar ms to respond
         }
@@ -191,12 +191,12 @@ public class BusTestCase1 {
         }
         commandP.put("state", "BUSSwOff");
          for(int i=0; i<10; i++){
-            Thread.sleep(10);
+            Thread.sleep(testtimepar);
             caseClient.sendFrame(commandP);  
         Thread.sleep(testtimepar);// MCU seems to need testtimepar ms to respond
         }
         //
-        Thread.sleep(949);// housekeeping data is refreshed every 1000 miliseconds.  
+        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.  
         caseClient.sendFrame(commandR);
         reply = caseClient.getFrame();
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
@@ -224,7 +224,6 @@ public class BusTestCase1 {
         commandP.put("state", "BUSSwOff");
         caseClient.sendFrame(commandP); 
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
-         output.append("i");
         //GET HOUSEKEEPING
         caseClient.sendFrame(commandR);
         reply = caseClient.getFrame();

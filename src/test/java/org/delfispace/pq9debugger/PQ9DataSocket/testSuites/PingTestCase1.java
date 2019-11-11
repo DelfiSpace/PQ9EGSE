@@ -29,6 +29,9 @@ public class PingTestCase1
     static PQ9DataClient caseClient;
     private final static ZoneId LOCAL = ZoneId.of("Europe/Berlin");
     private final static long NANTOMIL = 1000*1000;
+      private final String EPSPingService = "{\"valid\":\"true\",\"value\":\"Ping\"}";
+    private final String EPSPingRequest = "{\"valid\":\"true\",\"value\":\"Reply\"}";
+    private final String EPSPingSource  = "{\"valid\":\"true\",\"value\":\"EPS\"}"; 
                 
     @BeforeClass 
     public static void BeforePingTestClass() 
@@ -63,21 +66,21 @@ public class PingTestCase1
        reply = caseClient.getFrame();
       // Assert.assertEquals("PingService", reply.get("_received_").toString());
       // String pow = reply.get("Ping").toString();
-       Assert.assertEquals("{\"valid\":\"true\",\"value\":\"Ping\"}", reply.get("Service").toString());   
+       Assert.assertEquals(EPSPingService, reply.get("Service").toString());   
     }
     @Test(timeout=1000)
     public void testPingthree() throws IOException, ParseException, TimeoutException
     {       
        caseClient.sendFrame(commandP);  
        reply = caseClient.getFrame();
-       Assert.assertEquals("{\"valid\":\"true\",\"value\":\"Reply\"}", reply.get("Request").toString()); 
+       Assert.assertEquals(EPSPingRequest, reply.get("Request").toString()); 
     }
      @Test(timeout=1000)
     public void testPingFour() throws IOException, ParseException, TimeoutException
     {       
        caseClient.sendFrame(commandP);  
        reply = caseClient.getFrame();
-       Assert.assertEquals("{\"valid\":\"true\",\"value\":\"EPS\"}", reply.get("Source").toString()); 
+       Assert.assertEquals(EPSPingSource, reply.get("Source").toString()); 
     }
     
     
@@ -104,9 +107,9 @@ public class PingTestCase1
                 if(results[i]==-1){}
                 else{
                 if("PingService".equals(reply.get("_received_").toString())) {
-                    if("{\"valid\":\"true\",\"value\":\"Ping\"}".equals(reply.get("Service").toString())){
-                        if("{\"valid\":\"true\",\"value\":\"Reply\"}".equals(reply.get("Request").toString())){
-                            if("{\"valid\":\"true\",\"value\":\"EPS\"}".equals(reply.get("Source").toString())){
+                    if(EPSPingService.equals(reply.get("Service").toString())){
+                        if(EPSPingRequest.equals(reply.get("Request").toString())){
+                            if(EPSPingSource.equals(reply.get("Source").toString())){
                             results[i]=elapsed;
                             }
                             else{
