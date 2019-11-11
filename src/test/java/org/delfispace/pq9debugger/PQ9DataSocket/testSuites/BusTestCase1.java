@@ -205,7 +205,7 @@ public class BusTestCase1 {
     
        @Test(timeout=3500)
     public void itestBusAllTime() throws IOException, ParseException, TimeoutException, InterruptedException
-    {   
+    {   //This part turns off all busses. 
         // BUS2
         commandP.put("EPSParam", "Bus2Sw");  
         commandP.put("state", "BUSSwOff");
@@ -220,8 +220,6 @@ public class BusTestCase1 {
         commandP.put("EPSParam", "Bus4Sw");  
         commandP.put("state", "BUSSwOff");
         caseClient.sendFrame(commandP); 
-          Thread.sleep(50);
-        //WAIT
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
          output.append("i");
         //GET HOUSEKEEPING
@@ -232,21 +230,21 @@ public class BusTestCase1 {
         Assert.assertEquals(busIsOff, reply.get("B3_state").toString()); 
         Assert.assertEquals(busIsOff, reply.get("B4_state").toString()); 
         // Begin TEST
-         output.append("j");
+        output.append("i"); //confirms test order
         // BUS2
         commandP.put("EPSParam", "Bus2Sw");  
         commandP.put("state", "BUSSwOn");
         caseClient.sendFrame(commandP);  
-        Thread.sleep(50);
+        Thread.sleep(50);// wait
         //BUS3
         commandP.put("EPSParam", "Bus3Sw");  
         commandP.put("state", "BUSSwOn");
         caseClient.sendFrame(commandP); 
-        Thread.sleep(50);
+        Thread.sleep(50); // wait
         //BUS4
         commandP.put("EPSParam", "Bus4Sw");  
         commandP.put("state", "BUSSwOn");
-        caseClient.sendFrame(commandP); 
+        caseClient.sendFrame(commandP); // wait
         //WAIT
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
         //GET HOUSEKEEPING
@@ -257,9 +255,9 @@ public class BusTestCase1 {
         Assert.assertEquals(busIsOn, reply.get("B3_state").toString()); 
         Assert.assertEquals(busIsOn, reply.get("B4_state").toString()); 
     }
-     @Test(timeout=1500)
+     @Test(timeout=3500)
     public void jtestBusAll() throws IOException, ParseException, TimeoutException, InterruptedException
-    {   
+    {   //This part turns off all busses. 
         // BUS2
         commandP.put("EPSParam", "Bus2Sw");  
         commandP.put("state", "BUSSwOff");
@@ -274,10 +272,8 @@ public class BusTestCase1 {
         commandP.put("EPSParam", "Bus4Sw");  
         commandP.put("state", "BUSSwOff");
         caseClient.sendFrame(commandP); 
-          Thread.sleep(50);
-        //WAIT
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
-         output.append("i");
+        output.append("j");
         //GET HOUSEKEEPING
         caseClient.sendFrame(commandR);
         reply = caseClient.getFrame();
