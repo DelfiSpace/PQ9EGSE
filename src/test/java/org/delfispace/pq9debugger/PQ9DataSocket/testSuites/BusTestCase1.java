@@ -203,7 +203,7 @@ public class BusTestCase1 {
     }
      
     
-       @Test(timeout=2500)
+       @Test(timeout=3500)
     public void itestBusAllTime() throws IOException, ParseException, TimeoutException, InterruptedException
     {   
         // BUS2
