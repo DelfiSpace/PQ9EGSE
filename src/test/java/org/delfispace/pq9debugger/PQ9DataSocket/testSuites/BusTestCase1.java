@@ -36,6 +36,7 @@ public class BusTestCase1 {
     private final String busIsOn = "{\"valid\":\"true\",\"value\":\"ON\"}";
     private final String busIsOff = "{\"valid\":\"true\",\"value\":\"OFF\"}";
     private static StringBuilder output = new StringBuilder("");
+    private final int testtimepar = 45; //wait time in miliseconds
     
     
     @BeforeClass 
@@ -165,7 +166,7 @@ public class BusTestCase1 {
         for(int i=0; i<10; i++){
             Thread.sleep(10);
             caseClient.sendFrame(commandP);  
-        Thread.sleep(50);// MCU seems to need 50 ms to respond
+        Thread.sleep(testtimepar);// MCU seems to need testtimepar ms to respond
         }
         //
         Thread.sleep(10);
@@ -184,15 +185,15 @@ public class BusTestCase1 {
         caseClient.sendFrame(commandP);  
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
         for(int i=0; i<10; i++){
-            Thread.sleep(10);
+            Thread.sleep(testtimepar);
             caseClient.sendFrame(commandP);  
-        Thread.sleep(50);// MCU seems to need 50 ms to respond
+        Thread.sleep(testtimepar);// MCU seems to need testtimepar ms to respond
         }
         commandP.put("state", "BUSSwOff");
          for(int i=0; i<10; i++){
             Thread.sleep(10);
             caseClient.sendFrame(commandP);  
-        Thread.sleep(50);// MCU seems to need 50 ms to respond
+        Thread.sleep(testtimepar);// MCU seems to need testtimepar ms to respond
         }
         //
         Thread.sleep(949);// housekeeping data is refreshed every 1000 miliseconds.  
@@ -205,17 +206,19 @@ public class BusTestCase1 {
     
        @Test(timeout=3500)
     public void itestBusAllTime() throws IOException, ParseException, TimeoutException, InterruptedException
-    {   //This part turns off all busses. 
+    {   
+         
+        //This part turns off all busses. 
         // BUS2
         commandP.put("EPSParam", "Bus2Sw");  
         commandP.put("state", "BUSSwOff");
         caseClient.sendFrame(commandP);  
-          Thread.sleep(50);
+          Thread.sleep(testtimepar);
         //BUS3
         commandP.put("EPSParam", "Bus3Sw");  
         commandP.put("state", "BUSSwOff");
         caseClient.sendFrame(commandP); 
-          Thread.sleep(50);
+          Thread.sleep(testtimepar);
         //BUS4
         commandP.put("EPSParam", "Bus4Sw");  
         commandP.put("state", "BUSSwOff");
@@ -235,12 +238,12 @@ public class BusTestCase1 {
         commandP.put("EPSParam", "Bus2Sw");  
         commandP.put("state", "BUSSwOn");
         caseClient.sendFrame(commandP);  
-        Thread.sleep(50);// wait
+        Thread.sleep(testtimepar);// wait
         //BUS3
         commandP.put("EPSParam", "Bus3Sw");  
         commandP.put("state", "BUSSwOn");
         caseClient.sendFrame(commandP); 
-        Thread.sleep(50); // wait
+        Thread.sleep(testtimepar); // wait
         //BUS4
         commandP.put("EPSParam", "Bus4Sw");  
         commandP.put("state", "BUSSwOn");
@@ -262,12 +265,12 @@ public class BusTestCase1 {
         commandP.put("EPSParam", "Bus2Sw");  
         commandP.put("state", "BUSSwOff");
         caseClient.sendFrame(commandP);  
-          Thread.sleep(50);
+          Thread.sleep(testtimepar);
         //BUS3
         commandP.put("EPSParam", "Bus3Sw");  
         commandP.put("state", "BUSSwOff");
         caseClient.sendFrame(commandP); 
-          Thread.sleep(50);
+          Thread.sleep(testtimepar);
         //BUS4
         commandP.put("EPSParam", "Bus4Sw");  
         commandP.put("state", "BUSSwOff");
