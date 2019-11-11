@@ -15,9 +15,9 @@ import org.junit.runners.Suite;
 
 @Suite.SuiteClasses({
         PingTestCase1.class,
-        PingTestCase2.class,
-        PingTestCase3.class,
-        PingTestCase4.class
+        //PingTestCase2.class,
+       //PingTestCase3.class,
+        //PingTestCase4.class
 })
 
 public class PingTestSuite {    
