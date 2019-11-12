@@ -14,7 +14,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.xtce.toolkit.XTCEDatabaseException;
-
+import junit.runner.Version;
 
 
 /**
@@ -25,6 +25,7 @@ public class TestRunner
 {
    public static void main(String[]args)throws IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException 
    {
+       System.out.println(Version.id());
         Result result = JUnitCore.runClasses(PingTestSuite.class);
         result.getFailures().forEach((failure) -> 
         {
