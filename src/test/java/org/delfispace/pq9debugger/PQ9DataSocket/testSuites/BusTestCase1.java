@@ -59,7 +59,7 @@ public class BusTestCase1 {
         commandR.put("Destination", "EPS");
     }
     
-    @Test(timeout=1500)
+    @Test(timeout=2500)
    // @order(1)
     public void atestBus4() throws IOException, ParseException, TimeoutException, InterruptedException
     {       
@@ -68,8 +68,11 @@ public class BusTestCase1 {
        commandP.put("_send_", "EPSBusSW");
        commandP.put("state", "BUSSwOn");
        caseClient.sendFrame(commandP);  
-        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-      
+       /*reply = caseClient.getFrame();
+       Assert.assertEquals("Execute", reply.get("_received_").toString()); 
+       Assert.assertEquals("Reply", reply.get("Request").toString()); 
+       
+      */ Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
        caseClient.sendFrame(commandR);
        reply = caseClient.getFrame();
        Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
@@ -95,7 +98,7 @@ public class BusTestCase1 {
     @Test(timeout=5000)
     public void ctestBus2() throws IOException, ParseException, TimeoutException, InterruptedException
     {
-        output.append("c");
+       output.append("c");
        commandP.put("EPSParam", "Bus2Sw");  
        caseClient.sendFrame(commandP);  
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   

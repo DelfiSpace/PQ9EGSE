@@ -491,9 +491,11 @@
                 <xtce:Parameter name="IntVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="URBCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="URBVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="BusState1" parameterTypeRef="/byte"/>
+                <xtce:Parameter name="BusState2" parameterTypeRef="/byte"/>
             </xtce:ParameterSet>
             <xtce:ContainerSet>
-                <xtce:SequenceContainer name="EPSHousekeepingContainer" shortDescription="EPS Housekeeping container">
+                <xtce:SequenceContainer name="EPSHousekeepingContainer" abstract="true" shortDescription="EPS Housekeeping container">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor15Status"/>
@@ -564,7 +566,21 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
-                </xtce:SequenceContainer>           
+                </xtce:SequenceContainer>   
+                 <xtce:SequenceContainer name="BusService" shortDescription="Bus Service Reply">
+                    <xtce:LongDescription>Should recieve reply from EPS Bus Set routine.</xtce:LongDescription>
+                     <xtce:EntryList>
+                        <xtce:ParameterRefEntry parameterRef="BusState1"/>
+                    </xtce:EntryList>
+                    <xtce:BaseContainer containerRef="PQ9">
+                        <xtce:RestrictionCriteria>
+                            <xtce:ComparisonList>
+                                <xtce:Comparison parameterRef="Service" value="Execute"/>
+                                <xtce:Comparison parameterRef="Source" value="EPS"/>
+                            </xtce:ComparisonList>
+                        </xtce:RestrictionCriteria>
+                    </xtce:BaseContainer>
+                </xtce:SequenceContainer>        
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
         <xtce:CommandMetaData>
