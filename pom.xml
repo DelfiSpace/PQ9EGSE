@@ -137,7 +137,41 @@
                     </execution>
                 </executions>
             </plugin>
-                        
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.3</version>
+                <executions>
+                    <execution>
+                    <id>attach-descriptor</id>
+                        <goals>
+                             <goal>attach-descriptor</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>            
         </plugins>
     </build>
+    <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <reportSets>
+            <reportSet>
+                <reports>
+                    <report>testreport</report>
+                </reports>
+            </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+  
+   <!--Command the Site plugin to generate a web site.-->
+   <distributionManagement>
+        <site>
+            <id>site.deployments</id>
+        </site>
+    </distributionManagement>
 </project>
