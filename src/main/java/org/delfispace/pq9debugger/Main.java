@@ -228,16 +228,12 @@ public class Main implements PQ9Receiver, Subscriber
         srv.send(new Command("log", sb.toString())); 
     }
     
-    private String processFrame(XTCETMStream stream, byte[] data, HashMap<String, String> values) throws XTCEDatabaseException, Exception 
+    private void processFrame(XTCETMStream stream, byte[] data, HashMap<String, String> values) throws XTCEDatabaseException
     {
-        StringBuilder sb = new StringBuilder();
-        
-        XTCEContainerContentModel model = stream.processStream( data );        
+        XTCEContainerContentModel model = stream.processStream( data );    
         List<XTCEContainerContentEntry> entries = model.getContentList();
 
         values.put("_received_", model.getName());
-        sb.append(model.getName());
-        sb.append("\n");
         
         entries.forEach((XTCEContainerContentEntry entry) -> 
         {
@@ -262,44 +258,20 @@ public class Main implements PQ9Receiver, Subscriber
                 obj.put("value", value);
                 obj.put("valid", "true");
                 
-                
-                sb.append("\t");
-                sb.append(entry.getParameter().getShortDescription().isEmpty() ? entry.getName() : entry.getParameter().getShortDescription());
-                sb.append(": ");
-                
-               
-                sb.append(val.getCalibratedValue());
-                sb.append(" ");
-                sb.append(entry.getParameter().getUnits());
-                sb.append(" (");
-                sb.append(val.getRawValueHex());
-                sb.append(")");
-
                 if (!isWithinValidRange(entry))
                 {
-                    sb.append(" INVALID!");
-                    sb.append("\n");
                     obj.put("valid", "false");
                 }
                 else
                 {
-                    sb.append("\n");
                     obj.put("valid", "true");
                 }
                 
                 values.put(entry.getName(), obj.toJSONString());
             }
         });
-        List<String> warnings = model.getWarnings();
-        Iterator<String> it = warnings.iterator();
-        while(it.hasNext())
-        {
-            sb.append("WARNING: ");
-            sb.append(it.next());
-            sb.append("\n");
-        }
-        sb.append("\n");
-        return sb.toString();
+        //List<String> warnings = model.getWarnings();
+        //Iterator<String> it = warnings.iterator();
     }
     
     private boolean isWithinValidRange(XTCEContainerContentEntry entry)
@@ -351,7 +323,6 @@ public class Main implements PQ9Receiver, Subscriber
 
     private void newFrameToGUI(PQ9 msg, Date time, boolean received) throws XTCEDatabaseException, Exception
     {
-        StringBuilder sb = new StringBuilder();
         HashMap<String, String> data = new HashMap<>();
         
         byte[] frame = msg.getFrame();
@@ -370,50 +341,23 @@ public class Main implements PQ9Receiver, Subscriber
         data.put("_raw_", sb1.toString());
         data.put("_timestamp_", dateFormatJSONSocket.format(time));
         
-        if (received)
+        try
         {
-            sb.append("<font color=\"black\">");
+            // process the frame
+            processFrame(stream, msg.getFrame(), data);
         }
-        else
-        {
-            sb.append("<font color=\"yellow\">");
-        }
-        // print time
-        sb.append(df.format(time));
-        // print the received frame
-        if (received)
-        {
-            sb.append("New frame received: <br>");
-        }
-        else
-        {
-            sb.append("New frame transmitted: <br>");
-        }
-        sb.append("&emsp;&emsp;&emsp;&emsp;");
-        sb.append(msg.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
-        sb.append("</font>");
-        //srv.send(new Command("datalog", sb.toString()));
+        finally
+        {        
+            // always execute he finally
+            // report the received message even if the message could not be parsed
+            JSONObject obj=new JSONObject();
+            data.forEach((k,v)->obj.put(k,v));
+            srv.send(new Command("downlink", obj.toJSONString() + "\n"));  
 
-        sb.setLength(0);
-        if (received)
-        {
-            sb.append("<font color=\"black\">");
-        }
-        else
-        {
-            sb.append("<font color=\"yellow\">");
-        }
-        sb.append("&emsp;&emsp;&emsp;&emsp;Decoded frame: ");
-        sb.append(processFrame(stream, msg.getFrame(), data).replace("\n", "<br>&emsp;&emsp;&emsp;&emsp;").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
-        sb.append("</font>");
-        //srv.send(new Command("datalog", sb.toString()));  
-        JSONObject obj=new JSONObject();
-        data.forEach((k,v)->obj.put(k,v));
-        srv.send(new Command("downlink", obj.toJSONString() + "\n"));  
-
-        if (received)
-        {
-            DatSktSrv.send(data);
+            if (received)
+            {
+                DatSktSrv.send(data);
+            }
         }
     }
     /**
@@ -569,13 +513,13 @@ public class Main implements PQ9Receiver, Subscriber
                      
         } catch (java.lang.NumberFormatException ex)
         {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
-                    String.format("Invalid value: %s", cmd.toString()), ex);
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
+            //        String.format("Invalid value: %s", cmd.toString()), ex);
             handleException(ex);
         } catch (Exception ex)
         {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
-                    String.format("Invalid value: %s", cmd.toString()), ex);
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
+            //        String.format("Invalid value: %s", cmd.toString()), ex);
             handleException(ex);
         } 
     }
