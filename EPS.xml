@@ -491,11 +491,13 @@
                 <xtce:Parameter name="IntVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="URBCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="URBVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="BusState1" parameterTypeRef="/byte"/>
-                <xtce:Parameter name="BusState2" parameterTypeRef="/byte"/>
+                
+                <xtce:Parameter name="PowerBus" parameterTypeRef="/Delfi-PQ/byte"/>
+                <xtce:Parameter name="State" parameterTypeRef="/Delfi-PQ/byte"/>
+                
             </xtce:ParameterSet>
             <xtce:ContainerSet>
-                <xtce:SequenceContainer name="EPSHousekeepingContainer" abstract="true" shortDescription="EPS Housekeeping container">
+                <xtce:SequenceContainer name="EPSHousekeepingContainer" shortDescription="EPS Housekeeping container">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor15Status"/>
@@ -566,13 +568,29 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
-                </xtce:SequenceContainer>   
-                 <xtce:SequenceContainer name="BusService" shortDescription="Bus Service Reply">
-                    <xtce:LongDescription>Should recieve reply from EPS Bus Set routine.</xtce:LongDescription>
+                </xtce:SequenceContainer>  
+                <xtce:SequenceContainer name="PowerBusCommand" shortDescription="Power Bus Command">
+                    <xtce:LongDescription>Power Bus control command</xtce:LongDescription>
                      <xtce:EntryList>
-                        <xtce:ParameterRefEntry parameterRef="BusState1"/>
+                        <xtce:ParameterRefEntry parameterRef="PowerBus"/>
+                        <xtce:ParameterRefEntry parameterRef="State"/>
                     </xtce:EntryList>
-                    <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:BaseContainer containerRef="/Delfi-PQ/PQ9">
+                        <xtce:RestrictionCriteria>
+                            <xtce:ComparisonList>
+                                <xtce:Comparison parameterRef="Service" value="Execute"/>
+                                <xtce:Comparison parameterRef="Destination" value="EPS"/>
+                            </xtce:ComparisonList>
+                        </xtce:RestrictionCriteria>
+                    </xtce:BaseContainer>
+                </xtce:SequenceContainer>
+                <xtce:SequenceContainer name="PowerBusReply" shortDescription="Power Bus Reply">
+                    <xtce:LongDescription>Power Bus control reply</xtce:LongDescription>
+                     <xtce:EntryList>
+                        <xtce:ParameterRefEntry parameterRef="PowerBus"/>
+                        <xtce:ParameterRefEntry parameterRef="State"/>
+                    </xtce:EntryList>
+                    <xtce:BaseContainer containerRef="/Delfi-PQ/PQ9">
                         <xtce:RestrictionCriteria>
                             <xtce:ComparisonList>
                                 <xtce:Comparison parameterRef="Service" value="Execute"/>
@@ -580,7 +598,7 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
-                </xtce:SequenceContainer>        
+                </xtce:SequenceContainer>     
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
         <xtce:CommandMetaData>
@@ -599,27 +617,27 @@
                         <xtce:Enumeration label="Bus4Sw" value="8" shortDescription="Bus 4 Switch"/>
                     </xtce:EnumerationList>
                 </xtce:EnumeratedArgumentType>
-                <xtce:EnumeratedArgumentType name="EPSBusParameterType" shortDescription="Bus">
+                <xtce:EnumeratedArgumentType name="BusParameterType" shortDescription="Bus">
                     <xtce:UnitSet/>
                     <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                     <xtce:EnumerationList>
-                        <xtce:Enumeration label="Bus1Sw" value="1" shortDescription="1"/>
-                        <xtce:Enumeration label="Bus2Sw" value="2" shortDescription="2"/>
-                        <xtce:Enumeration label="Bus3Sw" value="4" shortDescription="3"/>
-                        <xtce:Enumeration label="Bus4Sw" value="8" shortDescription="4"/>
+                        <xtce:Enumeration label="Bus1" value="1" shortDescription="Bus 1"/>
+                        <xtce:Enumeration label="Bus2" value="2" shortDescription="Bus 2"/>
+                        <xtce:Enumeration label="Bus3" value="3" shortDescription="Bus 3"/>
+                        <xtce:Enumeration label="Bus4" value="4" shortDescription="Bus 4"/>
                     </xtce:EnumerationList>
                 </xtce:EnumeratedArgumentType>
-                <xtce:EnumeratedArgumentType name="EPSBusSwitchParameterType" shortDescription="Status">
+                <xtce:EnumeratedArgumentType name="BusStateParameterType" shortDescription="Status">
                     <xtce:UnitSet/>
                     <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                     <xtce:EnumerationList>
-                        <xtce:Enumeration label="BUSSwOff" value="0" shortDescription="OFF"/>
-                        <xtce:Enumeration label="BUSSwOn" value="1" shortDescription="ON"/>
+                        <xtce:Enumeration label="BusOff" value="0" shortDescription="OFF"/>
+                        <xtce:Enumeration label="BusOn" value="1" shortDescription="ON"/>
                     </xtce:EnumerationList>
                 </xtce:EnumeratedArgumentType>
             </xtce:ArgumentTypeSet>
             <xtce:MetaCommandSet>
-                <xtce:MetaCommand name="EPSBusSW" shortDescription="Set EPS power bus">
+                <xtce:MetaCommand name="PowerBusControl" shortDescription="Set EPS power bus">
                     <xtce:LongDescription>EPS power bus</xtce:LongDescription>
                     <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
                         <xtce:ArgumentAssignmentList>
@@ -631,13 +649,13 @@
                         </xtce:ArgumentAssignmentList>
                     </xtce:BaseMetaCommand>
                     <xtce:ArgumentList>
-                        <xtce:Argument name="EPSParam" argumentTypeRef="EPSBusParameterType"/>
-                        <xtce:Argument name="state" argumentTypeRef="EPSBusSwitchParameterType"/>
+                        <xtce:Argument name="PowerBusParam" argumentTypeRef="BusParameterType"/>
+                        <xtce:Argument name="PowerBusState" argumentTypeRef="BusStateParameterType"/>
                     </xtce:ArgumentList>
                     <xtce:CommandContainer name="EPSBusSW">
                         <xtce:EntryList>
-                            <xtce:ArgumentRefEntry argumentRef="EPSParam"/>
-                            <xtce:ArgumentRefEntry argumentRef="state"/>
+                            <xtce:ArgumentRefEntry argumentRef="PowerBusParam"/>
+                            <xtce:ArgumentRefEntry argumentRef="PowerBusState"/>
                         </xtce:EntryList>
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
