@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.Arrays;
 
 /**
  *
@@ -103,6 +104,15 @@ public class TestConcepts {
                     
                 }               
             }
+        TestVarsMethods drinkin = new TestVarsMethods();
+        System.out.println(TIMESTAMPEX1);
+        String[] drinkinT = drinkin.testBreakTimeStamp(TIMESTAMPEX1);
+        for (String drinkinT1 : drinkinT) {
+            System.out.println(drinkinT1);
+        }
+        System.out.println(Arrays.toString(drinkin.testBreakTimeStamp(TIMESTAMPEX1)));
+        System.out.println(drinkin.testgetMillis(TIMESTAMPEX1));
+        
     }  	
 }
 

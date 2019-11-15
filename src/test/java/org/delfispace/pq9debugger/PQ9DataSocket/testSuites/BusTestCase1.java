@@ -27,39 +27,26 @@ import org.junit.runners.MethodSorters;
  * @author michael van den Bos
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class BusTestCase1 {
-    private final static int TIMEOUT = 5000; // in ms
-    JSONObject reply;
-    JSONObject commandP;
-    JSONObject commandR;
-    static PQ9DataClient caseClient;
-    private final String busIsOn = "{\"valid\":\"true\",\"value\":\"ON\"}";
-    private final String busIsOff = "{\"valid\":\"true\",\"value\":\"OFF\"}";
-    private final String servicePB = "{\"valid\":\"true\",\"value\":\"Execute\"}";
-    private final String replyPB = "{\"valid\":\"true\",\"value\":\"Reply\"}";
-    private final String replyER = "{\"valid\":\"true\",\"value\":\"Error\"}";
-    private final String replySH = "{\"valid\":\"true\",\"value\":\"1\"}";
-    private static StringBuilder output = new StringBuilder("");
-    private final int testtimepar = 43; //wait time in miliseconds
-    
-    
+public class BusTestCase1 extends TestVarsMethods{
+ 
     @BeforeClass 
     public static void BeforeBusTestClass() throws IOException 
     {
         System.out.println("Initializer of BusTestClass1 ");
         caseClient = new PQ9DataClient("localhost", 10000);
-        caseClient.setTimeout(TIMEOUT);    
+        caseClient.setTimeout(TIMEOUT);   
+        output = new StringBuilder("");
     }    
     
     @Before
     public void setup() throws IOException
     {
-        commandP = new JSONObject();
-        commandR = new JSONObject();
-        commandP.put("_send_", "PowerBusControl");
+        commandSetBus = new JSONObject();
+        commandGetTelemetry = new JSONObject();
+        commandSetBus.put("_send_", "PowerBusControl");
         
-        commandR.put("_send_", "GetTelemetry");
-        commandR.put("Destination", "EPS");
+        commandGetTelemetry.put("_send_", "GetTelemetry");
+        commandGetTelemetry.put("Destination", "EPS");
     }
     
     @Test(timeout=2500)
@@ -67,15 +54,15 @@ public class BusTestCase1 {
     public void atestBus4() throws IOException, ParseException, TimeoutException, InterruptedException
     {       
        output.append("a"); // order of the test, these tests cannnot be run in parallel but should be run in alphabetical order 
-       commandP.put("PowerBusParam", "Bus4"); 
-       commandP.put("PowerBusState", "BusOn");
-       caseClient.sendFrame(commandP); //send command to turn on bus 4  
+       commandSetBus.put("PowerBusParam", "Bus4"); 
+       commandSetBus.put("PowerBusState", "BusOn");
+       caseClient.sendFrame(commandSetBus); //send command to turn on bus 4  
        reply = caseClient.getFrame();
        Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
        Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
        Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-       caseClient.sendFrame(commandR); //request housekeeping data
+       caseClient.sendFrame(commandGetTelemetry); //request housekeeping data
        reply = caseClient.getFrame(); //receive housekeeping data
        Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
        Assert.assertEquals(busIsOn, reply.get("B4_state").toString()); // assert that B4 is ON
@@ -85,15 +72,15 @@ public class BusTestCase1 {
     public void btestBus3() throws IOException, ParseException, TimeoutException, InterruptedException
     {
        output.append("b"); // order of the test
-       commandP.put("PowerBusParam", "Bus3"); // put can be used as replace
-       commandP.put("PowerBusState", "BusOn");
-       caseClient.sendFrame(commandP);//send command to turn on bus 3  
+       commandSetBus.put("PowerBusParam", "Bus3"); // put can be used as replace
+       commandSetBus.put("PowerBusState", "BusOn");
+       caseClient.sendFrame(commandSetBus);//send command to turn on bus 3  
        reply = caseClient.getFrame();//get response
        Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
        Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
        Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-       caseClient.sendFrame(commandR);//request housekeeping data
+       caseClient.sendFrame(commandGetTelemetry);//request housekeeping data
        reply = caseClient.getFrame();//receive housekeeping data
        Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
        Assert.assertEquals(busIsOn, reply.get("B3_state").toString()); // assert that B3 is ON
@@ -103,15 +90,15 @@ public class BusTestCase1 {
     public void ctestBus2() throws IOException, ParseException, TimeoutException, InterruptedException
     {
        output.append("c"); // order of the test
-       commandP.put("PowerBusParam", "Bus2"); // put can be used as replace
-       commandP.put("PowerBusState", "BusOn");
-       caseClient.sendFrame(commandP);//send command to turn on bus 3  
+       commandSetBus.put("PowerBusParam", "Bus2"); // put can be used as replace
+       commandSetBus.put("PowerBusState", "BusOn");
+       caseClient.sendFrame(commandSetBus);//send command to turn on bus 3  
        reply = caseClient.getFrame();//get response
        Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
        Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
        Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-       caseClient.sendFrame(commandR);//request housekeeping data
+       caseClient.sendFrame(commandGetTelemetry);//request housekeeping data
        reply = caseClient.getFrame();//receive housekeeping data
        Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
        Assert.assertEquals(busIsOn, reply.get("B2_state").toString()); // assert that B2 is ON
@@ -121,15 +108,15 @@ public class BusTestCase1 {
     public void dtestBus4Inv() throws IOException, ParseException, TimeoutException, InterruptedException
     {       
        output.append("d"); // order of the test
-       commandP.put("PowerBusParam", "Bus4"); // put can be used as replace
-       commandP.put("PowerBusState", "BusOff");
-       caseClient.sendFrame(commandP); 
+       commandSetBus.put("PowerBusParam", "Bus4"); // put can be used as replace
+       commandSetBus.put("PowerBusState", "BusOff");
+       caseClient.sendFrame(commandSetBus); 
        reply = caseClient.getFrame();//get response
        Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
        Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
        Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-       caseClient.sendFrame(commandR);
+       caseClient.sendFrame(commandGetTelemetry);
        reply = caseClient.getFrame();
        Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
        Assert.assertEquals(busIsOff, reply.get("B4_state").toString()); // assert that B4 is OFF
@@ -139,15 +126,15 @@ public class BusTestCase1 {
     public void etestBus3Inv() throws IOException, ParseException, TimeoutException, InterruptedException
     {
          output.append("e");
-       commandP.put("PowerBusParam", "Bus3"); // put can be used as replace
-       commandP.put("PowerBusState", "BusOff");
-       caseClient.sendFrame(commandP); 
+       commandSetBus.put("PowerBusParam", "Bus3"); // put can be used as replace
+       commandSetBus.put("PowerBusState", "BusOff");
+       caseClient.sendFrame(commandSetBus); 
        reply = caseClient.getFrame();//get response
        Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
        Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
        Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-       caseClient.sendFrame(commandR);
+       caseClient.sendFrame(commandGetTelemetry);
        reply = caseClient.getFrame();
        Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
        Assert.assertEquals(busIsOff, reply.get("B3_state").toString()); // assert that B3 is OFF
@@ -157,15 +144,15 @@ public class BusTestCase1 {
     public void ftestBus2Inv() throws IOException, ParseException, TimeoutException, InterruptedException
     {
         output.append("f");
-        commandP.put("PowerBusParam", "Bus2"); // put can be used as replace
-        commandP.put("PowerBusState", "BusOff");
-        caseClient.sendFrame(commandP); 
+        commandSetBus.put("PowerBusParam", "Bus2"); // put can be used as replace
+        commandSetBus.put("PowerBusState", "BusOff");
+        caseClient.sendFrame(commandSetBus); 
         reply = caseClient.getFrame();//get response
         Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
         Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
         Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-        caseClient.sendFrame(commandR);
+        caseClient.sendFrame(commandGetTelemetry);
         reply = caseClient.getFrame();
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
         Assert.assertEquals(busIsOff, reply.get("B2_state").toString()); // assert that B2 is OFF
@@ -176,38 +163,38 @@ public class BusTestCase1 {
     {
         output.append("g");
     // STEP 1 turn on BUS 2
-        commandP.put("PowerBusParam", "Bus2"); // put can be used as replace
-        commandP.put("PowerBusState", "BusOn");
-        caseClient.sendFrame(commandP);  
+        commandSetBus.put("PowerBusParam", "Bus2"); // put can be used as replace
+        commandSetBus.put("PowerBusState", "BusOn");
+        caseClient.sendFrame(commandSetBus);  
         reply = caseClient.getFrame();//get response
         Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
         Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
         Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
     // STEP 2 assert that BUS 2 is ON
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-        caseClient.sendFrame(commandR); // request housekeeping data
+        caseClient.sendFrame(commandGetTelemetry); // request housekeeping data
         reply = caseClient.getFrame(); // receive housekeeping data
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
         Assert.assertEquals(busIsOn, reply.get("B2_state").toString()); 
     // STEP 3 turn off BUS 2
-        commandP.put("PowerBusState", "BusOff");
-        caseClient.sendFrame(commandP);  
+        commandSetBus.put("PowerBusState", "BusOff");
+        caseClient.sendFrame(commandSetBus);  
         reply = caseClient.getFrame();//get response
         Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
         Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
         Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
     // STEP 4 assert that BUS 2 is OFF
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-        caseClient.sendFrame(commandR); // request housekeeping data
+        caseClient.sendFrame(commandGetTelemetry); // request housekeeping data
         reply = caseClient.getFrame(); // receive housekeeping data
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
         Assert.assertEquals(busIsOff, reply.get("B2_state").toString()); 
     //STEP 5 send same command multiple times
-        commandP.put("PowerBusState", "BusOn");
+        commandSetBus.put("PowerBusState", "BusOn");
         for(int i=0; i<100; i++){
-            if(i==50){commandP.put("PowerBusState", "BusOff");
-                caseClient.sendFrame(commandP); commandP.put("PowerBusState", "BusOn");
-            }else{caseClient.sendFrame(commandP); }
+            if(i==50){commandSetBus.put("PowerBusState", "BusOff");
+                caseClient.sendFrame(commandSetBus); commandSetBus.put("PowerBusState", "BusOn");
+            }else{caseClient.sendFrame(commandSetBus); }
             reply = caseClient.getFrame();//get response
             Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
         }
@@ -215,7 +202,7 @@ public class BusTestCase1 {
         Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
         Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
         Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
-        caseClient.sendFrame(commandR);
+        caseClient.sendFrame(commandGetTelemetry);
         reply = caseClient.getFrame();
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
         Assert.assertEquals(busIsOn, reply.get("B2_state").toString()); 
@@ -225,27 +212,27 @@ public class BusTestCase1 {
     public void htestBus3Dup() throws IOException, ParseException, TimeoutException, InterruptedException
     {
          output.append("h");
-        commandP.put("PowerBusParam", "Bus3"); // put can be used as replace
-        commandP.put("PowerBusState", "BusOn");
-        caseClient.sendFrame(commandP);//send command to turn on bus 3  
+        commandSetBus.put("PowerBusParam", "Bus3"); // put can be used as replace
+        commandSetBus.put("PowerBusState", "BusOn");
+        caseClient.sendFrame(commandSetBus);//send command to turn on bus 3  
         reply = caseClient.getFrame();//get response
         Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
         Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
         Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-        caseClient.sendFrame(commandR);//request housekeeping data
+        caseClient.sendFrame(commandGetTelemetry);//request housekeeping data
         reply = caseClient.getFrame();//receive housekeeping data
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
         Assert.assertEquals(busIsOn, reply.get("B3_state").toString()); // assert that B3 is ON
     
-        commandP.put("PowerBusState", "BusOff");
-        caseClient.sendFrame(commandP); 
+        commandSetBus.put("PowerBusState", "BusOff");
+        caseClient.sendFrame(commandSetBus); 
         reply = caseClient.getFrame();//get response
         Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
         Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
         Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-        caseClient.sendFrame(commandR);
+        caseClient.sendFrame(commandGetTelemetry);
         reply = caseClient.getFrame();
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
         Assert.assertEquals(busIsOff, reply.get("B3_state").toString()); // assert that B3 is OFF
@@ -254,27 +241,27 @@ public class BusTestCase1 {
     public void htestBus4Dup() throws IOException, ParseException, TimeoutException, InterruptedException
     {
          output.append("h");
-       commandP.put("PowerBusParam", "Bus4"); // put can be used as replace
-       commandP.put("PowerBusState", "BusOn");
-       caseClient.sendFrame(commandP); //send command to turn on bus 4  
+       commandSetBus.put("PowerBusParam", "Bus4"); // put can be used as replace
+       commandSetBus.put("PowerBusState", "BusOn");
+       caseClient.sendFrame(commandSetBus); //send command to turn on bus 4  
        reply = caseClient.getFrame();
        Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
        Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
        Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-       caseClient.sendFrame(commandR); //request housekeeping data
+       caseClient.sendFrame(commandGetTelemetry); //request housekeeping data
        reply = caseClient.getFrame(); //receive housekeeping data
        Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
        Assert.assertEquals(busIsOn, reply.get("B4_state").toString()); // assert that B4 is ON
     
-        commandP.put("PowerBusState", "BusOff");
-        caseClient.sendFrame(commandP); 
+        commandSetBus.put("PowerBusState", "BusOff");
+        caseClient.sendFrame(commandSetBus); 
         reply = caseClient.getFrame();//get response
         Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
         Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
         Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
-        caseClient.sendFrame(commandR);
+        caseClient.sendFrame(commandGetTelemetry);
         reply = caseClient.getFrame();
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
         Assert.assertEquals(busIsOff, reply.get("B4_state").toString()); // assert that B4 is OFF
@@ -285,66 +272,66 @@ public class BusTestCase1 {
     public void itestBusAllTime() throws IOException, ParseException, TimeoutException, InterruptedException
     {   output.append("i"); //confirms test order
         // BUS2
-        commandP.put("PowerBusParam", "Bus2"); // put can be used as replace
-        commandP.put("PowerBusState", "BusOff");
-        caseClient.sendFrame(commandP);  
+        commandSetBus.put("PowerBusParam", "Bus2"); // put can be used as replace
+        commandSetBus.put("PowerBusState", "BusOff");
+        caseClient.sendFrame(commandSetBus);  
         reply = caseClient.getFrame();
         //BUS3
-        commandP.put("PowerBusParam", "Bus3"); // put can be used as replace
-        caseClient.sendFrame(commandP); 
+        commandSetBus.put("PowerBusParam", "Bus3"); // put can be used as replace
+        caseClient.sendFrame(commandSetBus); 
         reply = caseClient.getFrame(); 
         //BUS4
-        commandP.put("PowerBusParam", "Bus4"); // put can be used as replace
-        caseClient.sendFrame(commandP); 
+        commandSetBus.put("PowerBusParam", "Bus4"); // put can be used as replace
+        caseClient.sendFrame(commandSetBus); 
         reply = caseClient.getFrame();
         //GET HOUSEKEEPING
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
-        caseClient.sendFrame(commandR);
+        caseClient.sendFrame(commandGetTelemetry);
         reply = caseClient.getFrame();
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
         Assert.assertEquals(busIsOff, reply.get("B2_state").toString()); 
         Assert.assertEquals(busIsOff, reply.get("B3_state").toString()); 
         Assert.assertEquals(busIsOff, reply.get("B4_state").toString()); 
         // BUS2
-        commandP.put("PowerBusParam", "Bus2"); // put can be used as replace
-        commandP.put("PowerBusState", "BusOn");
-        caseClient.sendFrame(commandP);  
+        commandSetBus.put("PowerBusParam", "Bus2"); // put can be used as replace
+        commandSetBus.put("PowerBusState", "BusOn");
+        caseClient.sendFrame(commandSetBus);  
         reply = caseClient.getFrame();
         Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
         Assert.assertEquals(replyPB, reply.get("Request").toString()); // validate response
         Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
         Assert.assertEquals(replySH, reply.get("State").toString());// validate response
         //BUS3
-        commandP.put("PowerBusParam", "Bus3"); // put can be used as replace  
-        caseClient.sendFrame(commandP);
+        commandSetBus.put("PowerBusParam", "Bus3"); // put can be used as replace  
+        caseClient.sendFrame(commandSetBus);
         reply = caseClient.getFrame();
         //BUS4
-        commandP.put("PowerBusParam", "Bus4"); // put can be used as replace
-        caseClient.sendFrame(commandP); 
+        commandSetBus.put("PowerBusParam", "Bus4"); // put can be used as replace
+        caseClient.sendFrame(commandSetBus); 
         reply = caseClient.getFrame();
         //GET HOUSEKEEPING
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
-        caseClient.sendFrame(commandR);
+        caseClient.sendFrame(commandGetTelemetry);
         reply = caseClient.getFrame();
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
         Assert.assertEquals(busIsOn, reply.get("B2_state").toString()); 
         Assert.assertEquals(busIsOn, reply.get("B3_state").toString()); 
         Assert.assertEquals(busIsOn, reply.get("B4_state").toString());
-        commandP.put("PowerBusParam", "Bus2"); // put can be used as replace
-        commandP.put("PowerBusState", "BusOff");
-        caseClient.sendFrame(commandP);  
+        commandSetBus.put("PowerBusParam", "Bus2"); // put can be used as replace
+        commandSetBus.put("PowerBusState", "BusOff");
+        caseClient.sendFrame(commandSetBus);  
         reply = caseClient.getFrame();
         //BUS3
-        commandP.put("PowerBusParam", "Bus3"); // put can be used as replace
-        caseClient.sendFrame(commandP); 
+        commandSetBus.put("PowerBusParam", "Bus3"); // put can be used as replace
+        caseClient.sendFrame(commandSetBus); 
         reply = caseClient.getFrame(); 
         //BUS4
-        commandP.put("PowerBusParam", "Bus4"); // put can be used as replace
-        caseClient.sendFrame(commandP); 
+        commandSetBus.put("PowerBusParam", "Bus4"); // put can be used as replace
+        caseClient.sendFrame(commandSetBus); 
         reply = caseClient.getFrame();
         //GET HOUSEKEEPING
         Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
-        caseClient.sendFrame(commandR);
+        caseClient.sendFrame(commandGetTelemetry);
         reply = caseClient.getFrame();
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
         Assert.assertEquals(busIsOff, reply.get("B2_state").toString()); 
@@ -355,7 +342,7 @@ public class BusTestCase1 {
     {
         // do  not say which bus, hihhihi
         output.append("j"); //confirms test order
-        commandP.put("PowerBusState", "BusOn");
+        commandSetBus.put("PowerBusState", "BusOn");
         reply = caseClient.getFrame();
         Assert.assertEquals(servicePB, reply.get("Service").toString()); // validate response
         Assert.assertEquals(replyER, reply.get("Request").toString()); // validate response

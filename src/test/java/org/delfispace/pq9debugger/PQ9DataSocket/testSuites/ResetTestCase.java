@@ -27,29 +27,8 @@ import org.junit.Test;
  *
  * @author Michael van den Bos
  */
-public class ResetTestCase
-{
-    private final static int TIMEOUT = 500; // in ms
-    JSONObject reply;
-    JSONObject commandReset;
-    JSONObject commandGetTelemetry;
-    static PQ9DataClient caseClient;
-    private final static ZoneId LOCAL = ZoneId.of("Europe/Berlin");
-    private final static long NANTOMIL = 1000*1000;
-    private final String EPSPingService = "{\"valid\":\"true\",\"value\":\"Ping\"}";
-    private final String EPSPingRequest = "{\"valid\":\"true\",\"value\":\"Reply\"}";
-    private final String EPSSource  = "{\"valid\":\"true\",\"value\":\"EPS\"}";  
-    
-    private final String ResetReply  = "{\"valid\":\"true\",\"value\":\"Reply\"}";
-    private final String ResetReplyDest = "{\"valid\":\"true\",\"value\":\"OBC\"}";
-    private final String ResetService = "{\"valid\":\"true\",\"value\":\"Reset\"}";
-    private final String ResetReplySize  = "{\"valid\":\"true\",\"value\":3\"}";
-    private final String ResetSoft  ="{\"valid\":\"true\",\"value\":\"Soft\"}";
-    private final String ResetHard  ="{\"valid\":\"true\",\"value\":\"Hard\"}";
-    private final String ResetPC  ="{\"valid\":\"true\",\"value\":\"PowerCycle\"}";
-    private final int testtimepar = 43; //wait time in miliseconds
-     private static StringBuilder output = new StringBuilder("");
-    
+public class ResetTestCase extends TestVarsMethods
+{   
       @BeforeClass 
     public static void BeforeTestClass() throws IOException 
     {
@@ -63,7 +42,7 @@ public class ResetTestCase
     @Before
     public void setup() throws IOException
     {
-        
+        output = new StringBuilder("");   
         commandReset = new JSONObject();
         commandReset.put("_send_", "Reset");
         commandReset.put("Destination", "EPS");
@@ -145,8 +124,8 @@ public class ResetTestCase
         String where = String.valueOf(2);
         for(int i=0; i < 12; i++){
             where = String.valueOf(i);
-            commandP.put("dest", where); 
-            caseClient.sendFrame(commandP);  
+            commandRaw.put("dest", where); 
+            caseClient.sendFrame(commandRaw);  
             try{
             reply = caseClient.getFrame();
             }catch(TimeoutException Ex){
@@ -156,8 +135,8 @@ public class ResetTestCase
             } 
             if(i == 2){ 
                 Assert.assertEquals("PingService", reply.get("_received_").toString()); 
-                Assert.assertEquals(EPSPingService, reply.get("Service").toString());   
-                Assert.assertEquals(EPSPingRequest, reply.get("Request").toString()); 
+                Assert.assertEquals(PingService, reply.get("Service").toString());   
+                Assert.assertEquals(PingRequest, reply.get("Request").toString()); 
                 Assert.assertEquals(EPSPingSource, reply.get("Source").toString()); 
             }
             Thread.sleep(testtimepar);

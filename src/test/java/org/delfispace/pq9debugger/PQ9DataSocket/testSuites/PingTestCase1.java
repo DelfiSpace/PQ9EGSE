@@ -12,7 +12,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataClient;
 import org.delfispace.pq9debugger.PQ9DataSocket.TimeoutException;
+import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.BusTestCase1.caseClient;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Assert;
@@ -21,24 +23,15 @@ import org.junit.Test;
  *
  * @author LocalAdmin
  */
-public class PingTestCase1
-{
-    private final static int TIMEOUT = 100; // in ms
-    JSONObject reply;
-    JSONObject commandP;
-    static PQ9DataClient caseClient;
-    private final static ZoneId LOCAL = ZoneId.of("Europe/Berlin");
-    private final static long NANTOMIL = 1000*1000;
-      private final String EPSPingService = "{\"valid\":\"true\",\"value\":\"Ping\"}";
-    private final String EPSPingRequest = "{\"valid\":\"true\",\"value\":\"Reply\"}";
-    private final String EPSPingSource  = "{\"valid\":\"true\",\"value\":\"EPS\"}"; 
+public class PingTestCase1 extends TestVarsMethods
+{ 
+    private String sDestination;
                 
     @BeforeClass 
     public static void BeforePingTestClass() 
     {
         System.out.println("Initializer of PingTestClass1 ");
-         
-   
+        output = new StringBuilder("");   
     }
     
     @Before
@@ -46,15 +39,16 @@ public class PingTestCase1
     {
         caseClient = new PQ9DataClient("localhost", 10000);
         caseClient.setTimeout(TIMEOUT);    
-        commandP = new JSONObject();
-        commandP.put("_send_", "Ping");
-        commandP.put("Destination", "EPS");
+        commandPing = new JSONObject();
+        commandPing.put("_send_", "Ping");
+        commandPing.put("Destination", "EPS");
+        String sDestination = (String)commandPing.get("Destination");
     }
     
     @Test(timeout=1000)
     public void testPingOne() throws IOException, ParseException, TimeoutException
     {       
-       caseClient.sendFrame(commandP);  
+       caseClient.sendFrame(commandPing);  
        reply = caseClient.getFrame();
        Assert.assertEquals("PingService", reply.get("_received_").toString()); 
     }
@@ -62,29 +56,24 @@ public class PingTestCase1
     @Test(timeout=1000)
     public void testPingTwo() throws IOException, ParseException, TimeoutException
     {       
-       caseClient.sendFrame(commandP);  
+       caseClient.sendFrame(commandPing);  
        reply = caseClient.getFrame();
-      // Assert.assertEquals("PingService", reply.get("_received_").toString());
-      // String pow = reply.get("Ping").toString();
-       Assert.assertEquals(EPSPingService, reply.get("Service").toString());   
+       Assert.assertEquals(PingService, reply.get("Service").toString());   
     }
     @Test(timeout=1000)
     public void testPingthree() throws IOException, ParseException, TimeoutException
     {       
-       caseClient.sendFrame(commandP);  
+       caseClient.sendFrame(commandPing);  
        reply = caseClient.getFrame();
-       Assert.assertEquals(EPSPingRequest, reply.get("Request").toString()); 
+       Assert.assertEquals(PingRequest, reply.get("Request").toString()); 
     }
      @Test(timeout=1000)
     public void testPingFour() throws IOException, ParseException, TimeoutException
     {       
-       caseClient.sendFrame(commandP);  
+       caseClient.sendFrame(commandPing);  
        reply = caseClient.getFrame();
-       Assert.assertEquals(EPSPingSource, reply.get("Source").toString()); 
-    }
-    
-    
-    
+       Assert.assertEquals(EPSSource, reply.get("Source").toString()); 
+    }    
     @Test
     public void testPingMany() throws IOException, ParseException, TimeoutException
     {
@@ -96,7 +85,7 @@ public class PingTestCase1
             for(int i = 0; i<testruns; i++){
                 Instant before = Instant.now();
                 pt = System.nanoTime();
-                caseClient.sendFrame(commandP);  
+                caseClient.sendFrame(commandPing);  
                 try{
                     reply = caseClient.getFrame();
                 }catch (TimeoutException ex){
@@ -107,13 +96,13 @@ public class PingTestCase1
                 if(results[i]==-1){}
                 else{
                 if("PingService".equals(reply.get("_received_").toString())) {
-                    if(EPSPingService.equals(reply.get("Service").toString())){
-                        if(EPSPingRequest.equals(reply.get("Request").toString())){
-                            if(EPSPingSource.equals(reply.get("Source").toString())){
+                    if(PingService.equals(reply.get("Service").toString())){
+                        if(PingRequest.equals(reply.get("Request").toString())){
+                            if(EPSSource.equals(reply.get("Source").toString())){
                             results[i]=elapsed;
                             }
                             else{
-                                Assert.assertEquals("Service should have been: EPS, but Service = ",reply.get("Source").toString());
+                                Assert.assertEquals("Source should have been: " + sDestination + " but Source = ",reply.get("Source").toString());
                             }
                         }
                         else{
@@ -121,7 +110,7 @@ public class PingTestCase1
                         }
                     } 
                     else{
-                        Assert.assertEquals("Service should have been: Ping but Service = ",reply.get("Service").toString()); 
+                        Assert.assertEquals("Request should have been: Reply but Request = ",reply.get("Service").toString()); 
                     }
                 }
                 else {
@@ -142,6 +131,12 @@ public class PingTestCase1
     
     @After
     public void tearDown() throws IOException
+    {
+        
+    }
+    
+    @AfterClass
+     public static void shutDown() throws IOException
     {
         caseClient.close();
     }
