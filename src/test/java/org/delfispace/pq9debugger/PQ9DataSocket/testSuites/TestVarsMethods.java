@@ -11,6 +11,7 @@ import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataClient;
 import org.delfispace.pq9debugger.PQ9DataSocket.TimeoutException;
 import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.BusTestCase1.caseClient;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
@@ -20,8 +21,12 @@ import org.json.simple.parser.ParseException;
 public class TestVarsMethods {
     
     // TEST VARIABLES
+    protected final int WAITREFRESH = 1111; // in ms
     protected final static int TIMEOUT = 500; // in ms
-    static PQ9DataClient caseClient;
+    protected static StringBuilder output;
+    protected final int testtimepar = 43; //wait time in miliseconds
+    protected final static ZoneId LOCAL = ZoneId.of("Europe/Berlin");
+    protected final static long NANTOMIL = 1000*1000;
     
     protected final String busIsOn = "{\"valid\":\"true\",\"value\":\"ON\"}";
     protected final String busIsOff = "{\"valid\":\"true\",\"value\":\"OFF\"}";
@@ -29,18 +34,30 @@ public class TestVarsMethods {
     protected final String replyPB = "{\"valid\":\"true\",\"value\":\"Reply\"}";
     protected final String replyER = "{\"valid\":\"true\",\"value\":\"Error\"}";
     protected final String replySH = "{\"valid\":\"true\",\"value\":\"1\"}";
-    protected static StringBuilder output;
-    protected final int testtimepar = 43; //wait time in miliseconds
-    protected final static ZoneId LOCAL = ZoneId.of("Europe/Berlin");
-    protected final static long NANTOMIL = 1000*1000;
     protected final String PingService = "{\"valid\":\"true\",\"value\":\"Ping\"}";
     protected final String PingRequest = "{\"valid\":\"true\",\"value\":\"Reply\"}";
+    protected final String EPSSource  = "{\"valid\":\"true\",\"value\":\"EPS\"}";  
+    protected final String COMMSSource  = "{\"valid\":\"true\",\"value\":\"COMMS\"}";
+    protected final String ResetReply  = "{\"valid\":\"true\",\"value\":\"Reply\"}";
+    protected final String ResetReplyDest = "{\"valid\":\"true\",\"value\":\"OBC\"}";
+    protected final String ResetService = "{\"valid\":\"true\",\"value\":\"Reset\"}";
+    protected final String ResetReplySize  = "{\"valid\":\"true\",\"value\":\"3\"}";
+    protected final String ResetSoft  ="{\"valid\":\"true\",\"value\":\"Soft\"}";
+    protected final String ResetHard  ="{\"valid\":\"true\",\"value\":\"Hard\"}";
+    protected final String ResetPC  ="{\"valid\":\"true\",\"value\":\"PowerCycle\"}";
     
+    
+    //predefined PQ9Client
+    static PQ9DataClient caseClient;
+    
+    //Subsystem locations
     protected int NumEPS = 2;
-    protected int NumCOMMS =4;
+    protected int NumCOMMS = 4;
     
+    //List of subSystems
+    protected String[] subSystems = {"EPS", "COMMS", "ADCS", "ABD"};
     
-
+    //predefined JSON Objects
     protected JSONObject reply;
     protected JSONObject commandPing;
     protected JSONObject commandSetBus;
@@ -48,68 +65,75 @@ public class TestVarsMethods {
     protected JSONObject commandGetTelemetry;
     protected JSONObject commandRaw;
 
-    protected final String EPSSource  = "{\"valid\":\"true\",\"value\":\"EPS\"}";  
-    protected final String COMMSSource  = "{\"valid\":\"true\",\"value\":\"COMMS\"}";
     
-    protected final String ResetReply  = "{\"valid\":\"true\",\"value\":\"Reply\"}";
-    protected final String ResetReplyDest = "{\"valid\":\"true\",\"value\":\"OBC\"}";
-    protected final String ResetService = "{\"valid\":\"true\",\"value\":\"Reset\"}";
-    protected final String ResetReplySize  = "{\"valid\":\"true\",\"value\":3\"}";
-    protected final String ResetSoft  ="{\"valid\":\"true\",\"value\":\"Soft\"}";
-    protected final String ResetHard  ="{\"valid\":\"true\",\"value\":\"Hard\"}";
-    protected final String ResetPC  ="{\"valid\":\"true\",\"value\":\"PowerCycle\"}";
     
     public static void TestVarsMethods(){
-        
         
     } 
     protected JSONObject getTelemetry(String subSystem) throws IOException, ParseException, TimeoutException{
         
         JSONObject replyInt = new JSONObject();
-        switch(subSystem)
-            {
-                case "EPS":
-                      commandGetTelemetry.put("Destination", "EPS");
-                      commandGetTelemetry.put("_send_", "GetTelemetry");
-                      caseClient.sendFrame(commandGetTelemetry); //request housekeeping data
-                      replyInt = caseClient.getFrame(); //receive housekeeping data
-                    break;
-                case "COMMS":
-                    //code block
-                    break;
-                case "ADCS":
-                    //code block
-                    break;
-                case "ADB":
-                    //code block
-                    break;    
-                default: 
-                    replyInt.put("_recieved_", "Error Unknown Subsystem");
-            }
+        if(isKnown(subSystem, subSystems))
+        {
+            commandGetTelemetry.put("Destination", subSystem);
+        }
+        else
+        {
+            replyInt.put("_recieved_", "Error Unknown Subsystem");
+            return replyInt; // return here, there is something wrong thererfore test will fail. 
+        }
+        //commandGetTelemetry should be initialized by the @Before method of the test
+        caseClient.sendFrame(commandGetTelemetry); //request housekeeping data
+        replyInt = caseClient.getFrame(); //receive housekeeping data
         return replyInt;           
     }
     
-    protected JSONObject pingSubSystem(String subSystem){
-        JSONObject replyInternal = new JSONObject();
-        switch(subSystem)
-            {
-                case "EPS":
-                    //code block
-                    break;
-                case "COMMS":
-                    //code block
-                    break;
-                case "ADCS":
-                    //code block
-                    break;
-                case "ADB":
-                    //code block
-                    break;    
-                default: 
-                    reply.put("_recieved_", "Error Unknown Subsystem");
-            }    
-        return replyInternal;   
+    protected JSONObject pingSubSystem(String subSystem) throws IOException, ParseException, TimeoutException{
+        JSONObject replyInt = new JSONObject();
+         if(isKnown(subSystem, subSystems))
+        {
+            commandPing.put("Destination", subSystem);
+        }
+        else
+        {
+            replyInt.put("_received_", "Error Unknown Subsystem");
+            return replyInt; // return here, there is something wrong thererfore test will fail.
+        }
+        //commandPing should be initialized by the @Before method of the test
+        commandPing.put("_send_", "Ping");
+        caseClient.sendFrame(commandPing);  
+        replyInt = caseClient.getFrame();
+        return replyInt;   
     } 
+    
+    protected JSONObject resetSubSystem(String subSystem, String type)throws IOException, ParseException, TimeoutException{
+        JSONObject replyInt = new JSONObject();
+        if("Soft".equals(type) || "Hard".equals(type) || "PowerCycle".equals(type))
+        {
+            commandReset.put("Type", type);
+        }
+        else
+        {
+            replyInt.put("_received_", "Error Unknown Reset Type");
+            return replyInt; // return here, there is something wrong thererfore test will fail.
+        }
+        if(isKnown(subSystem, subSystems))
+        {
+            commandReset.put("Destination", subSystem);
+        }
+        else
+        {
+            replyInt.put("_received_", "Error Unknown Subsystem");
+            return replyInt; // return here, there is something wrong thererfore test will fail.
+        }
+        //commandReset should be initialized by the @Before method of the test
+        caseClient.sendFrame(commandReset);  
+        replyInt = caseClient.getFrame();
+        return replyInt;   
+    } 
+    
+    
+    
     protected int timeStampGetMillis(String timestamp){
         String[] delta = breakTimestamp(timestamp);
             int loc = delta.length;
@@ -139,4 +163,27 @@ public class TestVarsMethods {
         int delta = timeStampGetMillis(timestamp);
         return delta;
     }
+    protected boolean isKnown(String x, String[] ax){
+        for(String s: ax){
+            if(x.equals(s))
+                return true;
+        }
+        return false;
+    } 
+     public boolean testisKnown(String str, String[] Arr){
+        boolean delta = isKnown(str,Arr); 
+        return delta;
+    }
+     protected JSONObject stringToJSON(String tobreak) throws ParseException{
+        
+        JSONParser parser = new JSONParser();
+        JSONObject tempJSON = (JSONObject) parser.parse(tobreak);
+        return tempJSON;
+     }
+     protected int getUptime(String uptime) throws ParseException
+     {
+             JSONObject tempJSON = stringToJSON(uptime);
+             int value = Integer.valueOf(tempJSON.get("value").toString());
+             return value;
+     }        
 }

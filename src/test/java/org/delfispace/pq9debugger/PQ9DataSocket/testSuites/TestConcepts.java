@@ -113,6 +113,13 @@ public class TestConcepts {
         System.out.println(Arrays.toString(drinkin.testBreakTimeStamp(TIMESTAMPEX1)));
         System.out.println(drinkin.testgetMillis(TIMESTAMPEX1));
         
+        System.out.println("Testing isKnown!");
+        String[] testArray = new String[] {"A","B","C"};
+        System.out.println(drinkin.testisKnown("A", testArray));
+        System.out.println(drinkin.testisKnown("B", testArray));
+        System.out.println(drinkin.testisKnown("C", testArray));
+        System.out.println(drinkin.testisKnown("D", testArray));
+        System.out.println(drinkin.testisKnown("COMMS", drinkin.subSystems));
     }  	
 }
 
