@@ -104,7 +104,7 @@ public class TestConcepts {
                     
                 }               
             }
-        TestVarsMethods drinkin = new TestVarsMethods();
+        /*TestVarsMethods drinkin = new TestVarsMethods();
         System.out.println(TIMESTAMPEX1);
         String[] drinkinT = drinkin.testBreakTimeStamp(TIMESTAMPEX1);
         for (String drinkinT1 : drinkinT) {
@@ -119,7 +119,7 @@ public class TestConcepts {
         System.out.println(drinkin.testisKnown("B", testArray));
         System.out.println(drinkin.testisKnown("C", testArray));
         System.out.println(drinkin.testisKnown("D", testArray));
-        System.out.println(drinkin.testisKnown("COMMS", drinkin.subSystems));
+        System.out.println(drinkin.testisKnown("COMMS", drinkin.subSystems));*/
     }  	
 }
 

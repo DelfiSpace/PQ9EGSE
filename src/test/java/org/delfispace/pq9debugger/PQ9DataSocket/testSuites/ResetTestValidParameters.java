@@ -10,8 +10,6 @@ import java.time.ZoneId;
 import org.delfispace.pq9debugger.PQ9DataSocket.Frame;
 import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataClient;
 import org.delfispace.pq9debugger.PQ9DataSocket.TimeoutException;
-import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.BusTestCase1.caseClient;
-import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.PingTestCase1.caseClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -27,8 +25,10 @@ import org.junit.Test;
  *
  * @author Michael van den Bos
  */
-public class ResetTestCase extends TestVarsMethods
+public class ResetTestValidParameters extends TestVarsMethods
 {   
+    private String dest;
+    
       @BeforeClass 
     public static void BeforeTestClass() throws IOException 
     {
@@ -42,10 +42,11 @@ public class ResetTestCase extends TestVarsMethods
     @Before
     public void setup() throws IOException
     {
+        dest = TestParameters.getDestination();
         output = new StringBuilder("");   // can collect output from the test
         commandReset = new JSONObject();  // This is required for the test   
         commandReset.put("_send_", "Reset");    //This should remain during the test
-        commandReset.put("Destination", "EPS"); //This is overwritten by the tests
+        commandReset.put("Destination", dest); //This is overwritten by the tests
         commandReset.put("Type", "Soft");       //This is overwritten by the tests
         
         commandGetTelemetry = new JSONObject(); // This is required for the test  
@@ -53,13 +54,13 @@ public class ResetTestCase extends TestVarsMethods
         commandGetTelemetry.put("Destination", "EPS");
         reply = new JSONObject();
     }
-    /*
+    
     @Test
     public void atestSoftResetEPS() throws IOException, ParseException, TimeoutException, InterruptedException
     {
         int uptime;
         do{
-            reply = getTelemetry("COMMS"); // check uptime
+            reply = getTelemetry(dest); // check uptime
             uptime = getUptime(reply.get("Uptime").toString());
             Thread.sleep(WAITREFRESH);
         }while(uptime < 3);
@@ -77,18 +78,15 @@ public class ResetTestCase extends TestVarsMethods
         Assert.assertEquals(ResetReplyDest, reply.get("Destination").toString());
         //Thread.sleep(WAITREFRESH);
         reply = getTelemetry("EPS"); // check uptime
-        int uptime;
         uptime = getUptime(reply.get("Uptime").toString());
         Assert.assertTrue("Uptime should be less than 3", uptime < 3);
-        // this last test may pass even if board has not reset but it should be very rare 
-        // If needed the uptime can be checked before the reset as well to ensure. 
     }      
     @Test
     public void btestHardResetEPS() throws IOException, ParseException, TimeoutException, InterruptedException
     {
         int uptime;
         do{
-            reply = getTelemetry("COMMS"); // check uptime
+            reply = getTelemetry("EPS"); // check uptime
             uptime = getUptime(reply.get("Uptime").toString());
             Thread.sleep(WAITREFRESH);
         }while(uptime < 3);
@@ -102,7 +100,6 @@ public class ResetTestCase extends TestVarsMethods
         Assert.assertEquals(ResetHard, reply.get("Reset").toString());
         Assert.assertEquals(ResetReplyDest, reply.get("Destination").toString());
         reply = getTelemetry("EPS"); // check uptime
-        int uptime;
         uptime = getUptime(reply.get("Uptime").toString());
         Assert.assertTrue("Uptime should be less than 3", uptime < 3);
     }
@@ -125,12 +122,11 @@ public class ResetTestCase extends TestVarsMethods
         Assert.assertEquals(ResetReplySize, reply.get("Size").toString());
         Assert.assertEquals(ResetPC, reply.get("Reset").toString());
         Assert.assertEquals(commandReset.get("Source").toString(), reply.get("Destination").toString());
+        //caseClient.sendFrame(commandReset); // send reset command
         reply = getTelemetry("EPS"); // check uptime
         uptime = getUptime(reply.get("Uptime").toString());
         Assert.assertTrue("Uptime should be less than 3", uptime < 3);
-        // this last test may pass even if board has not reset but it should be very rare 
-        // If needed the uptime can be checked before the reset as well to ensure. 
-    } */ 
+    }
     @Test
     public void etestSoftResetCOMMS() throws IOException, ParseException, TimeoutException, InterruptedException
     {
@@ -164,8 +160,6 @@ public class ResetTestCase extends TestVarsMethods
             uptime = getUptime(reply.get("Uptime").toString());
             Thread.sleep(WAITREFRESH);
         }while(uptime < 3);
-        output.append("This is a reset test of COMMS, hard "); 
-        output.append("\n");
         reply = resetSubSystem("COMMS", "Hard");
         Assert.assertEquals("ResetService", reply.get("_received_").toString());
         Assert.assertEquals(ResetReply, reply.get("Request").toString());
@@ -198,40 +192,11 @@ public class ResetTestCase extends TestVarsMethods
         // this last test may pass even if board has not reset but it should be very rare 
         // If needed the uptime can be checked before the reset as well to ensure. 
     }
-    
-    
     /*
-      @Test
-    public void btestPingSSS() throws IOException, ParseException, TimeoutException, InterruptedException
-    {
-        String where = String.valueOf(2);
-        for(int i=0; i < 12; i++){
-            where = String.valueOf(i);
-            commandRaw.put("dest", where); 
-            caseClient.sendFrame(commandRaw);  
-            try{
-            reply = caseClient.getFrame();
-            }catch(TimeoutException Ex){
-                String successString = "No reply from board no. " + String.valueOf(i)+"/n" ;
-                output.append(successString);
-                Assert.assertEquals("No reply from ", String.valueOf(i),String.valueOf(i));
-            } 
-            if(i == 2){ 
-                Assert.assertEquals("PingService", reply.get("_received_").toString()); 
-                Assert.assertEquals(PingService, reply.get("Service").toString());   
-                Assert.assertEquals(PingRequest, reply.get("Request").toString()); 
-                Assert.assertEquals(EPSPingSource, reply.get("Source").toString()); 
-            }
-            Thread.sleep(testtimepar);
-        }
-    }
-*/
-      /*
     @Test
     public void ctestInternalResetEPS() throws IOException, ParseException, TimeoutException, InterruptedException
     {
-        output.append("This is a reset test. "); 
-        output.append("/n");
+        output.append("This is a internal reset test (EPS). \n"); 
         caseClient.sendFrame(commandReset); // send reset command
         reply = caseClient.getFrame();
         Assert.assertEquals("ResetService", reply.get("_received_").toString());
@@ -250,8 +215,29 @@ public class ResetTestCase extends TestVarsMethods
         int uptime = Integer.valueOf(tempJSON.get("value").toString());
         Assert.assertTrue("uptime should be less than 5", uptime < 5);
     }
-    */
+     @Test
+    public void ctestInternalResetCOMMS() throws IOException, ParseException, TimeoutException, InterruptedException
+    {   int uptime;
+        output.append("This is a internal reset test (COMMS). \n"); 
+        reply = resetSubSystem("COMMS", "Soft"); // soft reset 
+        Assert.assertEquals("ResetService", reply.get("_received_").toString());
+        //GET HOUSEKEEPING to check uptime
+        reply = getTelemetry("COMMS");
+        uptime = getUptime(reply.get("Uptime").toString());
+        Assert.assertTrue("Uptime should be less than 3", uptime < 3);
+        //uptime is less than 3, now wait 3 minutes
+        for(int i = 0; i<3; i++){
+            reply = pingSubSystem("EPS");
+            Thread.sleep(60000); // pin EPS once every minute so it does not reset
+        }// if EPS resets, so does COMMS.
+        //GET HOUSEKEEPING
+        reply = getTelemetry("COMMS");
+        Assert.assertEquals("COMMSHousekeepingReply", reply.get("_received_").toString());
+        uptime = getUptime(reply.get("Uptime").toString());
+        Assert.assertTrue("uptime should be less than 5", uptime < 5);
+    }
     
+    */
     @After
     public void tearDown() throws IOException
     {

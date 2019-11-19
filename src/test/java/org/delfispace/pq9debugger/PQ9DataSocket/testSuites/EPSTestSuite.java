@@ -18,11 +18,11 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         PingTestValidParameters.class,
         PingTestInvalidParameters.class,
-       //PingTestCase3.class,
-        //PingTestCase4.class
+        EPSBusHandlingTest.class,
+        ResetTestValidParameters.class,
 })
 
-public class PingTestSuite {   
+public class EPSTestSuite {   
     @BeforeClass
     public static void setUp() 
     {

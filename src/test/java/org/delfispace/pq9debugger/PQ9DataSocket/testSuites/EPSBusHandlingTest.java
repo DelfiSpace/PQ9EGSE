@@ -10,7 +10,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataClient;
 import org.delfispace.pq9debugger.PQ9DataSocket.TimeoutException;
-import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.PingTestCase1.caseClient;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -27,7 +26,7 @@ import org.junit.runners.MethodSorters;
  * @author michael van den Bos
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class BusTestCase1 extends TestVarsMethods{
+public class EPSBusHandlingTest extends TestVarsMethods{
  
     @BeforeClass 
     public static void BeforeBusTestClass() throws IOException 

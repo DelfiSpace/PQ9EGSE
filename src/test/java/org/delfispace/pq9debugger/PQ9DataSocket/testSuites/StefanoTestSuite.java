@@ -14,15 +14,13 @@ import org.junit.runners.Suite;
  */
 
 @RunWith(Suite.class)
-
-@Suite.SuiteClasses({
-        PingTestValidParameters.class,
-        PingTestInvalidParameters.class,
-       //PingTestCase3.class,
-        //PingTestCase4.class
+@Suite.SuiteClasses(
+{
+    StefanoTestCase1.class,
+    StefanoTestCase2.class
 })
-
-public class PingTestSuite {   
+public class StefanoTestSuite 
+{
     @BeforeClass
     public static void setUp() 
     {
@@ -34,4 +32,5 @@ public class PingTestSuite {
     public static void tearDown() {
         System.out.println("tearing down");
     }
+
 }

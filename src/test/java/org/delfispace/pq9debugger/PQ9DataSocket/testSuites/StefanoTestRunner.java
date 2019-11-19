@@ -21,12 +21,11 @@ import junit.runner.Version;
  *
  * @author MFvandenBos
  */
-public class TestRunner 
+public class StefanoTestRunner 
 {
    public static void main(String[]args)throws IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException 
    {
-        System.out.println(Version.id());
-        Result result = JUnitCore.runClasses(PingTestSuite.class);
+        Result result = JUnitCore.runClasses(StefanoTestSuite.class);
         result.getFailures().forEach((failure) -> 
         {
             System.out.println(failure.toString());

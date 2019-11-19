@@ -27,7 +27,7 @@ import org.xtce.toolkit.XTCETMStream;
  *
  * @author LocalAdmin
  */
-public class PowerTestCase extends TestVarsMethods {
+public class EPSPowerSupplyTests extends TestVarsMethods {
 
             JSONObject command;
             PQ9DataClient client;

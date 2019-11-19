@@ -10,8 +10,6 @@ import java.time.ZoneId;
 import org.delfispace.pq9debugger.PQ9DataSocket.Frame;
 import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataClient;
 import org.delfispace.pq9debugger.PQ9DataSocket.TimeoutException;
-import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.BusTestCase1.caseClient;
-import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.PingTestCase1.caseClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.After;
@@ -26,12 +24,12 @@ import org.junit.Test;
  *
  * @author LocalAdmin
  */
-public class PingTestCase2 extends TestVarsMethods
+public class PingTestInvalidParameters extends TestVarsMethods
 {
       @BeforeClass 
     public static void BeforePingTestClass() throws IOException 
     {
-        System.out.println("Initializer of PingTestClass1 ");
+        System.out.println("Initializer of PingTestClass2 ");
         caseClient = new PQ9DataClient("localhost", 10000);
         caseClient.setTimeout(TIMEOUT);     
           output = new StringBuilder("");

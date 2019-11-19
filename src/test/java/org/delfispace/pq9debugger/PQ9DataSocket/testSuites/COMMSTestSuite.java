@@ -22,7 +22,7 @@ import org.junit.runners.Suite;
         //PingTestCase4.class
 })
 
-public class PingTestSuite {   
+public class COMMSTestSuite {   
     @BeforeClass
     public static void setUp() 
     {
