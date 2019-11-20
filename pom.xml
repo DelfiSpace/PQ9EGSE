@@ -10,7 +10,7 @@
     <name>PQ9EGSE</name>
 
     <properties>
-        <jettyVersion>[9.4.10.RC1,)</jettyVersion>
+        <jettyVersion>9.4.18.v20190429</jettyVersion>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
