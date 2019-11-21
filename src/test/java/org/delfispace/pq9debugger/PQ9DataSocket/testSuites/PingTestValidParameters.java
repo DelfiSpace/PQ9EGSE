@@ -12,7 +12,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataClient;
 import org.delfispace.pq9debugger.PQ9DataSocket.TimeoutException;
-import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest.caseClient;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,6 +24,7 @@ import org.junit.Test;
  */
 public class PingTestValidParameters 
 { 
+    private static PQ9DataClient caseClient;
     protected final static long NANTOMIL = 1000*1000;
     private static String destination;
     private static StringBuilder output;     
@@ -33,14 +33,16 @@ public class PingTestValidParameters
     @BeforeClass 
     public static void BeforePingTestClass() throws IOException 
     {
-        destination = TestParameters.getDestination();    
-        if(destination == null){
-            destination = "EPS";
-        }
-        System.out.println("Initializer of PingTestClass1 " + destination);
+        destination = TestParameters.getDestination(); 
+        /*
+            if(destination == null){
+                destination = "EPS";
+            }
+        /**/
+        System.out.println("Initializer of Ping Test with Valid Parameters for: " + destination);
         output = new StringBuilder("");   
         caseClient = new PQ9DataClient("localhost", 10000);
-        caseClient.setTimeout(TestParameters.TIMEOUT);    
+        caseClient.setTimeout(TestParameters.getTimeOut());    
     }
     
     @Before
@@ -63,19 +65,19 @@ public class PingTestValidParameters
     public void PingReplyTest() throws IOException, ParseException, TimeoutException
     {       
        reply = pingSubSystem(destination);
-       Assert.assertEquals(TestParameters.getExpectedReply("Ping"), reply.get("Service").toString());   
+       Assert.assertEquals(getExpectedReply("Service"), reply.get("Service").toString());   
     }
     @Test(timeout=1000)
     public void pingRequestTest() throws IOException, ParseException, TimeoutException
     {       
        reply = pingSubSystem(destination);
-       Assert.assertEquals(TestParameters.getExpectedReply("Request"), reply.get("Request").toString()); 
+       Assert.assertEquals(getExpectedReply("Request"), reply.get("Request").toString()); 
     }
      @Test(timeout=1000)
     public void pingSourceTest() throws IOException, ParseException, TimeoutException
     {       
        reply = pingSubSystem(destination);
-       Assert.assertEquals(TestParameters.getExpectedReply("Source"), reply.get("Source").toString()); 
+       Assert.assertEquals(getExpectedReply("Source"), reply.get("Source").toString()); 
     }    
     
     @Test
@@ -87,10 +89,6 @@ public class PingTestValidParameters
             long et;
             long elapsed;
             for(int i = 0; i<testruns; i++){
-                if (i == 100){
-                System.out.println(i);
-                }
-                //Instant before = Instant.now();
                 pt = System.nanoTime();
                 caseClient.sendFrame(commandPing);  
                 try{
@@ -103,9 +101,9 @@ public class PingTestValidParameters
                 if(results[i]==-1){}
                 else{
                 if("PingService".equals(reply.get("_received_").toString())) {
-                    if(TestParameters.getExpectedReply("Ping").equals(reply.get("Service").toString())){
-                        if(TestParameters.getExpectedReply("Request").equals(reply.get("Request").toString())){
-                            if(TestParameters.getExpectedReply("Source").equals(reply.get("Source").toString())){
+                    if(getExpectedReply("Service").equals(reply.get("Service").toString())){
+                        if(getExpectedReply("Request").equals(reply.get("Request").toString())){
+                            if(getExpectedReply("Source").equals(reply.get("Source").toString())){
                             results[i]=elapsed;
                             }
                             else{
@@ -127,14 +125,14 @@ public class PingTestValidParameters
             }
             int timeoutrate=0;
             for(int i=0; i<testruns; i++){
-                if (results[i]==-1){timeoutrate=timeoutrate++;} 
+                if (results[i]==-1){timeoutrate=timeoutrate+1;} 
             }
             double timeoutrateR;
             timeoutrateR = ((double)timeoutrate/(double)testruns)*100;
             String eRmessage = "The failure rate is above 0.001//% ";
             eRmessage = eRmessage + String.valueOf(timeoutrateR);
             Assert.assertTrue(eRmessage,timeoutrate<1);  
-            //output.append("PingManyTimes ")
+            output.append("Number of timeouts: ").append(String.valueOf(timeoutrate));
     }
     
     @After
@@ -166,6 +164,23 @@ public class PingTestValidParameters
         replyInt = caseClient.getFrame();
         return replyInt;   
     }  
-     
-     
+    
+    private String getExpectedReply(String service){
+        //return string example: "{\"valid\":\"true\",\"value\":\"COMMS\"}"
+            StringBuilder exReply;
+            exReply = new StringBuilder(40);
+        if( service.equals("Source"))
+        {
+            exReply.append("{\"valid\":\"true\",\"value\":\"\"}");
+            exReply.insert(25, destination);
+        }
+        if( service.equals("Request"))
+        {
+            exReply.append("{\"valid\":\"true\",\"value\":\"Reply\"}");
+        }
+        if( service.equals("Service")){
+            exReply.append("{\"valid\":\"true\",\"value\":\"Ping\"}");
+        }
+        return exReply.toString();
+    }
 }

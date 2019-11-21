@@ -53,7 +53,16 @@ public class TestConcepts {
         command.put("Destination", "EPS");
             
         int transmitted = 5;
+        
+        for(int i = 0; i<4; i++){
+            System.out.println(getExpectedReply("Source", i));
             
+        }
+            System.out.println(getExpectedReply("Request", 0));
+            System.out.println(getExpectedReply("Service", 0));
+            
+        
+            /*
         for (int h = 0; h < transmitted; h++) 
         {
             if ((h % 100) == 0)
@@ -104,6 +113,9 @@ public class TestConcepts {
                     
                 }               
             }
+        */
+       
+
         /*TestVarsMethods drinkin = new TestVarsMethods();
         System.out.println(TIMESTAMPEX1);
         String[] drinkinT = drinkin.testBreakTimeStamp(TIMESTAMPEX1);
@@ -121,6 +133,26 @@ public class TestConcepts {
         System.out.println(drinkin.testisKnown("D", testArray));
         System.out.println(drinkin.testisKnown("COMMS", drinkin.subSystems));*/
     }  	
+      private static String getExpectedReply(String service, int loc){
+        //return string example: "{\"valid\":\"true\",\"value\":\"COMMS\"}"
+         
+        String destination = TestParameters.SUBSYSTEMS[loc];
+            StringBuilder exReply;
+            exReply = new StringBuilder(40);
+        if( service.equals("Source"))
+        {
+            exReply.append("{\"valid\":\"true\",\"value\":\"\"}");
+            exReply.insert(25, destination);
+        }
+        if( service.equals("Request"))
+        {
+            exReply.append("{\"valid\":\"true\",\"value\":\"Reply\"}");
+        }
+        if( service.equals("Service")){
+            exReply.append("{\"valid\":\"true\",\"value\":\"Ping\"}");
+        }
+        return exReply.toString();
+        }
 }
 
 

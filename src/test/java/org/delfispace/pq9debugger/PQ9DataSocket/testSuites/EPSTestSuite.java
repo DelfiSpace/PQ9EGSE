@@ -20,6 +20,7 @@ import org.junit.runners.Suite;
         PingTestInvalidParameters.class,
         EPSBusHandlingTest.class,
         ResetTestValidParameters.class,
+        TestInvalidService.class,
 })
 
 public class EPSTestSuite {   

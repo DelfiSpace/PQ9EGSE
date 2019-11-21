@@ -12,10 +12,10 @@ package org.delfispace.pq9debugger.PQ9DataSocket.testSuites;
 public class TestParameters 
 {
     private static String destination;
-    public final static int TIMEOUT = 500; 
+    private static int TIMEOUT = 500; 
     
     //List of subSystems
-    public static final String[] SUBSYSTEMS = {"EPS", "COMMS", "ADCS", "ABD"};
+    public static final String[] SUBSYSTEMS = {"EPS", "ADCS", "COMMS", "ABD"};
     
     //responses
     private static final String replyER = "{\"valid\":\"true\",\"value\":\"Error\"}";
@@ -29,35 +29,44 @@ public class TestParameters
     {
         destination = dest;
     }
-    static String getExpectedReply(String service)
+    
+     static int getTimeOut()
     {
-        switch(service){
-            case "Ping":
-                return "{\"valid\":\"true\",\"value\":\"Ping\"}";    
-            case "Request":
-                return "{\"valid\":\"true\",\"value\":\"Reply\"}";
-            case "SetPowerBus":
-                return "{\"valid\":\"true\",\"value\":\"Execute\"}";
-            case "Source":
-                switch(destination)
-                {
-                    case "EPS":
-                       return "{\"valid\":\"true\",\"value\":\"EPS\"}";
-                    case "COMMS":
-                       return "{\"valid\":\"true\",\"value\":\"COMMS\"}";
-                    case "ADCS":   
-                       return "{\"valid\":\"true\",\"value\":\"ADCS\"}";
-                    case "ABD":   
-                        return "{\"valid\":\"true\",\"value\":\"ABD\"}";
-                    case "OBC":   
-                        return "{\"valid\":\"true\",\"value\":\"OBC\"}";
-                    default: 
-                        return replyER;
-                }
-            default:
-                return replyER;
-        } 
+        return TIMEOUT;
     }
+    
+    static void setTimeOut(int TimeOut)
+    {
+        TIMEOUT = TimeOut;
+    }
+    
+    static int getDestinationInt()
+    {
+        int destint;
+        destint = 0;
+        int runner = 0;
+        do{
+            if (destination.equals(SUBSYSTEMS[runner]))
+            {
+                destint = 2+runner;
+            }
+        }while(destint == 0 && runner < SUBSYSTEMS.length);
+        return destint;
+    }
+    static int getDestinationInt(String dest)
+    {
+        int destint;
+        destint = 0;
+        int runner = 0;
+        do{
+            if (dest.equals(SUBSYSTEMS[runner]))
+            {
+                destint = 2+runner;
+            }
+        }while(destint == 0 && runner < SUBSYSTEMS.length);
+        return destint;
+    }
+   
     public static boolean isKnown(String x){
         for(String s: SUBSYSTEMS){
             if(!x.equals(s)) {
