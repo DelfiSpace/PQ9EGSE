@@ -70,7 +70,7 @@ public class EPSBusHandlingTest
         commandGetTelemetry.put("_send_", "GetTelemetry");
         commandGetTelemetry.put("Destination", destination);
     }
-    
+    /*
     @Test(timeout=2500)
     public void testBus4() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {      
@@ -88,6 +88,7 @@ public class EPSBusHandlingTest
     {
         testBus(2,true);
     }
+    
     @Test(timeout=5000)
     public void testBus1() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {
@@ -101,18 +102,18 @@ public class EPSBusHandlingTest
     }
     
     @Test(timeout=1500)
-    public void etestBus3Inv() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
+    public void testBus3Inv() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {
         testBus(3, false);
     }
     
     @Test(timeout=1500)
-    public void ftestBus2Inv() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
+    public void testBus2Inv() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {
         testBus(2, false);
     }
     @Test(timeout=1500)
-    public void ftestBus1Inv() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
+    public void testBus1Inv() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {
         testBus(1, false);
     }
@@ -164,7 +165,7 @@ public class EPSBusHandlingTest
         testBus(4,true);  
     }
      
-    
+    */
        @Test(timeout=4500)
     public void testAllBusses() throws IOException, ParseException, TimeoutException, InterruptedException
     {   
@@ -199,6 +200,8 @@ public class EPSBusHandlingTest
         Assert.assertEquals(busIsOff, reply.get("B3_state").toString()); 
         Assert.assertEquals(busIsOff, reply.get("B4_state").toString()); 
     }
+    
+    /*
     public void jtestBusError() throws IOException, ParseException, TimeoutException, InterruptedException
     {
         // do  not say which bus, expect error: 
@@ -268,14 +271,21 @@ public class EPSBusHandlingTest
         commandBus(bus, goal_on_true_off_false); 
         reply = caseClient.getFrame();
         validateResponseToCommandBus(reply, goal_on_true_off_false);
-        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds.   
+        Thread.sleep(1000);// housekeeping data is refreshed every 1000 miliseconds.   
         caseClient.sendFrame(commandGetTelemetry); 
         reply = caseClient.getFrame(); 
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
         StringBuilder key = new StringBuilder(8);
-        // assert that Bus is ON
+        // assert that Bus is equal to goal.
         key.append("B").append(String.valueOf(bus)).append("_state");
-        Assert.assertEquals(busIsOn, reply.get("B4_state").toString()); 
+        if(goal_on_true_off_false)
+        {
+            Assert.assertEquals(busIsOn, reply.get(key.toString()).toString()); 
+        }
+        else
+        {
+            Assert.assertEquals(busIsOff, reply.get(key.toString()).toString()); 
+        }
     }
     
     protected void setAllBusses(boolean on_true_off_false) throws IOException, ParseException, TimeoutException
@@ -284,6 +294,10 @@ public class EPSBusHandlingTest
         if(on_true_off_false)
         {
             commandSetBus.put("PowerBusState", "BusOn");
+        }
+        else
+        {
+            commandSetBus.put("PowerBusState", "BusOff");
         }
         commandSetBus.put("PowerBusParam", "Bus2"); 
         caseClient.sendFrame(commandSetBus);  
