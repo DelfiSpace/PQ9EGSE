@@ -30,11 +30,11 @@ public class TestInvalidService {
     protected JSONObject reply;
     private final int destination = TestParameters.getDestinationInt();
     @BeforeClass 
-    public static void BeforePingTestClass() throws IOException 
+    public static void BeforeTestClass() throws IOException 
     {
-        
+        TestParameters.setDestination("EPS"); // REMOVE THIS LINE
         caseClient = new PQ9DataClient("localhost", 10000);
-        System.out.println("Initializer of Ping Test with Invalid Parameters ");
+        System.out.println("Initializer of Service Test with random Parameters ");
         caseClient.setTimeout(TestParameters.getTimeOut());     
     }
     
@@ -44,22 +44,26 @@ public class TestInvalidService {
         output = new StringBuilder(""); 
         commandRaw = new JSONObject();
         commandRaw.put("_send_", "SendRaw");
-        commandRaw.put("dest", destination);
+        commandRaw.put("dest", String.valueOf(destination));
         commandRaw.put("src", "1");
         commandRaw.put("data", "17 1");
         reply = new JSONObject();
     }
     @Test
-    public void testPingWrongService() throws IOException, ParseException
+    public void testWrongService() throws IOException, ParseException
     {
         boolean replyToRequest;
         boolean pass = true;
+        boolean responseToAll = true;
+        System.out.println("getting started");
+        StringBuilder failMessage = new StringBuilder("");
+        StringBuilder errorMessage = new StringBuilder("[1, 2, ");
+        errorMessage.append(String.valueOf(destination)).append(", 0, 0,");
         for(int i = 0; i <256; i++)
         { 
-            replyToRequest = false;
             StringBuilder data = new StringBuilder("");
             data.append(String.valueOf(i)).append(" 1");
-            commandRaw.put("data", data.toString());  
+            commandRaw.put("data", data.toString());
             caseClient.sendFrame(commandRaw);  
             try
             {
@@ -87,14 +91,30 @@ public class TestInvalidService {
                            pass = false;
                            if(correctSource){boardName = reply.get("Source").toString();}
                            else{boardName = "Unknown Board!";}
-                           serviceName = "An invalid response!";  
-                           output.append("command: ").append(String.valueOf(i)).append(" ([").append(commandRaw.get("dest").toString());
-                           output.append(", ").append(String.valueOf(2)).append(", ").append(commandRaw.get("src").toString());
-                           output.append(", ").append(String.valueOf(i)).append(", 1])\n");
-                           output.append("response: ").append(reply.get("_raw_").toString()).append("\n");
+                           StringBuilder rawReply = new StringBuilder(reply.get("_raw_").toString());
+                           rawReply.delete(15, rawReply.length());
+                           if(rawReply.toString().equals(errorMessage.toString()))
+                           {
+                               pass = true;
+                               output.append("recieved error message from command: ").append(String.valueOf(i)).append("\n");
+                           }
+                           else
+                           {
+                                output.append("command: ").append(String.valueOf(i)).append(" ([").append(commandRaw.get("dest").toString());
+                                output.append(", ").append(String.valueOf(2)).append(", ").append(commandRaw.get("src").toString());
+                                output.append(", ").append(String.valueOf(i)).append(", 1])\n");
+                                output.append("response: ").append(reply.get("_raw_").toString()).append("\n");
+                           }
+                           
                         }
             }
+            else
+            {failMessage.append("No response from board ").append(destination).append(" on commmand: ").append(String.valueOf(i)).append("\n");
+            responseToAll = false;
+            }
         }
+        
+        Assert.assertTrue(failMessage.toString(),responseToAll);
         Assert.assertTrue("An invalid thing happened", pass);
     }    
     @After

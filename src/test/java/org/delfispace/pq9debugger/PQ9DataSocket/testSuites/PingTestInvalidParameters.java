@@ -52,7 +52,7 @@ public class PingTestInvalidParameters
         commandRaw.put("data", "17 1");
         reply = new JSONObject();
     }
-    /*
+   
     @Test
     public void testPingRAW() throws IOException, ParseException, TimeoutException
     {
@@ -122,54 +122,7 @@ public class PingTestInvalidParameters
         }
     }
     /**/
-    @Test
-    public void testPingWrongService() throws IOException, ParseException
-    {
-        boolean replyToRequest;
-        boolean pass = true;
-        for(int i = 0; i <256; i++)
-        { 
-            replyToRequest = false;
-            StringBuilder data = new StringBuilder("");
-            data.append(String.valueOf(i)).append(" 1");
-            commandRaw.put("data", data.toString());  
-            caseClient.sendFrame(commandRaw);  
-            try
-            {
-                reply = caseClient.getFrame();
-                replyToRequest = true; 
-            }catch(TimeoutException Ex)
-            {
-                output.append("No reply to service request. ").append(String.valueOf(i)).append("\n");         
-                replyToRequest = false;
-            } 
-            if(replyToRequest)
-            {
-                String boardName;
-                String serviceName;
-                boolean correctSource = false;
-                try{
-                    boardName = reply.get("Source").toString();
-                    correctSource = true;
-                    serviceName = reply.get("Service").toString();
-                    boardName = getSource(boardName);
-                    output.append(boardName).append(" replied to ").append(String.valueOf(i)).append(" with ");
-                    output.append(serviceName).append("\n");
-                }catch(NullPointerException ex)
-                        {
-                           pass = false;
-                           if(correctSource){boardName = reply.get("Source").toString();}
-                           else{boardName = "Unknown Board!";}
-                           serviceName = "An invalid response!";  
-                           output.append("command: ").append(String.valueOf(i)).append(" ([").append(commandRaw.get("dest").toString());
-                           output.append(", ").append(String.valueOf(2)).append(", ").append(commandRaw.get("src").toString());
-                           output.append(", ").append(String.valueOf(i)).append(", 1])\n");
-                           output.append("response: ").append(reply.get("_raw_").toString()).append("\n");
-                        }
-            }
-        }
-        Assert.assertTrue("An invalid thing happened", pass);
-    }    
+    
     @After
     public void tearDown() throws IOException
     {
