@@ -29,6 +29,8 @@ public class TestInvalidService {
     private JSONObject commandRaw;
     protected JSONObject reply;
     private final int destination = TestParameters.getDestinationInt();
+    private static PQ9DataClient caseClient; 
+    
     @BeforeClass 
     public static void BeforeTestClass() throws IOException 
     {

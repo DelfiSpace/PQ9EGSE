@@ -59,8 +59,8 @@ public class TenmaDriver
         comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 2000, 0);
         is = comPort.getInputStream();
         os = comPort.getOutputStream();
-        //if(is == null || os == null){
-          //  throw new IOException("In or outputstream fail");}
+        if(is == null || os == null){
+        throw new IOException("In or outputstream fail");}
     }
     
     public void closePort(){

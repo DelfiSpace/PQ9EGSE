@@ -121,6 +121,93 @@ public class PingTestInvalidParameters
             }
         }
     }
+    
+    @Test
+    public void testPingCommandOverflow() throws IOException, ParseException, TimeoutException, InterruptedException
+    {//Testing what happens when calling pingservice with a improper command
+        StringBuilder errorMessage = new StringBuilder("[1, 2, ");
+        
+        String where = String.valueOf(2);
+        boolean[] boardConnected  = new boolean[12];
+        for(int i=0; i < 12; i++){
+            where = String.valueOf(i);
+            commandRaw.put("dest", where); 
+            caseClient.sendFrame(commandRaw);  
+            try
+            {
+                reply = caseClient.getFrame();
+                boardConnected[i] = true;
+            }catch(TimeoutException Ex){
+                boardConnected[i] = false;
+            }
+        }
+        for(int b=0; b<12; b++)
+        {
+            errorMessage.append(String.valueOf(b)).append(", 0, 0,");
+            if(boardConnected[b])
+            {
+                boolean boardReplied;
+                for(int i=0; i < 256; i++)
+                {
+                    StringBuilder data = new StringBuilder("");
+                    data.append("17 ").append(String.valueOf(i));
+                    commandRaw.put("dest", String.valueOf(b)); 
+                    
+                    commandRaw.put("data", data.toString());
+                    
+                    caseClient.sendFrame(commandRaw);  
+                    try{
+                        reply = caseClient.getFrame();
+                        boardReplied = true;
+                    }catch(TimeoutException Ex)
+                    {
+                        output.append("No reply to service request. ").append(String.valueOf(i)).append("\n");         
+                        boardReplied = false;
+                    } 
+                    if(boardReplied)
+                    {
+                        String boardName;
+                        String serviceName;
+                        boolean correctSource = false;
+                        try
+                        {
+                            boardName = reply.get("Source").toString();
+                            correctSource = true;
+                            serviceName = reply.get("Service").toString();
+                            boardName = getSource(boardName);
+                            if(getExpectedReply("Request","Error").equals(reply.get("Request"))){}
+                            else
+                            {
+                                output.append("contacting board: ").append(String.valueOf(b)).append(" ,");
+                                output.append("Testing data: ").append(data.toString()).append("\n");
+                                output.append(boardName).append(" replied to ").append(String.valueOf(i)).append(" with ");
+                                output.append(serviceName);
+                                output.append("and ").append(reply.get("Request").toString()).append("\n"); 
+                            }
+                        }catch(NullPointerException ex)
+                        {
+                            if(correctSource){boardName = reply.get("Source").toString();}
+                            else{boardName = "Unknown Board!";}
+                            StringBuilder rawReply = new StringBuilder(reply.get("_raw_").toString());
+                            rawReply.delete(15, rawReply.length());
+                            if(rawReply.toString().equals(errorMessage.toString()))
+                                {
+                                    output.append("recieved error message from command: ").append(String.valueOf(i)).append("\n");
+                                }
+                                else
+                                {
+                                    output.append("command: ").append(String.valueOf(i)).append(" ([").append(commandRaw.get("dest").toString());
+                                    output.append(", ").append(String.valueOf(2)).append(", ").append(commandRaw.get("src").toString());
+                                    output.append(", ").append(String.valueOf(i)).append(", 1])\n");
+                                    output.append("response: ").append(reply.get("_raw_").toString()).append("\n");
+                                }
+
+                        }
+                    }
+                }
+            }
+        }
+    }
     /**/
     
     @After
@@ -168,11 +255,36 @@ public class PingTestInvalidParameters
         
         if( service.equals("Request"))
         {
-            exReply.append("{\"valid\":\"true\",\"value\":\"Reply\"}");
+                exReply.append("{\"valid\":\"true\",\"value\":\"Reply\"}");
         }
         if( service.equals("Service")){
             exReply.append("{\"valid\":\"true\",\"value\":\"Ping\"}");
         }
+        
+        return exReply.toString();
+    }
+    private String getExpectedReply(String service, String error)
+    {
+        //return string example: "{\"valid\":\"true\",\"value\":\"COMMS\"}"
+            StringBuilder exReply;
+            exReply = new StringBuilder(40);
+        
+        if( service.equals("Request"))
+        {
+            if(error.equals("Error"))
+            {
+                exReply.append("{\"valid\":\"true\",\"value\":\"Error\"}");
+            }
+            else
+            {
+                exReply.append("{\"valid\":\"true\",\"value\":\"Reply\"}");
+            }
+            
+        }
+        if( service.equals("Service")){
+            exReply.append("{\"valid\":\"true\",\"value\":\"Ping\"}");
+        }
+        
         return exReply.toString();
     }
 }
