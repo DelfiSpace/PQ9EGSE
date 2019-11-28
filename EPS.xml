@@ -37,6 +37,7 @@
                     <xtce:Enumeration label="PacketStats" value="6"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                     <xtce:Enumeration label="Reset" value="19"/>
+                    <xtce:Enumeration label="RadioService" value="20"/>
                     <xtce:Enumeration label="Testing" value="21"/>
                     <xtce:Enumeration label="RX" value="55"/>
                 </xtce:EnumerationList>

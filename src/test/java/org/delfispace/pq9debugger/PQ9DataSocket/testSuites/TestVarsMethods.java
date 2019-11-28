@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.time.ZoneId;
 import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataClient;
 import org.delfispace.pq9debugger.PQ9DataSocket.TimeoutException;
-import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest.caseClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;

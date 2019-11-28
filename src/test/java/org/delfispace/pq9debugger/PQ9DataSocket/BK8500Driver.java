@@ -30,6 +30,7 @@ public class BK8500Driver {
     private final InputStream is;
     private final OutputStream os;
     private boolean RemoteOperation; 
+    
       
     // Power Supply Functions. 
 
@@ -70,6 +71,15 @@ public class BK8500Driver {
         os = comPort.getOutputStream();
         if(is == null || os == null){
             throw new IOException("In or outputstream fail");
+        }
+        try
+        {
+            startOperation();
+        }catch(TimeoutException Ex)
+        {
+            throw new IOException(Ex.getMessage() + "No connection");
+        } catch (Bk8500CException ex) {
+            Logger.getLogger(BK8500Driver.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     /*
@@ -124,11 +134,18 @@ public class BK8500Driver {
     }
         
     // start remote operation
-    public void startRemoteOperation() throws IOException{
+    public void startRemoteOperation() throws IOException, Bk8500CException, TimeoutException{
         //enable remote mode
         byte[]cmd;
         cmd = commandHandler((byte)0x20, (byte)0x01);
         sendCommand(cmd);
+        simpleCheck(getAnyResponse());
+    }
+    
+    private boolean startOperation() throws IOException, Bk8500CException, TimeoutException
+    {
+        byte[]cmd; cmd = commandHandler((byte)0x20, (byte)0x01); sendCommand(cmd);
+        return simpleCheck(getAnyResponse());
     }
     
      public void endRemoteOperation() throws IOException{
@@ -310,6 +327,22 @@ public class BK8500Driver {
         sendCommand(cmd); 
     }
     
+    // set current for CC operation
+    public void setResistanceCR(double resistanceCCO) throws IOException, Bk8500CException
+    {
+        byte[] cmd; long lendian; 
+        cmd = commandHandler((byte)0x30); //basic array fill    
+        lendian = (long)(resistanceCCO*1000); // now calculate the bytes 
+        byte[] lendiantobyte = longToByte(lendian);// long into Byte array. 
+        for(int i = 3; i<7; i++)
+        { // sets bytes 3 through 6
+            cmd[i]=lendiantobyte[i-3]; // it is little endian
+        }
+        cmd[25]=(byte)checkSum(cmd);
+        sendCommand(cmd); 
+        simpleCheck(getAnyResponse(false));
+    }
+    
      public void setMinVoltageBatteryTest(double minV) throws IOException{
         byte[] cmd; // new byte[]
         cmd = commandHandler((byte)0x4E); //basic array fill 
@@ -352,6 +385,17 @@ public class BK8500Driver {
         results[3] = (double)response[15];
 //        results[4] = (double)byteToLong(DemandStateResponse);
         return results;
+    }
+    
+    public double getCurrent() throws IOException, Bk8500CException
+    {
+        double[] response = getValues();
+        return response[1];
+    }
+    public double getVoltage() throws IOException, Bk8500CException
+    {
+        double[] response = getValues();
+        return response[0];
     }
     
     // battery test 
@@ -433,7 +477,7 @@ public class BK8500Driver {
         return val;       
     }
     
-    private byte[] getAnyResponse() throws IOException, Bk8500CException
+    private byte[] getAnyResponse() throws IOException, Bk8500CException, TimeoutException
     {
         try 
         {
@@ -530,6 +574,25 @@ public class BK8500Driver {
         lendiantobyte[7] = (byte) (lendian >> 56);
         return lendiantobyte;
     }
+    public boolean simpleCheck(byte[] response) throws Bk8500CException
+    {
+        switch ((((int)response[3]) & 0xFF))
+        {
+            case 0x90:   
+                throw new Bk8500CException("CheckSum Incorrect");
+            case 0x80:
+                return true;
+            case 0xA0:
+                throw new Bk8500CException("Parameter Incorrect");
+            case 0xB0:
+                throw new Bk8500CException("Unrecognized Command"); 
+            case 0xC0:
+                throw new Bk8500CException("Invalid Command"); 
+            default:
+                throw new Bk8500CException("Not a Command"); 
+        }
+    }
+    
     
     private long byteToLong(byte[] b){
         if (b.length!=4){

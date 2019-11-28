@@ -16,9 +16,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Assert;
 import org.junit.Test;
-import junit.runner.Version;
-import org.junit.FixMethodOrder;
-import org.junit.runners.MethodSorters;
+import org.delfispace.pq9debugger.PQ9DataSocket.BK8500Driver;
+import org.delfispace.pq9debugger.PQ9DataSocket.TenmaDriver;
 /**
  *
 /**
@@ -29,14 +28,15 @@ import org.junit.runners.MethodSorters;
 
 public class EPSBusHandlingTest 
 {
-    protected static PQ9DataClient caseClient;
-    protected StringBuilder output;  
+    StringBuilder output;
+    JSONObject command;
+    private static PQ9DataClient caseClient;
+    protected JSONObject reply;
     protected JSONObject commandPing;
     protected JSONObject commandSetBus;
     protected JSONObject commandReset;
     protected JSONObject commandGetTelemetry;
-    protected JSONObject reply;
-    
+  
     protected final String busIsOn = "{\"valid\":\"true\",\"value\":\"ON\"}";
     protected final String busIsOff = "{\"valid\":\"true\",\"value\":\"OFF\"}";
     protected final String servicePB = "{\"valid\":\"true\",\"value\":\"Execute\"}";
@@ -70,7 +70,7 @@ public class EPSBusHandlingTest
         commandGetTelemetry.put("_send_", "GetTelemetry");
         commandGetTelemetry.put("Destination", destination);
     }
-    /*
+    
     @Test(timeout=2500)
     public void testBus4() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {      
@@ -165,9 +165,9 @@ public class EPSBusHandlingTest
         testBus(4,true);  
     }
      
-    */
-       @Test(timeout=4500)
-    public void testAllBusses() throws IOException, ParseException, TimeoutException, InterruptedException
+    
+       @Test(timeout=5500)
+    public void testAllBusses() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {   
         //Make sure all busses are off
         setAllBusses(false);
@@ -199,9 +199,12 @@ public class EPSBusHandlingTest
         Assert.assertEquals(busIsOff, reply.get("B2_state").toString()); 
         Assert.assertEquals(busIsOff, reply.get("B3_state").toString()); 
         Assert.assertEquals(busIsOff, reply.get("B4_state").toString()); 
+        
+        // make sure bus 1 is on
+        testBus(1,true);
     }
     
-    /*
+    
     public void jtestBusError() throws IOException, ParseException, TimeoutException, InterruptedException
     {
         // do  not say which bus, expect error: 
@@ -215,8 +218,9 @@ public class EPSBusHandlingTest
     
     
     @After
-    public void tearDown() throws IOException
+    public void tearDown() throws IOException, Exception
     {
+        commandBus(1,true);
         System.out.println("test complete");
         System.out.println(output);
     }

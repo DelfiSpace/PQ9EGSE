@@ -21,8 +21,9 @@ public class BK8500TestDriver {
     
     
     
-     public static void main(String args[]) throws IOException, Bk8500CException, InterruptedException 
+     public static void main(String args[]) throws IOException, Bk8500CException, InterruptedException, TimeoutException 
     {
+      
         Date start = new Date();
         long starttime = start.getTime();
         PrintStream writer;
@@ -31,13 +32,39 @@ public class BK8500TestDriver {
         // show serial ports // note that COM10 comes before COM2 in the array. 
         for (SerialPort item : seenPorts){System.out.println(item);}
         String portName;
-        portName = "COM5"; //note this is device specific. 
+        portName = "COM10"; //note this is device specific. 
         // start new driver
         String fileString; 
         int testCur = (int)(testCurrent*1000);
         fileString = "BKDATA_TEST_" + String.valueOf(testCur)+".txt";
         writer = new PrintStream(new FileOutputStream(fileString, true));
         BK8500Driver TestDriver = new BK8500Driver(portName);
+        System.out.println("Test simpleCheck");
+         byte[] testArray = new byte[26];
+        for(int i = 0; i<testArray.length; i++)
+        {
+            testArray[i] = (byte)0x00;
+        }
+        testArray[3] = (byte)0x50;
+         for(int item = 0; item<testArray.length; item++)
+            {  
+                System.out.print(String.format("%02X ", testArray[item] & 0xFF));
+            }
+            System.out.println();
+        try
+        {
+            boolean right = TestDriver.simpleCheck(testArray);
+            System.out.print("right = "); System.out.println(right);
+        }catch(Bk8500CException Ex) 
+        {
+            System.out.println(Ex.toString());
+        }
+       
+             
+        
+        
+        
+        
         System.out.println("Start Remote Operation");
         TestDriver.startRemoteOperation();
         System.out.println("get Response (remote operation)");
