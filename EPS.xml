@@ -39,6 +39,8 @@
                     <xtce:Enumeration label="Reset" value="19"/>
                     <xtce:Enumeration label="RadioService" value="20"/>
                     <xtce:Enumeration label="Testing" value="21"/>
+                    <xtce:Enumeration label="FRAMService" value="22"/>
+                    <xtce:Enumeration label="Version" value="23"/>
                     <xtce:Enumeration label="RX" value="55"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
@@ -49,6 +51,7 @@
                     <xtce:Enumeration label="Error" value="0"/>
                     <xtce:Enumeration label="Request" value="1"/>
                     <xtce:Enumeration label="Reply" value="2"/>
+                    <xtce:Enumeration label="Reject" value="3"/>
                     <xtce:Enumeration label="ACKErrorReply" value="4"/>
                     <xtce:Enumeration label="RF_TX" value="6"/>
                 </xtce:EnumerationList>
@@ -63,6 +66,7 @@
                     <xtce:Enumeration label="PowerCycle" value="3"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
+			
             <xtce:EnumeratedParameterType name="sensorBitStatus">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
@@ -83,6 +87,16 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="32"/>
             </xtce:IntegerParameterType>
+			<xtce:StringParameterType name="String">
+                <xtce:UnitSet/>
+                <xtce:StringDataEncoding encoding="UTF-8">
+					<xtce:SizeInBits> 
+						<xtce:Fixed> 
+							<xtce:FixedValue>160</xtce:FixedValue> 
+						</xtce:Fixed> 
+					</xtce:SizeInBits> 
+				</xtce:StringDataEncoding>
+            </xtce:StringParameterType>
             <xtce:FloatParameterType name="INAvoltage">
                 <xtce:UnitSet>
                     <xtce:Unit>V</xtce:Unit>
@@ -190,6 +204,7 @@
             <xtce:Parameter name="Sensor14Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor15Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="MCUTemp" parameterTypeRef="MCUtemperature"/>
+			<xtce:Parameter name="SoftwareVersion" parameterTypeRef="String"/>
         </xtce:ParameterSet>
         <xtce:ContainerSet>
             <xtce:SequenceContainer name="PQ9" abstract="true" shortDescription="PQ9 frame">
@@ -235,6 +250,24 @@
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
+			
+			<xtce:SequenceContainer name="VersionControl" shortDescription="Version Software">
+                <xtce:LongDescription>Version of software</xtce:LongDescription>
+				<xtce:EntryList>
+                    <xtce:ParameterRefEntry parameterRef="SoftwareVersion"/>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Service" value="Version"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+			
+			
+			
+			
             <xtce:SequenceContainer name="HousekeepingRequest" shortDescription="Housekeeping request">
                 <xtce:LongDescription>Request the subsystem housekeeping frame.</xtce:LongDescription>
                 <xtce:EntryList>&#13;</xtce:EntryList>
@@ -304,10 +337,15 @@
                     <xtce:Enumeration label="Execute" value="1"/>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
                     <xtce:Enumeration label="Verification" value="4"/>
+                    <!--xtce:Enumeration label="Ackownledgment" value="4"/-->
                     <xtce:Enumeration label="PacketStats" value="6"/>
-                    <xtce:Enumeration label="Reset" value="19"/>
                     <xtce:Enumeration label="Ping" value="17"/>
+                    <xtce:Enumeration label="Reset" value="19"/>
+                    <xtce:Enumeration label="RadioService" value="20"/>
                     <xtce:Enumeration label="Testing" value="21"/>
+                    <xtce:Enumeration label="FRAMService" value="22"/>
+                    <xtce:Enumeration label="Version" value="23"/>
+                    <xtce:Enumeration label="RX" value="55"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
             <xtce:EnumeratedArgumentType name="RequestType">
@@ -334,6 +372,16 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="32"/>
             </xtce:IntegerArgumentType>
+			<xtce:StringArgumentType name="String">
+                <xtce:UnitSet/>
+				    <xtce:StringDataEncoding encoding="UTF-8">
+						<xtce:SizeInBits> 
+							<xtce:Fixed> 
+								<xtce:FixedValue>160</xtce:FixedValue> 
+							</xtce:Fixed> 
+						</xtce:SizeInBits> 
+					</xtce:StringDataEncoding>
+            </xtce:StringArgumentType>
             <xtce:EnumeratedArgumentType name="ResetType" shortDescription="Type of reset">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
@@ -389,6 +437,20 @@
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
                 <xtce:CommandContainer name="GetTelemetry">
+                    <xtce:EntryList/>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+            <xtce:MetaCommand name="GetVersion" shortDescription="Version Request">
+                <xtce:LongDescription>This command requests the version string from the selected destination address.</xtce:LongDescription>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="Version"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:CommandContainer name="Version">
                     <xtce:EntryList/>
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
