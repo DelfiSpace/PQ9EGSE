@@ -16,8 +16,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses({
-        PingTestValidParameters.class,
-        PingTestInvalidParameters.class,
+       // PingTestValidParameters.class,
+       // PingTestInvalidParameters.class,
        //PingTestCase3.class,
         //PingTestCase4.class
 })

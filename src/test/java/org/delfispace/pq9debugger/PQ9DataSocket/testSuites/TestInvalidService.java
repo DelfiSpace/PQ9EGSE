@@ -34,7 +34,7 @@ public class TestInvalidService {
     @BeforeClass 
     public static void BeforeTestClass() throws IOException 
     {
-        TestParameters.setDestination("EPS"); // REMOVE THIS LINE
+        TestParameters.setDestination("COMMS"); // REMOVE THIS LINE
         caseClient = new PQ9DataClient("localhost", 10000);
         System.out.println("Initializer of Service Test with random Parameters ");
         caseClient.setTimeout(TestParameters.getTimeOut());     
@@ -51,6 +51,7 @@ public class TestInvalidService {
         commandRaw.put("data", "17 1");
         reply = new JSONObject();
     }
+    /**/
     @Test
     public void testWrongService() throws IOException, ParseException
     {
@@ -119,6 +120,8 @@ public class TestInvalidService {
         Assert.assertTrue(failMessage.toString(),responseToAll);
         Assert.assertTrue("An invalid thing happened", pass);
     }    
+    /**/
+
     @After
     public void tearDown() throws IOException
     {

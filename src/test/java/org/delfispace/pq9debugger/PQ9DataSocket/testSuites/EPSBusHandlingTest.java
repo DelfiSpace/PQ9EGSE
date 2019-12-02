@@ -36,7 +36,8 @@ public class EPSBusHandlingTest
     protected JSONObject commandSetBus;
     protected JSONObject commandReset;
     protected JSONObject commandGetTelemetry;
-  
+    static protected JSONObject reinitializeBUS1;
+    
     protected final String busIsOn = "{\"valid\":\"true\",\"value\":\"ON\"}";
     protected final String busIsOff = "{\"valid\":\"true\",\"value\":\"OFF\"}";
     protected final String servicePB = "{\"valid\":\"true\",\"value\":\"Execute\"}";
@@ -51,7 +52,12 @@ public class EPSBusHandlingTest
     {
         System.out.println("Initializer of Bus Handeling Test for EPS ");
         caseClient = new PQ9DataClient("localhost", 10000);
-        caseClient.setTimeout(TestParameters.getTimeOut());    
+        caseClient.setTimeout(TestParameters.getTimeOut());
+        reinitializeBUS1 = new JSONObject();
+        reinitializeBUS1.put("_send_", "PowerBusControl");
+        reinitializeBUS1.put("Destination", "EPS");
+        reinitializeBUS1.put("PowerBusState", "BusOn");
+        reinitializeBUS1.put("PowerBusParam", "Bus1"); 
     }    
     
     @Before
@@ -70,7 +76,8 @@ public class EPSBusHandlingTest
         commandGetTelemetry.put("_send_", "GetTelemetry");
         commandGetTelemetry.put("Destination", destination);
     }
-    
+    /**/
+
     @Test(timeout=2500)
     public void testBus4() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {      
@@ -95,7 +102,7 @@ public class EPSBusHandlingTest
         testBus(1,true);
     }
     
-     @Test(timeout=1500)
+     @Test(timeout=2500)
     public void testBus4Inv() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {       
         testBus(4, false);
@@ -107,11 +114,12 @@ public class EPSBusHandlingTest
         testBus(3, false);
     }
     
-    @Test(timeout=1500)
+    @Test(timeout=3500)
     public void testBus2Inv() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {
         testBus(2, false);
     }
+    /**/
     @Test(timeout=1500)
     public void testBus1Inv() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {
@@ -143,7 +151,7 @@ public class EPSBusHandlingTest
     //  Turn off BUS 2
         testBus(2,false);
     }
-     
+      
     @Test(timeout=15500)
     public void testBus3Dup() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {
@@ -154,6 +162,7 @@ public class EPSBusHandlingTest
     //  STEP 3 turn off BUS 
         testBus(3,true);    
     }
+    
         @Test(timeout=15500)
     public void testBus4Dup() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {
@@ -165,14 +174,14 @@ public class EPSBusHandlingTest
         testBus(4,true);  
     }
      
-    
-       @Test(timeout=5500)
+   
+       @Test(timeout=9500)
     public void testAllBusses() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {   
         //Make sure all busses are off
         setAllBusses(false);
         //GET HOUSEKEEPING
-        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
+        Thread.sleep(1100);// housekeeping data is refreshed every 1000 miliseconds. 
         caseClient.sendFrame(commandGetTelemetry);
         reply = caseClient.getFrame();
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
@@ -182,7 +191,7 @@ public class EPSBusHandlingTest
        
         //Make sure all busses are on
         setAllBusses(true);
-        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
+        Thread.sleep(1100);// housekeeping data is refreshed every 1000 miliseconds. 
         caseClient.sendFrame(commandGetTelemetry);
         reply = caseClient.getFrame();
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
@@ -192,7 +201,7 @@ public class EPSBusHandlingTest
         
         //And off again
         setAllBusses(false);
-        Thread.sleep(999);// housekeeping data is refreshed every 1000 miliseconds. 
+        Thread.sleep(1100);// housekeeping data is refreshed every 1000 miliseconds. 
         caseClient.sendFrame(commandGetTelemetry);
         reply = caseClient.getFrame();
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
@@ -215,19 +224,20 @@ public class EPSBusHandlingTest
         Assert.assertEquals(replyER, reply.get("Request").toString()); // validate response
         Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());// validate response
     }
-    
+    /**/
     
     @After
     public void tearDown() throws IOException, Exception
     {
-        commandBus(1,true);
         System.out.println("test complete");
         System.out.println(output);
     }
     
     @AfterClass
-     public static void shutDown() throws IOException
+     public static void shutDown() throws IOException, ParseException, TimeoutException
     {
+        caseClient.sendFrame(reinitializeBUS1);
+        caseClient.getFrame();
         caseClient.close();
     }
     /**/
@@ -275,7 +285,7 @@ public class EPSBusHandlingTest
         commandBus(bus, goal_on_true_off_false); 
         reply = caseClient.getFrame();
         validateResponseToCommandBus(reply, goal_on_true_off_false);
-        Thread.sleep(1000);// housekeeping data is refreshed every 1000 miliseconds.   
+        Thread.sleep(1100);// housekeeping data is refreshed every 1000 miliseconds.   
         caseClient.sendFrame(commandGetTelemetry); 
         reply = caseClient.getFrame(); 
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 

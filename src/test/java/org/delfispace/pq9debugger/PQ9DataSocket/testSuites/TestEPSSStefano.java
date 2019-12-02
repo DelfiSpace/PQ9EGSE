@@ -18,7 +18,7 @@ public class TestEPSSStefano
 {
     protected final String subSystem = "EPS";
     protected final TestVarsMethods tm = new TestVarsMethods();
-    
+    /*
     @Test
     public void TestPing() throws IOException, ParseException, TimeoutException
     {
@@ -32,4 +32,5 @@ public class TestEPSSStefano
         tm.resetSubSystem(subSystem, "Hard");
         tm.resetSubSystem(subSystem, "PowerCycle");
     }
+*/
 }

@@ -75,6 +75,28 @@
                     <xtce:Enumeration label="Error" value="0"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
+			<xtce:EnumeratedParameterType name="nibble">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="4"/>
+				<xtce:EnumerationList>
+                    <xtce:Enumeration label="0" value="0"/>
+                    <xtce:Enumeration label="1" value="1"/>
+					<xtce:Enumeration label="2" value="2"/>
+                    <xtce:Enumeration label="3" value="3"/>
+                    <xtce:Enumeration label="4" value="4"/>
+                    <xtce:Enumeration label="5" value="5"/>
+                    <xtce:Enumeration label="6" value="6"/>
+                    <xtce:Enumeration label="7" value="7"/>
+                    <xtce:Enumeration label="8" value="8"/>
+                    <xtce:Enumeration label="9" value="9"/>
+                    <xtce:Enumeration label="a" value="10"/>
+                    <xtce:Enumeration label="b" value="11"/>
+                    <xtce:Enumeration label="c" value="12"/>
+                    <xtce:Enumeration label="d" value="13"/>
+                    <xtce:Enumeration label="e" value="14"/>
+                    <xtce:Enumeration label="f" value="15"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedParameterType>
             <xtce:IntegerParameterType name="byte">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8"/>
@@ -204,7 +226,14 @@
             <xtce:Parameter name="Sensor14Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor15Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="MCUTemp" parameterTypeRef="MCUtemperature"/>
-			<xtce:Parameter name="SoftwareVersion" parameterTypeRef="String"/>
+			<xtce:Parameter name="SoftwareVersion1" parameterTypeRef="nibble"/>
+			<xtce:Parameter name="SoftwareVersion2" parameterTypeRef="nibble"/>
+			<xtce:Parameter name="SoftwareVersion3" parameterTypeRef="nibble"/>
+			<xtce:Parameter name="SoftwareVersion4" parameterTypeRef="nibble"/>
+			<xtce:Parameter name="SoftwareVersion5" parameterTypeRef="nibble"/>
+			<xtce:Parameter name="SoftwareVersion6" parameterTypeRef="nibble"/>
+			<xtce:Parameter name="SoftwareVersion7" parameterTypeRef="nibble"/>
+			<xtce:Parameter name="SoftwareVersion8" parameterTypeRef="nibble"/>
         </xtce:ParameterSet>
         <xtce:ContainerSet>
             <xtce:SequenceContainer name="PQ9" abstract="true" shortDescription="PQ9 frame">
@@ -254,7 +283,14 @@
 			<xtce:SequenceContainer name="VersionControl" shortDescription="Version Software">
                 <xtce:LongDescription>Version of software</xtce:LongDescription>
 				<xtce:EntryList>
-                    <xtce:ParameterRefEntry parameterRef="SoftwareVersion"/>
+                    <xtce:ParameterRefEntry parameterRef="SoftwareVersion1"/>
+					<xtce:ParameterRefEntry parameterRef="SoftwareVersion2"/>
+					<xtce:ParameterRefEntry parameterRef="SoftwareVersion3"/>
+					<xtce:ParameterRefEntry parameterRef="SoftwareVersion4"/>
+					<xtce:ParameterRefEntry parameterRef="SoftwareVersion5"/>
+					<xtce:ParameterRefEntry parameterRef="SoftwareVersion6"/>
+					<xtce:ParameterRefEntry parameterRef="SoftwareVersion7"/>
+					<xtce:ParameterRefEntry parameterRef="SoftwareVersion8"/>
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>

@@ -16,8 +16,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 {
-    StefanoTestCase1.class,
-    StefanoTestCase2.class
+  //  StefanoTestCase1.class,
+  //  StefanoTestCase2.class
 })
 public class StefanoTestSuite 
 {
