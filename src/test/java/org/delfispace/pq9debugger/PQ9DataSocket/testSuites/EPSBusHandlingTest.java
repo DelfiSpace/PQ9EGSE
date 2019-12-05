@@ -108,7 +108,7 @@ public class EPSBusHandlingTest
         testBus(4, false);
     }
     
-    @Test(timeout=1500)
+    @Test(timeout=3500)
     public void testBus3Inv() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {
         testBus(3, false);
@@ -120,7 +120,7 @@ public class EPSBusHandlingTest
         testBus(2, false);
     }
     /**/
-    @Test(timeout=1500)
+    @Test(timeout=3500)
     public void testBus1Inv() throws IOException, ParseException, TimeoutException, InterruptedException, Exception
     {
         testBus(1, false);

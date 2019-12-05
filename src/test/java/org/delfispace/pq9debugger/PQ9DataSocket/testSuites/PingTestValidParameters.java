@@ -33,12 +33,8 @@ public class PingTestValidParameters
     @BeforeClass 
     public static void BeforePingTestClass() throws IOException 
     {
+        //TestParameters.setDestination("EPS");
         destination = TestParameters.getDestination(); 
-        /*
-            if(destination == null){
-                destination = "EPS";
-            }
-        /**/
         System.out.println("Initializer of Ping Test with Valid Parameters for: " + destination);
         output = new StringBuilder("");   
         caseClient = new PQ9DataClient("localhost", 10000);

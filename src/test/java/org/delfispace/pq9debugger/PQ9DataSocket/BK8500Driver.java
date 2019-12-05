@@ -261,11 +261,13 @@ public class BK8500Driver {
     }
     
     // set current limit for all operations
-    public void setCurrentLim(double currentLimA) throws IOException{
+    public void setCurrentLim(double currentLimAmp) throws IOException{
+        System.out.print("Setting Current limit to: ");
+        System.out.println(currentLimAmp);
         byte[] cmd; // new byte[]
         cmd = commandHandler((byte)0x24); //basic array fill
         long lendian; // new long
-        lendian = (long)(currentLimA*10000); // now calculate the bytes setting the current
+        lendian = (long)(currentLimAmp*10000); // now calculate the bytes setting the current
         byte[] lendiantobyte = longToByte(lendian);// long gets transformed into Byte array. 
         cmd[3]=lendiantobyte[0]; // it is little endian
         cmd[4]=lendiantobyte[1];
@@ -527,6 +529,8 @@ public class BK8500Driver {
     
     private boolean packetCheck(byte[]val) throws Bk8500CException
     {
+        return true;
+        /*
         byte testval1 = (byte)0x80;
         if(val[3] == testval1){}
         else 
@@ -561,6 +565,7 @@ public class BK8500Driver {
                 }         
             }
         return true;
+/**/
     }
     private byte[] longToByte(long lendian){
         byte[] lendiantobyte = new byte[8];
@@ -589,8 +594,12 @@ public class BK8500Driver {
             case 0xC0:
                 throw new Bk8500CException("Invalid Command"); 
             default:
+            {
+               
                 throw new Bk8500CException("Not a Command"); 
-        }
+                }
+            }
+        
     }
     
     

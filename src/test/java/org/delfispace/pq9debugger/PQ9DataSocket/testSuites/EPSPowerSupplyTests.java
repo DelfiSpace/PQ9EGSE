@@ -18,6 +18,7 @@ import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.TestVarsMethod
 import org.delfispace.protocols.pq9.PQ9;
 import org.delfispace.protocols.pq9.PQ9Exception;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -36,8 +37,6 @@ import org.xtce.toolkit.XTCETMStream;
  */
 public class EPSPowerSupplyTests implements TestClassInterface
 {
-  
-    
     protected static PQ9DataClient caseClient;
     protected static TenmaDriver powerSupply;
     protected static BK8500Driver programResistance;
@@ -80,7 +79,7 @@ public class EPSPowerSupplyTests implements TestClassInterface
             }
         }while(failed);
         if(donotruntest){
-            System.out.println("I am going to my trailer!!");
+            System.out.println("Improper configuration for TEST");
             Thread.sleep(1000);
             System.exit(0);
         }
@@ -104,28 +103,37 @@ public class EPSPowerSupplyTests implements TestClassInterface
             }
         }while(failed);
         if(donotruntest)
-        {   System.out.println("I am going to my trailer!!");
+        {   System.out.println("Improper configuration for test");
             Thread.sleep(1000);
             System.exit(0);
         }
     }
 
+    
+    
     @Before
-    public void setup() throws IOException, Bk8500CException, TimeoutException
+    public void setup() throws IOException, Bk8500CException, TimeoutException, InterruptedException
     {
+        String destination = "EPS";
         commandSetBus = new JSONObject();
         commandSetBus.put("_send_", "PowerBusControl");
         commandPing = new JSONObject();
+        commandPing.put("_send_", "Ping");
+        commandPing.put("Destination", destination);
         reply = new JSONObject(); 
         commandGetTelemetry = new JSONObject();
         commandGetTelemetry.put("_send_", "GetTelemetry");
-        commandGetTelemetry.put("Destination", "EPS");
+        commandGetTelemetry.put("Destination", destination);
         powerSupply.setVoltage(4.15); 
         programResistance.startRemoteOperation();
+        Thread.sleep(10);
         programResistance.setCurrentLim(2.5);
         powerSupply.setCurrent(2);
         powerSupply.sunUP();
+        Thread.sleep(2500);
+        System.out.println("start test: ");
     }
+    /*
     @Test
     public void maximizeCurrentBus4() throws IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException, Exception{
         //set Bus 4 ON; 
@@ -148,24 +156,81 @@ public class EPSPowerSupplyTests implements TestClassInterface
         Assert.assertTrue("protection does not work", programResistance.getCurrent()<1.6);
         testBus(4, false);
     }
-    
+    /**/
+   
     @Test
-      public void underVoltageProtectionTest()
+      public void underVoltageProtectionTest() throws IOException, ParseException, TimeoutException, InterruptedException
     {
+        double URBVoltage;
         do{
         }while(askQuestionYESNO("Is the battery disconnected?")==false);
-        Assert.assertTrue("GO", true);
+        Thread.sleep(1500); // EPS needs time to boot
+        caseClient.sendFrame(commandPing);
+        reply = caseClient.getFrame();
+        caseClient.sendFrame(commandGetTelemetry); 
+        reply = caseClient.getFrame(); 
+        Thread.sleep(100);
+        Assert.assertTrue("GO", assertBus(1,true));
+
+        double d = 3.5;
+        
+        do{
+            powerSupply.setVoltage(d);
+            Thread.sleep(50);
+            d = d-0.01;
+            System.out.print("PS voltage; ");
+            System.out.println(powerSupply.getVoltageAct());
+            Thread.sleep(1000);
+            URBVoltage = getURBVoltage(); 
+            System.out.print("URB Voltage : ");
+            System.out.print(URBVoltage);
+            System.out.print(" ");
+            if(URBVoltage > 3.05)
+            {
+                assertBus(1,true);
+                System.out.println("Bus 1 is on ");
+            }
+            else
+            {
+                System.out.print("Bus 1 is: ");
+                System.out.println(checkBusState(1));
+            }
+            
+        }while(URBVoltage>2.99);
+        assertBus(1,false);
+        
+        do{
+            d = d+0.01;
+            System.out.print("PS voltage; ");
+            System.out.println(powerSupply.getVoltageAct());
+            powerSupply.setVoltage(d);
+            Thread.sleep(1000);
+            URBVoltage = getURBVoltage(); 
+            System.out.print("URB Voltage : ");
+            System.out.print(URBVoltage);
+            if(URBVoltage < 3.18)
+            {
+                assertBus(1,false);
+                System.out.println("Bus 1 is off");
+            }
+            else
+            {
+                System.out.print("Bus 1 is: ");
+                System.out.println(checkBusState(1));
+            }
+        }while(URBVoltage<3.3);
+        assertBus(1,true);
     }
-    
+    /**/
     @After
     public void tearDown() throws IOException, InterruptedException
     {
         System.out.println("test complete");
         System.out.println(output);
         programResistance.turnLoadOFF();
-        powerSupply.sunDown();
+        //powerSupply.sunDown();
         programResistance.endRemoteOperation();
-        Thread.sleep(200);
+        Thread.sleep(1000);
     }
     
     @AfterClass
@@ -202,20 +267,54 @@ public class EPSPowerSupplyTests implements TestClassInterface
         commandBus(bus, goal_on_true_off_false); 
         reply = caseClient.getFrame();
         validateResponseToCommandBus(reply, goal_on_true_off_false);
-        Thread.sleep(1000);// housekeeping data is refreshed every 1000 miliseconds.   
+        Thread.sleep(1000);// housekeeping data is refreshed every 1000 miliseconds.
+        if(goal_on_true_off_false){Assert.assertTrue(assertBus(bus, goal_on_true_off_false));}
+        else{Assert.assertTrue(assertBus(bus, goal_on_true_off_false)== false);}
+    }
+    
+    protected boolean assertBus(int bus, boolean on) throws IOException, ParseException, TimeoutException
+    {
+        
         caseClient.sendFrame(commandGetTelemetry); 
         reply = caseClient.getFrame(); 
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
         StringBuilder key = new StringBuilder(8);
         // assert that Bus is equal to goal.
         key.append("B").append(String.valueOf(bus)).append("_state");
-        if(goal_on_true_off_false)
+        if(on)
         {
             Assert.assertEquals(busIsOn, reply.get(key.toString()).toString()); 
+            return true;
         }
         else
         {
             Assert.assertEquals(busIsOff, reply.get(key.toString()).toString()); 
+            return false;
+        }
+    }
+    
+    protected String checkBusState(int bus) throws IOException, ParseException, TimeoutException
+    {
+        caseClient.sendFrame(commandGetTelemetry); 
+        reply = caseClient.getFrame(); 
+        Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString()); 
+        StringBuilder key = new StringBuilder(8);
+        // assert that Bus is equal to goal.
+        key.append("B").append(String.valueOf(bus)).append("_state");
+        if(reply.get(key.toString()).toString().equals(busIsOn))
+        {
+            return "ON";
+        }
+        else
+        {
+            if(reply.get(key.toString()).toString().equals(busIsOff))
+            {
+               return "OFF"; 
+            }
+            else
+            {
+                return "ERROR";
+            }
         }
     }
     
@@ -225,7 +324,6 @@ public class EPSPowerSupplyTests implements TestClassInterface
         if(goal_on_true_off_false)
         {
             keySH.insert(25,String.valueOf(1));
-            
         }
         else
         {
@@ -236,8 +334,23 @@ public class EPSPowerSupplyTests implements TestClassInterface
         Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());
         Assert.assertEquals(keySH.toString(), reply.get("State").toString());// validate response
     }
+    protected double getURBVoltage() throws IOException, ParseException, TimeoutException
+    {
+        double output = 0.0;
+        caseClient.sendFrame(commandGetTelemetry); 
+        reply = caseClient.getFrame(); 
+        JSONObject URB = stringToJSON(reply.get("URBVoltage").toString());
+        output = Double.valueOf(URB.get("value").toString());
+        return output;
+    }
     
- 
+    protected JSONObject stringToJSON(String tobreak) throws ParseException
+    {  
+        JSONParser parser = new JSONParser();
+        JSONObject tempJSON = (JSONObject) parser.parse(tobreak);
+        return tempJSON;
+    }
+    
 }
 
 

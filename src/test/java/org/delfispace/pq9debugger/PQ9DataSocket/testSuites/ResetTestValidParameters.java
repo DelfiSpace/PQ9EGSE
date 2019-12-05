@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import org.delfispace.pq9debugger.PQ9DataSocket.Frame;
 import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataClient;
 import org.delfispace.pq9debugger.PQ9DataSocket.TimeoutException;
+import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.TestVarsMethods.caseClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -25,16 +26,24 @@ import org.junit.Test;
  *
  * @author Michael van den Bos
  */
-public class ResetTestValidParameters extends TestVarsMethods
+public class ResetTestValidParameters implements TestClassInterface
 {   
     private String dest;
+    protected static PQ9DataClient caseClient;
+    private JSONObject commandReset;
+    protected JSONObject reply;
+    protected StringBuilder output;
+    protected JSONObject commandGetTelemetry;
+    protected JSONObject commandPing;
+    
     
       @BeforeClass 
     public static void BeforeTestClass() throws IOException 
     {
+        //TestParameters.setDestination("EPS");
         System.out.println("Initializer of ResetTestCase ");
         caseClient = new PQ9DataClient("localhost", 10000);
-        caseClient.setTimeout(TIMEOUT);     
+        caseClient.setTimeout(TestParameters.getTimeOut());     
         System.out.println("This next test will take about 10 minutes");
           
     }
@@ -51,12 +60,12 @@ public class ResetTestValidParameters extends TestVarsMethods
         
         commandGetTelemetry = new JSONObject(); // This is required for the test  
         commandGetTelemetry.put("_send_", "GetTelemetry");
-        commandGetTelemetry.put("Destination", "EPS");
+        commandGetTelemetry.put("Destination", dest);
         reply = new JSONObject();
     }
     
     @Test
-    public void atestSoftResetEPS() throws IOException, ParseException, TimeoutException, InterruptedException
+    public void testSoftReset() throws IOException, ParseException, TimeoutException, InterruptedException
     {
         int uptime;
         do{
@@ -76,17 +85,18 @@ public class ResetTestValidParameters extends TestVarsMethods
         Assert.assertEquals(ResetReplySize, reply.get("Size").toString());
         Assert.assertEquals(ResetSoft, reply.get("Reset").toString());
         Assert.assertEquals(ResetReplyDest, reply.get("Destination").toString());
-        //Thread.sleep(WAITREFRESH);
-        reply = getTelemetry("EPS"); // check uptime
+        Thread.sleep(WAITREFRESH);// required because EPS cannot respond when it is resetting.
+        // the reset response is sent before the reset. 
+        reply = getTelemetry(dest); // check uptime
         uptime = getUptime(reply.get("Uptime").toString());
         Assert.assertTrue("Uptime should be less than 3", uptime < 3);
     }      
     @Test
-    public void btestHardResetEPS() throws IOException, ParseException, TimeoutException, InterruptedException
+    public void testHardReset() throws IOException, ParseException, TimeoutException, InterruptedException
     {
         int uptime;
         do{
-            reply = getTelemetry("EPS"); // check uptime
+            reply = getTelemetry(dest); // check uptime
             uptime = getUptime(reply.get("Uptime").toString());
             Thread.sleep(WAITREFRESH);
         }while(uptime < 3);
@@ -99,17 +109,18 @@ public class ResetTestValidParameters extends TestVarsMethods
         Assert.assertEquals(ResetReplySize, reply.get("Size").toString());
         Assert.assertEquals(ResetHard, reply.get("Reset").toString());
         Assert.assertEquals(ResetReplyDest, reply.get("Destination").toString());
-        reply = getTelemetry("EPS"); // check uptime
+        Thread.sleep(WAITREFRESH);  // required because EPS cannot respond when it is resetting. 
+        reply = getTelemetry(dest); // check uptime
         uptime = getUptime(reply.get("Uptime").toString());
         Assert.assertTrue("Uptime should be less than 3", uptime < 3);
     }
     
      @Test
-    public void cTestPowerCycleEPS() throws IOException, ParseException, TimeoutException, InterruptedException
+    public void testPowerCycle() throws IOException, ParseException, TimeoutException, InterruptedException
     {
         int uptime;
         do{
-            reply = getTelemetry("COMMS"); // check uptime
+            reply = getTelemetry(dest); // check uptime
             uptime = getUptime(reply.get("Uptime").toString());
             Thread.sleep(WAITREFRESH);
         }while(uptime < 3);
@@ -123,88 +134,31 @@ public class ResetTestValidParameters extends TestVarsMethods
         Assert.assertEquals(ResetPC, reply.get("Reset").toString());
         Assert.assertEquals(commandReset.get("Source").toString(), reply.get("Destination").toString());
         //caseClient.sendFrame(commandReset); // send reset command
-        reply = getTelemetry("EPS"); // check uptime
+        reply = getTelemetry(dest); // check uptime
         uptime = getUptime(reply.get("Uptime").toString());
         Assert.assertTrue("Uptime should be less than 3", uptime < 3);
     }
-    @Test
-    public void etestSoftResetCOMMS() throws IOException, ParseException, TimeoutException, InterruptedException
-    {
-        int uptime;
-        do{
-            reply = getTelemetry("COMMS"); // check uptime
-            uptime = getUptime(reply.get("Uptime").toString());
-            Thread.sleep(WAITREFRESH);
-        }while(uptime < 3);
-        output.append("This is a reset test of COMMS, soft "); 
-        output.append("\n");
-        reply = resetSubSystem("COMMS", "Soft");
-        Assert.assertEquals("ResetService", reply.get("_received_").toString());
-        Assert.assertEquals(ResetReply, reply.get("Request").toString());
-        Assert.assertEquals("COMMS", commandReset.get("Destination").toString());
-        Assert.assertEquals(COMMSSource, reply.get("Source").toString());
-        Assert.assertEquals(ResetReplySize, reply.get("Size").toString());
-        Assert.assertEquals(ResetSoft, reply.get("Reset").toString());
-        Assert.assertEquals(ResetReplyDest, reply.get("Destination").toString());
-        reply = getTelemetry("COMMS"); // check uptime
-        uptime = getUptime(reply.get("Uptime").toString());
-        output.append(uptime);output.append("\n");
-        Assert.assertTrue("Uptime should be less than 3", uptime < 3);
-    }        
     
+   
     @Test
-    public void ftestHardResetCOMMS() throws IOException, ParseException, TimeoutException, InterruptedException
-    {   int uptime;
-        do{
-            reply = getTelemetry("COMMS"); // check uptime
-            uptime = getUptime(reply.get("Uptime").toString());
-            Thread.sleep(WAITREFRESH);
-        }while(uptime < 3);
-        reply = resetSubSystem("COMMS", "Hard");
-        Assert.assertEquals("ResetService", reply.get("_received_").toString());
-        Assert.assertEquals(ResetReply, reply.get("Request").toString());
-        Assert.assertEquals(COMMSSource, reply.get("Source").toString());
-        Assert.assertEquals("COMMS", commandReset.get("Destination").toString());
-        Assert.assertEquals(ResetReplySize, reply.get("Size").toString());
-        Assert.assertEquals(ResetHard, reply.get("Reset").toString());
-        Assert.assertEquals(ResetReplyDest, reply.get("Destination").toString());
-        reply = getTelemetry("COMMS"); // check uptime
-        uptime = getUptime(reply.get("Uptime").toString());
-        Assert.assertTrue("Uptime should be less than 3", uptime < 3);
-    }
-     @Test
-    public void gTestPowerCycleCOMMS() throws IOException, ParseException, TimeoutException, InterruptedException
+    public void testInternalReset() throws IOException, ParseException, TimeoutException, InterruptedException
     {
-        output.append("This is a reset test of COMMS, PowerCycle "); 
-        output.append("/n");
-        reply = resetSubSystem("COMMS", "PowerCycle");
-        Assert.assertEquals("ResetService", reply.get("_received_").toString());
-        Assert.assertEquals(ResetReply, reply.get("Request").toString());
-        Assert.assertEquals(commandReset.get("Destination").toString(), reply.get("Source").toString());
-        Assert.assertEquals("COMMS", commandReset.get("Destination").toString());
-        Assert.assertEquals(ResetReplySize, reply.get("Size").toString());
-        Assert.assertEquals(ResetHard, reply.get("Reset").toString());
-        Assert.assertEquals(commandReset.get("Source").toString(), reply.get("Destination").toString());
-        reply = getTelemetry("COMMS"); // check uptime
-        int uptime;
-        uptime = getUptime(reply.get("Uptime").toString());
-        Assert.assertTrue("Uptime should be less than 3", uptime < 3);
-        // this last test may pass even if board has not reset but it should be very rare 
-        // If needed the uptime can be checked before the reset as well to ensure. 
-    }
-    /*
-    @Test
-    public void ctestInternalResetEPS() throws IOException, ParseException, TimeoutException, InterruptedException
-    {
-        output.append("This is a internal reset test (EPS). \n"); 
+        output.append("This is a internal reset test.").append(dest); 
         caseClient.sendFrame(commandReset); // send reset command
         reply = caseClient.getFrame();
         Assert.assertEquals("ResetService", reply.get("_received_").toString());
-        Thread.sleep(180000);
+        for(int i = 0; i<3; i++)
+        {
+            Thread.sleep(60000);
+            if(!"EPS".equals(dest))
+            {
+                pingSubSystem("EPS");
+            }
+        }
+        
         //GET HOUSEKEEPING
         Thread.sleep(WAITREFRESH);// housekeeping data is refreshed every 1000 miliseconds. 
-        caseClient.sendFrame(commandGetTelemetry);
-        reply = caseClient.getFrame();
+        reply = getTelemetry(dest);
         Assert.assertEquals("EPSHousekeepingReply", reply.get("_received_").toString());
         output.append(reply.get("Uptime").toString());
         String uptimeS = reply.get("Uptime").toString();
@@ -215,29 +169,7 @@ public class ResetTestValidParameters extends TestVarsMethods
         int uptime = Integer.valueOf(tempJSON.get("value").toString());
         Assert.assertTrue("uptime should be less than 5", uptime < 5);
     }
-     @Test
-    public void ctestInternalResetCOMMS() throws IOException, ParseException, TimeoutException, InterruptedException
-    {   int uptime;
-        output.append("This is a internal reset test (COMMS). \n"); 
-        reply = resetSubSystem("COMMS", "Soft"); // soft reset 
-        Assert.assertEquals("ResetService", reply.get("_received_").toString());
-        //GET HOUSEKEEPING to check uptime
-        reply = getTelemetry("COMMS");
-        uptime = getUptime(reply.get("Uptime").toString());
-        Assert.assertTrue("Uptime should be less than 3", uptime < 3);
-        //uptime is less than 3, now wait 3 minutes
-        for(int i = 0; i<3; i++){
-            reply = pingSubSystem("EPS");
-            Thread.sleep(60000); // pin EPS once every minute so it does not reset
-        }// if EPS resets, so does COMMS.
-        //GET HOUSEKEEPING
-        reply = getTelemetry("COMMS");
-        Assert.assertEquals("COMMSHousekeepingReply", reply.get("_received_").toString());
-        uptime = getUptime(reply.get("Uptime").toString());
-        Assert.assertTrue("uptime should be less than 5", uptime < 5);
-    }
-    
-    */
+   
     @After
     public void tearDown() throws IOException
     {
@@ -250,4 +182,122 @@ public class ResetTestValidParameters extends TestVarsMethods
     {
         caseClient.close();
     }
+     
+    protected JSONObject getTelemetry(String subSystem) throws IOException, ParseException, TimeoutException
+    {  
+        JSONObject replyInt = new JSONObject();
+        if(isKnown(subSystem, SUBSYSTEMS))
+        {
+            commandGetTelemetry.put("_send_", "GetTelemetry");
+            commandGetTelemetry.put("Destination", subSystem);
+            //commandGetTelemetry should be initialized by the @Before method of the test
+            caseClient.sendFrame(commandGetTelemetry); //request housekeeping data
+            replyInt = caseClient.getFrame(); //receive housekeeping data
+            return replyInt;
+        }
+        else
+        {
+            replyInt.put("_recieved_", "Error Unknown Subsystem");
+            return replyInt; // return here, there is something wrong thererfore test will fail. 
+        }          
+    }
+    
+    protected JSONObject resetSubSystem(String subSystem, String type)throws IOException, ParseException, TimeoutException{
+        JSONObject replyInt = new JSONObject();
+        if("Soft".equals(type) || "Hard".equals(type) || "PowerCycle".equals(type))
+        {
+            commandReset.put("Type", type);
+        }
+        else
+        {
+            replyInt.put("_received_", "Error Unknown Reset Type");
+            return replyInt; // return here, there is something wrong thererfore test will fail.
+        }
+        if(isKnown(subSystem, SUBSYSTEMS))
+        {
+            commandReset.put("Destination", subSystem);
+        }
+        else
+        {
+            replyInt.put("_received_", "Error Unknown Subsystem");
+            return replyInt; // return here, there is something wrong thererfore test will fail.
+        }
+        //commandReset should be initialized by the @Before method of the test
+        caseClient.sendFrame(commandReset);  
+        replyInt = caseClient.getFrame();
+        return replyInt;   
+    } 
+    
+    
+    protected int timeStampGetMillis(String timestamp){
+        String[] delta = breakTimestamp(timestamp);
+            int loc = delta.length;
+            int millis;
+            millis = Integer.valueOf(delta[loc-1]);
+        return millis;
+    }
+    protected String[] breakTimestamp(String timestamp){
+        // Rememeber this only works if the timestamp formatting is not changed!
+        String[] internalStringArray;
+        String[] temp = timestamp.split(" ");// splits off the date
+        String[] temp2 = temp[1].split(":");// splits up the time
+        String[] temp3 = temp2[temp2.length-1].split("\\.");
+        int size1 = temp2.length +2;
+        internalStringArray = new String[size1];
+        internalStringArray[0] = temp[0];
+        int size2 = internalStringArray.length-2;
+        System.arraycopy(temp2, 0, internalStringArray, 1, size1-2);
+        System.arraycopy(temp3, 0, internalStringArray, size2, 2);
+        return internalStringArray;
+    }
+    public String[] testBreakTimeStamp(String timestamp){
+        String[] delta = breakTimestamp(timestamp);
+        return delta;
+    }
+     public int testgetMillis(String timestamp){
+        int delta = timeStampGetMillis(timestamp);
+        return delta;
+    }
+    protected boolean isKnown(String x, String[] ax){
+        for(String s: ax){
+            if(x.equals(s))
+                return true;
+        }
+        return false;
+    } 
+     public boolean testisKnown(String str, String[] Arr){
+        boolean delta = isKnown(str,Arr); 
+        return delta;
+    }
+     protected JSONObject stringToJSON(String tobreak) throws ParseException{
+        
+        JSONParser parser = new JSONParser();
+        JSONObject tempJSON = (JSONObject) parser.parse(tobreak);
+        return tempJSON;
+     }
+     protected int getUptime(String uptime) throws ParseException
+     {
+             JSONObject tempJSON = stringToJSON(uptime);
+             int value = Integer.valueOf(tempJSON.get("value").toString());
+             return value;
+     }  
+     
+     protected JSONObject pingSubSystem(String subSystem) throws IOException, ParseException, TimeoutException{
+        JSONObject replyInt = new JSONObject();
+         if(isKnown(subSystem, SUBSYSTEMS))
+        {
+            
+            commandPing.put("Destination", subSystem);
+        }
+        else
+        {
+            replyInt.put("_received_", "Error Unknown Subsystem");
+            return replyInt; // return here, there is something wrong thererfore test will fail.
+        }
+        //commandPing should be initialized by the @Before method of the test
+        commandPing.put("_send_", "Ping");
+        caseClient.sendFrame(commandPing);  
+        replyInt = caseClient.getFrame();
+        return replyInt;   
+    } 
 }

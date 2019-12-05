@@ -11,6 +11,7 @@ import com.fazecast.jSerialComm.SerialPortEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -86,7 +87,8 @@ public class TenmaDriver
     public void setVoltage(double voltage) throws IOException{
         if(voltage <= MAXVOLTAGE){
         String cmd;
-        cmd =  SETVOLTAGE+Double.toString(voltage); 
+        //force to use 2 decimals, more will not be accepted by Tenma
+        cmd =  SETVOLTAGE+String.format(Locale.US,"%.2f", voltage);;
         System.out.println(cmd);
         sendCommand(cmd);
         }
@@ -95,7 +97,7 @@ public class TenmaDriver
     public void setCurrent(double current) throws IOException{
         
         String cmd;
-        cmd =  SETCURRENT+Double.toString(current); 
+        cmd =  SETCURRENT+String.format(Locale.US,"%.2f", current);; 
         System.out.println(cmd);
         sendCommand(cmd);
     }

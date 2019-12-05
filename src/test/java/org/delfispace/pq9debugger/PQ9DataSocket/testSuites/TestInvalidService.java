@@ -34,7 +34,7 @@ public class TestInvalidService {
     @BeforeClass 
     public static void BeforeTestClass() throws IOException 
     {
-        TestParameters.setDestination("COMMS"); // REMOVE THIS LINE
+        //TestParameters.setDestination("COMMS"); // REMOVE THIS LINE
         caseClient = new PQ9DataClient("localhost", 10000);
         System.out.println("Initializer of Service Test with random Parameters ");
         caseClient.setTimeout(TestParameters.getTimeOut());     
@@ -130,9 +130,10 @@ public class TestInvalidService {
     }
     
      @AfterClass
-     public static void shutDown() throws IOException
+     public static void shutDown() throws IOException, InterruptedException
     {
         caseClient.close();
+        Thread.sleep(500);
     }
      
     protected JSONObject stringToJSON(String tobreak) throws ParseException
