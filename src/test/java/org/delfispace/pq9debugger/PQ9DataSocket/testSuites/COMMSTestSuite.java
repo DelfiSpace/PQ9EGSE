@@ -20,6 +20,7 @@ import org.junit.runners.Suite;
        // PingTestInvalidParameters.class,
        //PingTestCase3.class,
         //PingTestCase4.class
+        TestInvalidService.class
 })
 
 public class COMMSTestSuite {   
@@ -27,7 +28,10 @@ public class COMMSTestSuite {
     public static void setUp() 
     {
         System.out.println("setting up");
-        TestParameters.setDestination("EPS");
+        TestParameters.setDestination("COMMS");
+        System.out.print(" Testing :" );
+        System.out.println(TestParameters.getDestination());
+        System.out.println(TestParameters.getDestinationInt());
     }
 
     @AfterClass

@@ -46,10 +46,15 @@ public class TestParameters
         destint = 0;
         int runner = 0;
         do{
+            System.out.println("runner");
+            System.out.println(SUBSYSTEMS[runner]);
+                System.out.println(runner);
             if (destination.equals(SUBSYSTEMS[runner]))
             {
+                
                 destint = 2+runner;
             }
+            runner++;
         }while(destint == 0 && runner < SUBSYSTEMS.length);
         return destint;
     }
