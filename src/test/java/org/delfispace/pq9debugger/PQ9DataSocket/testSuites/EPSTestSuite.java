@@ -16,11 +16,11 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses({
-       // PingTestValidParameters.class,
-       // PingTestInvalidParameters.class,
-       // EPSBusHandlingTest.class,
-        //ResetTestValidParameters.class,
-        TestInvalidService.class,
+        PingTestValidParameters.class,
+        PingTestInvalidParameters.class,
+        EPSBusHandlingTest.class,
+        ResetTestValidParameters.class,
+        //TestInvalidService.class,
         //EPSPowerSupplyTests.class,
 })
 
