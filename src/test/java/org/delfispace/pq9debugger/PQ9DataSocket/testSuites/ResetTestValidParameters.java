@@ -282,7 +282,7 @@ public class ResetTestValidParameters implements TestClassInterface
              return value;
      }  
      
-     protected JSONObject pingSubSystem(String subSystem) throws IOException, ParseException, TimeoutException{
+    protected JSONObject pingSubSystem(String subSystem) throws IOException, ParseException, TimeoutException{
         JSONObject replyInt = new JSONObject();
          if(isKnown(subSystem, SUBSYSTEMS))
         {

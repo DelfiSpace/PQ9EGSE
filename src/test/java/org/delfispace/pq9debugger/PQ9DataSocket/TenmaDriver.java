@@ -89,7 +89,7 @@ public class TenmaDriver
         String cmd;
         //force to use 2 decimals, more will not be accepted by Tenma
         cmd =  SETVOLTAGE+String.format(Locale.US,"%.2f", voltage);;
-        System.out.println(cmd);
+        //System.out.println(cmd);
         sendCommand(cmd);
         }
         else{System.out.println("Trying to set dangarous voltage, voltage is not changed");}
@@ -113,8 +113,16 @@ public class TenmaDriver
      public double getVoltageAct() throws IOException 
     {//Get the actual output voltage
         sendCommand(GETVOLTAGEACT);
+        try{
         String tmp = getResponse(5);
         return Double.valueOf(tmp);
+        }catch(IOException Ex)
+        {
+            System.out.println("Tenma Issue, attempting to restore");
+            sendCommand(GETVOLTAGEACT);
+            String tmp = getResponse(5);
+            return Double.valueOf(tmp);
+        }
     }
      
     public double getCurrentSet() throws IOException 

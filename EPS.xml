@@ -110,12 +110,12 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="32"/>
             </xtce:IntegerParameterType>
-			<xtce:StringParameterType name="String">
+			<xtce:StringParameterType name="String32">
                 <xtce:UnitSet/>
                 <xtce:StringDataEncoding encoding="UTF-8">
 					<xtce:SizeInBits> 
 						<xtce:Fixed> 
-							<xtce:FixedValue>160</xtce:FixedValue> 
+							<xtce:FixedValue>32</xtce:FixedValue> 
 						</xtce:Fixed> 
 					</xtce:SizeInBits> 
 				</xtce:StringDataEncoding>
@@ -227,6 +227,7 @@
             <xtce:Parameter name="Sensor14Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor15Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="MCUTemp" parameterTypeRef="MCUtemperature"/>
+			<xtce:Parameter name="SoftwareVersionS" parameterTypeRef="String32"/>
 			<xtce:Parameter name="SoftwareVersion1" parameterTypeRef="nibble"/>
 			<xtce:Parameter name="SoftwareVersion2" parameterTypeRef="nibble"/>
 			<xtce:Parameter name="SoftwareVersion3" parameterTypeRef="nibble"/>
@@ -235,6 +236,7 @@
 			<xtce:Parameter name="SoftwareVersion6" parameterTypeRef="nibble"/>
 			<xtce:Parameter name="SoftwareVersion7" parameterTypeRef="nibble"/>
 			<xtce:Parameter name="SoftwareVersion8" parameterTypeRef="nibble"/>
+			
         </xtce:ParameterSet>
         <xtce:ContainerSet>
             <xtce:SequenceContainer name="PQ9" abstract="true" shortDescription="PQ9 frame">
@@ -284,6 +286,8 @@
 			<xtce:SequenceContainer name="VersionControl" shortDescription="Version Software">
                 <xtce:LongDescription>Version of software</xtce:LongDescription>
 				<xtce:EntryList>
+				<xtce:ParameterRefEntry parameterRef="SoftwareVersionS"/>
+				<!--
                     <xtce:ParameterRefEntry parameterRef="SoftwareVersion1"/>
 					<xtce:ParameterRefEntry parameterRef="SoftwareVersion2"/>
 					<xtce:ParameterRefEntry parameterRef="SoftwareVersion3"/>
@@ -292,6 +296,7 @@
 					<xtce:ParameterRefEntry parameterRef="SoftwareVersion6"/>
 					<xtce:ParameterRefEntry parameterRef="SoftwareVersion7"/>
 					<xtce:ParameterRefEntry parameterRef="SoftwareVersion8"/>
+				-->
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>

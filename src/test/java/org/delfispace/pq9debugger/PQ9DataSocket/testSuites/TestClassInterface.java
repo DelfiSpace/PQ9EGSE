@@ -5,11 +5,14 @@
  */
 package org.delfispace.pq9debugger.PQ9DataSocket.testSuites;
 
+import java.io.IOException;
 import javax.swing.JOptionPane;
 import org.delfispace.pq9debugger.PQ9DataSocket.BK8500Driver;
 import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataClient;
 import org.delfispace.pq9debugger.PQ9DataSocket.TenmaDriver;
+import org.delfispace.pq9debugger.PQ9DataSocket.TimeoutException;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.xtce.toolkit.XTCEDatabase;
 import org.xtce.toolkit.XTCETMStream;
 
@@ -46,20 +49,79 @@ interface TestClassInterface
     {
         boolean yesorno;
         //JOPtion pane stack
-            int res = JOptionPane.showConfirmDialog(null,
-            message,
-            "Yes or NO?",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE);
-                if (res == JOptionPane.NO_OPTION)
-                {
-                    yesorno = false;
-                }
-                else 
-                {
-                    yesorno = true;
-                }
+            int res = JOptionPane.showConfirmDialog
+            (null,
+                message,
+                "Yes or NO?",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+            if (res == JOptionPane.NO_OPTION)
+            {
+                yesorno = false;
+            }
+            else 
+            {
+                yesorno = true;
+            }
     
         return yesorno;
+    }
+    
+    static boolean genericPingAttempt(String subSystem, PQ9DataClient caseClient) throws ParseException, PQ9PingTestException
+    {
+        if(TestParameters.isKnown(subSystem))
+        {
+            JSONObject localCommand = new JSONObject();
+            JSONObject localReply = new JSONObject();
+            localCommand.put("_send_", "Ping");
+            localCommand.put("Destination", subSystem);
+            try
+            {
+                caseClient.sendFrame(localCommand);
+            }catch(IOException Ex)
+            {
+                Ex.printStackTrace();
+                return false;
+            }
+            try
+            {
+                localReply = caseClient.getFrame();
+                if
+                (
+                    localReply.get("_received_").toString().equals("PingService")
+                    &&
+                    localReply.get("Request").toString().equals(replyPB)    
+                )
+                {
+                    return true;
+                }
+                if
+                (
+                    localReply.get("_recieved_").toString().equals("PingService")
+                    &&
+                    localReply.get("Request").toString().equals(replyER)    
+                )
+                {
+                    return false;
+                }    
+                else
+                {
+                    return false;
+                }
+            }catch(IOException Ex) 
+            {
+                Ex.printStackTrace();
+                return false;
+            }catch(TimeoutException TEx)
+            {
+                TEx.printStackTrace();
+                return false;
+            }
+            
+        }
+        else{
+            throw new PQ9PingTestException(" unknown subsystem ");
+        }
     }
 }
