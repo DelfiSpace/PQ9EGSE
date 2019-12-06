@@ -29,15 +29,16 @@ public class TestInvalidService {
     private JSONObject commandRaw;
     protected JSONObject reply;
     private final int destination = TestParameters.getDestinationInt();
+    
     private static PQ9DataClient caseClient; 
     
     @BeforeClass 
     public static void BeforeTestClass() throws IOException 
     {
-        //TestParameters.setDestination("COMMS"); // REMOVE THIS LINE
+        // TestParameters.setDestination("COMMS"); // REMOVE THIS LINE
         caseClient = new PQ9DataClient("localhost", 10000);
         System.out.println("Initializer of Service Test with random Parameters ");
-        caseClient.setTimeout(TestParameters.getTimeOut());     
+        caseClient.setTimeout(TestParameters.getTimeOut());   
     }
     
     @Before
@@ -50,6 +51,8 @@ public class TestInvalidService {
         commandRaw.put("src", "1");
         commandRaw.put("data", "17 1");
         reply = new JSONObject();
+        System.out.print("Testing subSystem: ");
+        System.out.println(destination);
     }
     /**/
     @Test

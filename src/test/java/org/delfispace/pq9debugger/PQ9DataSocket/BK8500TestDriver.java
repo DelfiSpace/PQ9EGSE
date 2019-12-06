@@ -45,7 +45,7 @@ public class BK8500TestDriver {
         {
             testArray[i] = (byte)0x00;
         }
-        testArray[3] = (byte)0x50;
+        testArray[3] = (byte)0x80;
          for(int item = 0; item<testArray.length; item++)
             {  
                 System.out.print(String.format("%02X ", testArray[item] & 0xFF));
@@ -68,14 +68,14 @@ public class BK8500TestDriver {
         System.out.println("Start Remote Operation");
         TestDriver.startRemoteOperation();
         System.out.println("get Response (remote operation)");
-        byte[] response =  TestDriver.getAnyResponse(false);
+        //byte[] response =  TestDriver.getAnyResponse(false);
         // getAnyResponse throws IOException, Bk8500CException
         // Bk8500CExceptions are not thrown if packetCheck is false. 
-            for(int item = 0; item<response.length; item++)
-            {  
-                System.out.print(String.format("%02X ", response[item] & 0xFF));
-            }
-            System.out.println();
+           // for(int item = 0; item<response.length; item++)
+          //  {  
+          //      System.out.print(String.format("%02X ", response[item] & 0xFF));
+          //  }
+          //  System.out.println();
      
             
         TestDriver.startBatteryTest(stopVoltage, testCurrent);

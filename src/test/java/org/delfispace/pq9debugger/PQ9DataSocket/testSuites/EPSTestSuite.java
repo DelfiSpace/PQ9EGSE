@@ -16,9 +16,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses({
-        PingTestValidParameters.class,
-        PingTestInvalidParameters.class,
-        EPSBusHandlingTest.class,
+       // PingTestValidParameters.class,
+       // PingTestInvalidParameters.class,
+       // EPSBusHandlingTest.class,
         //ResetTestValidParameters.class,
         TestInvalidService.class,
         //EPSPowerSupplyTests.class,
@@ -30,6 +30,9 @@ public class EPSTestSuite {
     {
         System.out.println("setting up");
         TestParameters.setDestination("EPS");
+             System.out.print(" Testing :" );
+        System.out.println(TestParameters.getDestination());
+        System.out.println(TestParameters.getDestinationInt());
     }
 
     @AfterClass
