@@ -54,11 +54,13 @@ public class EPSPowerSupplyTests implements TestClassInterface
  @BeforeClass 
     public static void BeforeTestClass() throws IOException, InterruptedException 
     {
+        // initialize caseClient
+        caseClient = new PQ9DataClient("localhost", 10000);
+        caseClient.setTimeout(TestParameters.getTimeOut());
         System.out.println("Initializer of PowerTestClass");
         output = new StringBuilder("");   
         StringBuilder mesgLoader = new StringBuilder("");
-        caseClient = new PQ9DataClient("localhost", 10000);
-        caseClient.setTimeout(TestParameters.getTimeOut());
+       
         
         boolean failed = false;
         boolean donotruntest = false;
@@ -70,6 +72,7 @@ public class EPSPowerSupplyTests implements TestClassInterface
                 donotruntest = false;
             }catch(IOException ex)
             {
+                ex.printStackTrace();
                 mesgLoader.append("Power Supply is not responding. Is it connected to ");
                 mesgLoader.append(comportTenma).append("\n is this correctly connected?");
                 // asks question: is Tenma connected correctly
@@ -92,7 +95,8 @@ public class EPSPowerSupplyTests implements TestClassInterface
                 programResistance = new BK8500Driver(comportBK);
                 donotruntest = false;
             }catch(IOException ex)
-            {   mesgLoader.setLength(0);
+            {   ex.printStackTrace(); 
+                mesgLoader.setLength(0);
                 mesgLoader.append("Programmable Resistance is not responding. Is it connected to ");
                 mesgLoader.append(comportBK);
                 mesgLoader.append("\n is this correctly connected?"); 
@@ -125,23 +129,24 @@ public class EPSPowerSupplyTests implements TestClassInterface
         commandGetTelemetry.put("_send_", "GetTelemetry");
         commandGetTelemetry.put("Destination", destination);
         powerSupply.setVoltage(4.15); 
+        System.out.println("starting Remote");
         programResistance.startRemoteOperation();
         Thread.sleep(10);
         programResistance.setCurrentLim(2.5);
         powerSupply.setCurrent(2);
         powerSupply.sunUP();
         Thread.sleep(2500);
-        System.out.println("start test: ");
     }
     /*
     @Test
     public void maximizeCurrentBus4() throws IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException, Exception{
         //set Bus 4 ON; 
         testBus(4, true);
-        double resistance = 2.8/1.7; // assuming 3.2 volt bus  
+        double resistance = 2.7/1.7; // assuming 3.2 volt bus  
         programResistance.setMode("CR");
         programResistance.setResistanceCR(resistance);
         Thread.sleep(100);
+        System.out.println("Turning on Load");
         programResistance.turnLoadON();
         StringBuilder outhere = new StringBuilder(100);
         double[] response = new double[4];
@@ -153,11 +158,15 @@ public class EPSPowerSupplyTests implements TestClassInterface
             System.out.println(outhere.toString());
             outhere.setLength(0);
         }
+        response = programResistance.getValues();
         Assert.assertTrue("protection does not work", programResistance.getCurrent()<1.6);
         testBus(4, false);
+        System.out.println("turning load off");
+        programResistance.turnLoadOFF();
+        
     }
     /**/
-   
+    
     @Test
       public void underVoltageProtectionTest() throws IOException, ParseException, TimeoutException, InterruptedException
     {
@@ -223,14 +232,15 @@ public class EPSPowerSupplyTests implements TestClassInterface
     }
     /**/
     @After
-    public void tearDown() throws IOException, InterruptedException
+    public void tearDown() throws IOException, InterruptedException, Bk8500CException, TimeoutException
     {
         System.out.println("test complete");
         System.out.println(output);
-        programResistance.turnLoadOFF();
         //powerSupply.sunDown();
+        Thread.sleep(100);
+        System.out.println("ending remote operation");
         programResistance.endRemoteOperation();
-        Thread.sleep(1000);
+        Thread.sleep(100);
     }
     
     @AfterClass
@@ -249,15 +259,18 @@ public class EPSPowerSupplyTests implements TestClassInterface
             value.append("Bus").append(String.valueOf(bus));
             commandSetBus.put("PowerBusParam", value.toString()); 
             System.out.print(value);
+            
         }
         else{throw new Exception("I cannot command " + bus);}
         if(on_true_off_false)
         {
             commandSetBus.put("PowerBusState", "BusOn");
+            System.out.println(" ON");
         }
         else
         {
             commandSetBus.put("PowerBusState", "BusOff");
+            System.out.println(" OFF");
         }
         caseClient.sendFrame(commandSetBus);
     }

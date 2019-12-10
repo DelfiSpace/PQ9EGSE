@@ -54,7 +54,7 @@ public class genericLowVoltageTest implements TestClassInterface
  @BeforeClass 
     public static void BeforeTestClass() throws IOException, InterruptedException 
     {
-        TestParameters.setDestination("COMMS");
+        //TestParameters.setDestination("COMMS");
         output = new StringBuilder("");   
         StringBuilder mesgLoader = new StringBuilder("");
         caseClient = new PQ9DataClient("localhost", 10000);

@@ -58,7 +58,9 @@ public class BK8500Driver {
         }
         else{
             //exception is thrown if the port did not open. 
+            closePort();
             throw new IOException("Port is shut");
+            
         }
         comPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
         // use flow control disabled even though the datasheet suggests otherwise
@@ -77,9 +79,14 @@ public class BK8500Driver {
             startOperation();
         }catch(TimeoutException Ex)
         {
+            closePort();//this is done so this instance does not monopolize the COM
             throw new IOException(Ex.getMessage() + "No connection");
         } catch (Bk8500CException ex) {
             Logger.getLogger(BK8500Driver.class.getName()).log(Level.SEVERE, null, ex);
+        }catch(IOException Ex)
+        {
+            closePort();
+            throw new IOException(Ex.getMessage());
         }
     }
     /*
@@ -139,20 +146,21 @@ public class BK8500Driver {
         byte[]cmd;
         cmd = commandHandler((byte)0x20, (byte)0x01);
         sendCommand(cmd);
-        simpleCheck(getAnyResponse());
+        simpleCheck(getAnyResponse(false));
     }
     
     private boolean startOperation() throws IOException, Bk8500CException, TimeoutException
     {
         byte[]cmd; cmd = commandHandler((byte)0x20, (byte)0x01); sendCommand(cmd);
-        return simpleCheck(getAnyResponse());
+        return simpleCheck(getAnyResponse(false));
     }
     
-     public void endRemoteOperation() throws IOException{
+     public void endRemoteOperation() throws IOException, Bk8500CException, TimeoutException{
         //disable remote mode
         byte[]cmd;
         cmd = commandHandler((byte)0x20, (byte)0x00);
         sendCommand(cmd);
+        getAnyResponse();
     }
     
     // get model number from device
@@ -183,6 +191,7 @@ public class BK8500Driver {
                 throw new Bk8500CException("Mode selector unknown");              
         }
         sendCommand(cmd);
+        getAnyResponse(false);
     }
     
     // set function, either FIXED, SHORT, TRANSIENT, LIST, BATTERY 
@@ -210,18 +219,20 @@ public class BK8500Driver {
         sendCommand(cmd);
     }
     
-    public void turnLoadON() throws IOException{
+    public void turnLoadON() throws IOException, Bk8500CException, TimeoutException{
         //turn the load on
         byte[]cmd;
         cmd = commandHandler((byte)0x21, (byte)0x01);
         sendCommand(cmd);
+        simpleCheck(getAnyResponse(false));
     }
     
-    public void turnLoadOFF() throws IOException{
+    public void turnLoadOFF() throws IOException, Bk8500CException, TimeoutException{
         //turn the load off
         byte[]cmd;
         cmd = commandHandler((byte)0x21, (byte)0x00);
         sendCommand(cmd);
+        simpleCheck(getAnyResponse(false));
     }      
    
     public String getOperationMode() throws IOException{
@@ -481,6 +492,8 @@ public class BK8500Driver {
     
     private byte[] getAnyResponse() throws IOException, Bk8500CException, TimeoutException
     {
+        byte[] val = new byte[26];
+        for(int item : val){val[item] = 0x00;}// set all command bytes to 0
         try 
         {
             Thread.sleep(10);
@@ -488,13 +501,13 @@ public class BK8500Driver {
         {
             // ignoring the error
         }
-        byte[] val = is.readNBytes(26); // a packet is always 26 bytes. 
-        /*System.out.println("Returned array ");
+        val = is.readNBytes(26); // a packet is always 26 bytes. 
+        System.out.println("Returned array ");
          for(int item = 0; item<val.length; item++)
         {  
             System.out.print(String.format("%02X ", val[item] & 0xFF));
         }System.out.println();
-        */
+        
         //byte[] val = is.readAllBytes(); 
         // a packet is always 26 bytes.  
         // run a packet check
@@ -510,62 +523,26 @@ public class BK8500Driver {
         {
             // ignoring the error
         }
-        byte[] val = is.readNBytes(26); // a packet is always 26 bytes. 
-        //System.out.println("Returned array ");
-         for(int item = 0; item<val.length; item++)
-        {  
-          //  System.out.print(String.format("%02X ", val[item] & 0xFF));
-        }//System.out.println();
+        byte[] val = is.readNBytes(26); // a packet is always 26 bytes.
        
-        //byte[] val = is.readAllBytes(); 
+        System.out.println("Returned array get Any Response");
+        for(int item = 0; item<val.length; item++)
+        {  
+            System.out.print(String.format("%02X ", val[item] & 0xFF));
+        }System.out.println();
+         /**/ 
         // a packet is always 26 bytes.  
         // run a packet check
         if(pcheck){
         if(packetCheck(val)){};//everthing is going well if true
         }
-        
         return val;
     }
     
     private boolean packetCheck(byte[]val) throws Bk8500CException
     {
+        simpleCheck(val);
         return true;
-        /*
-        byte testval1 = (byte)0x80;
-        if(val[3] == testval1){}
-        else 
-            {
-                System.out.println("I am here");
-                if(0xAA==val[0]){
-                    System.out.println("i am here too");
-                    System.out.print(String.format("%02X ", val[3] & 0xFF));
-                    switch ((((int)val[3]) & 0xFF)){
-                    case 0x90:
-                        throw new Bk8500CException("CheckSum Incorrect");
-                    case 0xA0:
-                        throw new Bk8500CException("Parameter Incorrect");
-                    case 0xB0:
-                        throw new Bk8500CException("Unrecognized Command"); 
-                    case 0xC0:
-                         throw new Bk8500CException("Invalid Command"); 
-                    default:
-                          throw new Bk8500CException("Unknown problem"); 
-                    }
-                }
-                byte[] val2 = Arrays.copyOf(val, 26);
-                val2[25] = 0x00;
-                     System.out.println("val2 ");
-                 for(int item = 0; item<val.length; item++)
-                {     
-                System.out.print(String.format("%02X ", val[item] & 0xFF));
-                }System.out.println();
-                int checksumR = checkSum(val2);
-                if(val[25]!=checksumR){
-                    throw new Bk8500CException("Response from device has been scrambled"); 
-                }         
-            }
-        return true;
-/**/
     }
     private byte[] longToByte(long lendian){
         byte[] lendiantobyte = new byte[8];
@@ -581,6 +558,21 @@ public class BK8500Driver {
     }
     public boolean simpleCheck(byte[] response) throws Bk8500CException
     {
+        byte[] check = new byte[26];
+        System.arraycopy(response, 0, check, 0, check.length);
+        check[25] = 0;
+        int checksum = (response[25]& 0xFF);
+        if(checksum==checkSum(check))
+        {
+            System.out.println("check passed");
+        }
+        else
+        {
+            System.out.println("response[25] = "+ checksum);
+            System.out.println("check = "+checkSum(check));
+        }
+        if((((int)response[3]) & 0xFF)==0x12)
+        {
         switch ((((int)response[3]) & 0xFF))
         {
             case 0x90:   
@@ -595,11 +587,16 @@ public class BK8500Driver {
                 throw new Bk8500CException("Invalid Command"); 
             default:
             {
-               
+                System.out.println("I am seeing failure: ");
+                for(int item = 0; item<response.length; item++)
+                {  
+                    System.out.print(String.format("%02X ", response[item] & 0xFF));
+                }System.out.println();
                 throw new Bk8500CException("Not a Command"); 
-                }
             }
-        
+        }
+        }
+        else{return true;}
     }
     
     
