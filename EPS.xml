@@ -1191,14 +1191,12 @@
                         </xtce:EntryList>
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
-			</xtce:MetaCommandSet>
-			<!--xtce:MetaCommandSet>
-                <xtce:MetaCommand name="SETServiceRadio" shortDescription="Radio Data Set">
+				<!--xtce:MetaCommand name="SETServiceRadio" shortDescription="Radio Data Set">
 				<xtce:LongDescription>Radio Service commands</xtce:LongDescription>
                     <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
                         <xtce:ArgumentAssignmentList>
                             <xtce:ArgumentAssignment argumentName="Destination" argumentValue="COMMS"/>
-                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="?"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
                             <xtce:ArgumentAssignment argumentName="Service" argumentValue="RadioService"/>
                             <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
@@ -1207,30 +1205,8 @@
                     <xtce:CommandContainer name="PingRadio">
                         <xtce:EntryList/>
                     </xtce:CommandContainer>
-                </xtce:MetaCommand>
-            </xtce:MetaCommandSet-->
-			<!--xtce:MetaCommand name="PowerBusControl" shortDescription="Set EPS power bus">
-                    <xtce:LongDescription>EPS power bus</xtce:LongDescription>
-                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
-                        <xtce:ArgumentAssignmentList>
-                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="EPS"/>
-                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
-                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="Execute"/>
-                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
-                        </xtce:ArgumentAssignmentList>
-                    </xtce:BaseMetaCommand>
-                    <xtce:ArgumentList>
-                        <xtce:Argument name="PowerBusParam" argumentTypeRef="BusParameterType"/>
-                        <xtce:Argument name="PowerBusState" argumentTypeRef="BusStateParameterType"/>
-                    </xtce:ArgumentList>
-                    <xtce:CommandContainer name="EPSBusSW">
-                        <xtce:EntryList>
-                            <xtce:ArgumentRefEntry argumentRef="PowerBusParam"/>
-                            <xtce:ArgumentRefEntry argumentRef="PowerBusState"/>
-                        </xtce:EntryList>
-                    </xtce:CommandContainer>
                 </xtce:MetaCommand-->
+			</xtce:MetaCommandSet>
         </xtce:CommandMetaData>
     </xtce:SpaceSystem>
 </xtce:SpaceSystem>
