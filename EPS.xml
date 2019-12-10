@@ -67,7 +67,6 @@
                     <xtce:Enumeration label="PowerCycle" value="3"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
-			
             <xtce:EnumeratedParameterType name="sensorBitStatus">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
@@ -236,7 +235,6 @@
 			<xtce:Parameter name="SoftwareVersion6" parameterTypeRef="nibble"/>
 			<xtce:Parameter name="SoftwareVersion7" parameterTypeRef="nibble"/>
 			<xtce:Parameter name="SoftwareVersion8" parameterTypeRef="nibble"/>
-			
         </xtce:ParameterSet>
         <xtce:ContainerSet>
             <xtce:SequenceContainer name="PQ9" abstract="true" shortDescription="PQ9 frame">
@@ -282,7 +280,6 @@
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
-			
 			<xtce:SequenceContainer name="VersionControl" shortDescription="Version Software">
                 <xtce:LongDescription>Version of software</xtce:LongDescription>
 				<xtce:EntryList>
@@ -294,7 +291,7 @@
 					<xtce:ParameterRefEntry parameterRef="SoftwareVersion5"/>
 					<xtce:ParameterRefEntry parameterRef="SoftwareVersion6"/>
 					<xtce:ParameterRefEntry parameterRef="SoftwareVersion7"/>
-					<xtce:ParameterRefEntry parameterRef="SoftwareVersion8"/> 
+					<xtce:ParameterRefEntry parameterRef="SoftwareVersion8"/>
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>
@@ -304,10 +301,6 @@
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
-			
-			
-			
-			
             <xtce:SequenceContainer name="HousekeepingRequest" shortDescription="Housekeeping request">
                 <xtce:LongDescription>Request the subsystem housekeeping frame.</xtce:LongDescription>
                 <xtce:EntryList>&#13;</xtce:EntryList>
@@ -516,7 +509,6 @@
             </xtce:MetaCommand>            
         </xtce:MetaCommandSet>
     </xtce:CommandMetaData>
-
     <xtce:SpaceSystem name="EPS">
         <xtce:LongDescription>EPS data frames description.</xtce:LongDescription>
         <xtce:TelemetryMetaData>
@@ -594,11 +586,9 @@
                 <xtce:Parameter name="IntCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="IntVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="URBCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="URBVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                
+                <xtce:Parameter name="URBVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>                
                 <xtce:Parameter name="PowerBus" parameterTypeRef="/Delfi-PQ/byte"/>
-                <xtce:Parameter name="State" parameterTypeRef="/Delfi-PQ/byte"/>
-                
+                <xtce:Parameter name="State" parameterTypeRef="/Delfi-PQ/byte"/>                
             </xtce:ParameterSet>
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="EPSHousekeepingContainer" shortDescription="EPS Housekeeping container">
@@ -642,18 +632,15 @@
                         <xtce:ParameterRefEntry parameterRef="B4_voltage"/>
                         <xtce:ParameterRefEntry parameterRef="BattVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="BattCapacity"/>
-                        <xtce:ParameterRefEntry parameterRef="BattTemperature"/>
-                        
+                        <xtce:ParameterRefEntry parameterRef="BattTemperature"/>                        
                         <xtce:ParameterRefEntry parameterRef="B4_status"/>
                         <xtce:ParameterRefEntry parameterRef="B3_status"/>
                         <xtce:ParameterRefEntry parameterRef="B2_status"/>
-                        <xtce:ParameterRefEntry parameterRef="B1_status"/>  
-                                              
+                        <xtce:ParameterRefEntry parameterRef="B1_status"/>                                                
                         <xtce:ParameterRefEntry parameterRef="B4_state"/>
                         <xtce:ParameterRefEntry parameterRef="B3_state"/>
                         <xtce:ParameterRefEntry parameterRef="B2_state"/>
-                        <xtce:ParameterRefEntry parameterRef="B1_state"/>
-                        
+                        <xtce:ParameterRefEntry parameterRef="B1_state"/>                        
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/MCUTemp"/>
                         <xtce:ParameterRefEntry parameterRef="IntCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="IntVoltage"/>
@@ -786,7 +773,6 @@
             </xtce:MetaCommandSet>
         </xtce:CommandMetaData>
     </xtce:SpaceSystem>
-
     <xtce:SpaceSystem name="OBC">
         <xtce:TelemetryMetaData>
             <xtce:ParameterSet>
@@ -826,7 +812,6 @@
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
     </xtce:SpaceSystem>
-
     <xtce:SpaceSystem name="ADCS">
         <xtce:TelemetryMetaData>
             <xtce:ParameterSet>
@@ -1081,6 +1066,12 @@
                 <xtce:Parameter name="SupplyVoltage" shortDescription="3V3 Supply Voltage" parameterTypeRef="VoltageType"/>
                 <xtce:Parameter name="ADCreading" parameterTypeRef="VoltageType"/>
                 <xtce:Parameter name="Data" parameterTypeRef="byteArray"/>
+				<!--xtce:Parameter name="RadioCommand" parameterTypeRef="RadioCommandParameterType"/>
+				<xtce:Parameter name="Data" parameterTypeRef="byteArray"/>
+				<xtce:Parameter name="Data" parameterTypeRef="byteArray"/>
+				<xtce:Parameter name="Data" parameterTypeRef="byteArray"/>
+				<xtce:Parameter name="Data" parameterTypeRef="byteArray"/>
+				<xtce:Parameter name="Data" parameterTypeRef="byteArray"/-->
             </xtce:ParameterSet>
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="COMMSHousekeepingContainer" shortDescription="COMMS Housekeeping container">
@@ -1146,6 +1137,25 @@
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
         <xtce:CommandMetaData>
+			<xtce:ArgumentTypeSet>
+				<xtce:EnumeratedArgumentType name="RadioCommandParameterType" shortDescription="RadioCommand">
+                    <xtce:UnitSet/>
+                    <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                    <xtce:EnumerationList>
+                        <xtce:Enumeration label="iTXpath" value="1" shortDescription="initialize TX path"/>
+                        <xtce:Enumeration label="iRXpath" value="2" shortDescription="initialize RX path"/>
+                        <xtce:Enumeration label="radioGDF" value="4" shortDescription="get data frame"/>
+                        <xtce:Enumeration label="radioGTF" value="5" shortDescription="get TX frequency"/>
+						<xtce:Enumeration label="radioGRF" value="6" shortDescription="get RX frequency"/>
+                        <xtce:Enumeration label="radioGTBR" value="9" shortDescription="get TX bit rate"/>
+                        <xtce:Enumeration label="radioGRBR" value="10" shortDescription="get RX bit rate"/>
+                        <xtce:Enumeration label="radioGLRSSI" value="15" shortDescription="get last RSSI"/>
+						<xtce:Enumeration label="radioGIRSSI" value="16" shortDescription="get instantaneous RSSI"/>
+						<xtce:Enumeration label="radioSTI" value="17" shortDescription="set TX idle"/>
+						<xtce:Enumeration label="radioSTA" value="18" shortDescription="set TX active"/>
+                    </xtce:EnumerationList>
+				</xtce:EnumeratedArgumentType>
+			</xtce:ArgumentTypeSet>
             <xtce:MetaCommandSet>
                 <xtce:MetaCommand name="PingRadio" shortDescription="Ping Radio">
                     <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/Ping">
@@ -1161,7 +1171,42 @@
                         <xtce:EntryList/>
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
-            </xtce:MetaCommandSet>
+                <xtce:MetaCommand name="GETServiceRadio" shortDescription="Radio Data">
+				<xtce:LongDescription>Radio Service commands</xtce:LongDescription>
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="COMMS"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="3"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="RadioService"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                    <xtce:ArgumentList>
+                        <xtce:Argument name="RadioCommand" argumentTypeRef="RadioCommandParameterType"/>
+                    </xtce:ArgumentList>
+                    <xtce:CommandContainer name="RadioGET">
+                        <xtce:EntryList>
+                            <xtce:ArgumentRefEntry argumentRef="RadioCommand"/>
+                        </xtce:EntryList>
+                    </xtce:CommandContainer>
+                </xtce:MetaCommand>
+				<!--xtce:MetaCommand name="SETServiceRadio" shortDescription="Radio Data Set">
+				<xtce:LongDescription>Radio Service commands</xtce:LongDescription>
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="COMMS"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="?"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="RadioService"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                    <xtce:CommandContainer name="PingRadio">
+                        <xtce:EntryList/>
+                    </xtce:CommandContainer>
+                </xtce:MetaCommand-->
+			</xtce:MetaCommandSet>
         </xtce:CommandMetaData>
     </xtce:SpaceSystem>
 </xtce:SpaceSystem>
