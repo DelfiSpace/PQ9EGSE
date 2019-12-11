@@ -20,7 +20,7 @@
                 <xtce:EnumerationList>
                     <xtce:Enumeration label="OBC" value="1"/>
                     <xtce:Enumeration label="EPS" value="2"/>
-                    <xtce:Enumeration label="ADB" value="3"/>
+                    <xtce:Enumeration label="ADB" value="3"/> <!--?Antenna Deploy Board-->
                     <xtce:Enumeration label="COMMS" value="4"/>
                     <xtce:Enumeration label="ADCS" value="5"/>
                     <xtce:Enumeration label="PROP" value="6"/>
@@ -1209,4 +1209,96 @@
 			</xtce:MetaCommandSet>
         </xtce:CommandMetaData>
     </xtce:SpaceSystem>
+	<xtce:SpaceSystem name="PROP">
+		<xtce:TelemetryMetaData>
+			<xtce:ParameterTypeSet>
+				<xtce:IntegerParameterType name="UInt3">
+					<xtce:UnitSet/>
+					<xtce:IntegerDataEncoding sizeInBits="3"/>
+				</xtce:IntegerParameterType>
+				<xtce:FloatParameterType name="CurrentType">
+					<xtce:UnitSet>
+						<xtce:Unit>mA</xtce:Unit>
+					</xtce:UnitSet>
+					<xtce:IntegerDataEncoding sizeInBits="16">
+						<xtce:DefaultCalibrator>
+							<xtce:MathOperationCalibrator>
+								<xtce:ThisParameterOperand/>
+								<xtce:ValueOperand>0.00152587890625</xtce:ValueOperand>
+								<xtce:Operator>*</xtce:Operator>
+							</xtce:MathOperationCalibrator>
+						</xtce:DefaultCalibrator>
+					</xtce:IntegerDataEncoding>
+				</xtce:FloatParameterType>
+				<xtce:FloatParameterType name="VoltageType">
+					<xtce:UnitSet>
+						<xtce:Unit>V</xtce:Unit>
+					</xtce:UnitSet>
+					<xtce:IntegerDataEncoding sizeInBits="16">
+						<xtce:DefaultCalibrator>
+							<xtce:MathOperationCalibrator>
+								<xtce:ThisParameterOperand/>
+								<xtce:ValueOperand>0.00030517578125</xtce:ValueOperand>
+								<xtce:Operator>*</xtce:Operator>
+							</xtce:MathOperationCalibrator>
+						</xtce:DefaultCalibrator>
+					</xtce:IntegerDataEncoding>
+				</xtce:FloatParameterType>
+				<xtce:ArrayParameterType name="byteArray" arrayTypeRef="/Delfi-PQ/byte" numberOfDimensions="1"/>
+			</xtce:ParameterTypeSet>
+			<xtce:ParameterSet>
+					<xtce:Parameter name="TMPStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+					<xtce:Parameter name="PropBusStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+					<xtce:Parameter name="paddingProp" parameterTypeRef="UInt3"/>
+					<xtce:Parameter name="ValveHold" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+					<xtce:Parameter name="ValveSpike" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+					<xtce:Parameter name="Heaters" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+					<xtce:Parameter name="PropTemperature" shortDescription="Temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+					<xtce:Parameter name="HeatersCurrent" shortDescription="Heaters Current" parameterTypeRef="CurrentType"/>
+					<xtce:Parameter name="ValveSpikeCurrent" shortDescription="Valve Spike Voltage" parameterTypeRef="CurrentType"/>
+					<xtce:Parameter name="ValveHoldCurrent" shortDescription="Valve Hold Current" parameterTypeRef="CurrentType"/>
+					<xtce:Parameter name="PropBusCurrent" shortDescription="Bus Current" parameterTypeRef="CurrentType"/>
+					<xtce:Parameter name="HeatersVoltage" shortDescription="Heaters Voltage" parameterTypeRef="VoltageType"/>
+					<xtce:Parameter name="ValveSpikeVoltage" shortDescription="MCU Supply Voltage" parameterTypeRef="VoltageType"/>
+					<xtce:Parameter name="ValveHoldVoltage" shortDescription="Protection Supply Voltage" parameterTypeRef="VoltageType"/>
+					<xtce:Parameter name="PropBusVoltage" shortDescription="3V3 Supply Voltage" parameterTypeRef="VoltageType"/>
+			</xtce:ParameterSet>
+			<xtce:ContainerSet>
+				<xtce:SequenceContainer name="PROPHousekeepingContainer" shortDescription="PROP Housekeeping container">
+						<xtce:EntryList>
+							<xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>	<!--Telemetry[0..6]-->
+							<xtce:ParameterRefEntry parameterRef="paddingProp"/>					<!--Telemetry[7]0x80,0x40,0x20-->
+							<xtce:ParameterRefEntry parameterRef="Heaters"/>						<!--Telemetry[7]0x10-->
+							<xtce:ParameterRefEntry parameterRef="ValveSpike"/>						<!--Telemetry[7]0x08-->
+							<xtce:ParameterRefEntry parameterRef="ValveHold"/>						<!--Telemetry[7]0x04-->
+							<xtce:ParameterRefEntry parameterRef="PropBusStatus"/>					<!--Telemetry[7]0x02-->
+							<xtce:ParameterRefEntry parameterRef="TMPStatus"/>						<!--Telemetry[7]0x01-->
+							<xtce:ParameterRefEntry parameterRef="PropTemperature"/>				<!--Telemetry[8..9]-->
+							<xtce:ParameterRefEntry parameterRef="HeatersCurrent"/>					<!--Telemetry[10..11]-->
+							<xtce:ParameterRefEntry parameterRef="ValveSpikeCurrent"/>				<!--Telemetry[12..13]-->
+							<xtce:ParameterRefEntry parameterRef="ValveHoldCurrent"/>				<!--Telemetry[14..15]-->
+							<xtce:ParameterRefEntry parameterRef="PropBusCurrent"/>					<!--Telemetry[16..17]-->
+							<xtce:ParameterRefEntry parameterRef="HeatersVoltage"/>					<!--Telemetry[18..19]-->
+							<xtce:ParameterRefEntry parameterRef="ValveSpikeVoltage"/>				<!--Telemetry[20..21]-->
+							<xtce:ParameterRefEntry parameterRef="ValveHoldVoltage"/>				<!--Telemetry[23..23]-->
+							<xtce:ParameterRefEntry parameterRef="PropBusVoltage"/>					<!--Telemetry[24..25]-->
+						</xtce:EntryList>
+					</xtce:SequenceContainer>
+					<xtce:SequenceContainer name="PROPHousekeepingReply" shortDescription="PROP Housekeeping frame">
+						<xtce:EntryList>
+							<xtce:ContainerRefEntry containerRef="PROPHousekeepingContainer"/>                        
+						</xtce:EntryList>
+						<xtce:BaseContainer containerRef="/Delfi-PQ/HousekeepingReply">
+							<xtce:RestrictionCriteria>
+								<xtce:ComparisonList>
+									<xtce:Comparison parameterRef="Source" value="PROP"/>
+								</xtce:ComparisonList>
+							</xtce:RestrictionCriteria>
+						</xtce:BaseContainer>
+				</xtce:SequenceContainer>
+			</xtce:ContainerSet>
+		</xtce:TelemetryMetaData>
+        <!--xtce:CommandMetaData>
+        </xtce:CommandMetaData-->
+	</xtce:SpaceSystem>
 </xtce:SpaceSystem>
