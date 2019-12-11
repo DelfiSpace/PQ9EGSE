@@ -47,7 +47,7 @@ public class PingTestInvalidParameters
         output = new StringBuilder(""); 
         commandRaw = new JSONObject();
         commandRaw.put("_send_", "SendRaw");
-        commandRaw.put("dest", "2");
+        commandRaw.put("dest", String.valueOf(TestParameters.getDestinationInt()));
         commandRaw.put("src", "1");
         commandRaw.put("data", "17 1");
         reply = new JSONObject();

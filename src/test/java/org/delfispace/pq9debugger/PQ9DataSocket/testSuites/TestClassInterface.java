@@ -41,6 +41,7 @@ interface TestClassInterface
     final String COMMSSource  = "{\"valid\":\"true\",\"value\":\"COMMS\"}";
     final String ResetPC  ="{\"valid\":\"true\",\"value\":\"PowerCycle\"}";
     final String EPSSource  = "{\"valid\":\"true\",\"value\":\"EPS\"}"; 
+
     
     final int WAITREFRESH = 50;
     final String[] SUBSYSTEMS = {"EPS", "ADCS", "COMMS", "ABD"};

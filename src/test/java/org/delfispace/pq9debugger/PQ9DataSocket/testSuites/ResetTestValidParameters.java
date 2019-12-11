@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import org.delfispace.pq9debugger.PQ9DataSocket.Frame;
 import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataClient;
 import org.delfispace.pq9debugger.PQ9DataSocket.TimeoutException;
+import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.TestClassInterface.genericPingAttempt;
 import static org.delfispace.pq9debugger.PQ9DataSocket.testSuites.TestVarsMethods.caseClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -77,7 +78,7 @@ public class ResetTestValidParameters implements TestClassInterface
         reply = caseClient.getFrame();
         Assert.assertEquals("ResetService", reply.get("_received_").toString());
         Assert.assertEquals(ResetReply, reply.get("Request").toString());
-        Assert.assertEquals(EPSSource, reply.get("Source").toString());
+        Assert.assertEquals(dest, getSource(reply.get("Source").toString()));
         output.append(reply.get("Size").toString());
         output.append("\n");
         output.append(ResetReplySize);
@@ -105,7 +106,7 @@ public class ResetTestValidParameters implements TestClassInterface
         reply = caseClient.getFrame();
         Assert.assertEquals("ResetService", reply.get("_received_").toString());
         Assert.assertEquals(ResetReply, reply.get("Request").toString());
-        Assert.assertEquals(EPSSource, reply.get("Source").toString());
+        Assert.assertEquals(dest, getSource(reply.get("Source").toString()));
         Assert.assertEquals(ResetReplySize, reply.get("Size").toString());
         Assert.assertEquals(ResetHard, reply.get("Reset").toString());
         Assert.assertEquals(ResetReplyDest, reply.get("Destination").toString());
@@ -141,7 +142,7 @@ public class ResetTestValidParameters implements TestClassInterface
     
    
     @Test
-    public void testInternalReset() throws IOException, ParseException, TimeoutException, InterruptedException
+    public void testInternalReset() throws IOException, ParseException, TimeoutException, InterruptedException, PQ9PingTestException
     {
         output.append("This is a internal reset test.").append(dest); 
         caseClient.sendFrame(commandReset); // send reset command
@@ -152,7 +153,7 @@ public class ResetTestValidParameters implements TestClassInterface
             Thread.sleep(60000);
             if(!"EPS".equals(dest))
             {
-                pingSubSystem("EPS");
+                boolean ping = genericPingAttempt("EPS", caseClient); 
             }
         }
         
@@ -281,23 +282,10 @@ public class ResetTestValidParameters implements TestClassInterface
              int value = Integer.valueOf(tempJSON.get("value").toString());
              return value;
      }  
-     
-    protected JSONObject pingSubSystem(String subSystem) throws IOException, ParseException, TimeoutException{
-        JSONObject replyInt = new JSONObject();
-         if(isKnown(subSystem, SUBSYSTEMS))
-        {
-            
-            commandPing.put("Destination", subSystem);
-        }
-        else
-        {
-            replyInt.put("_received_", "Error Unknown Subsystem");
-            return replyInt; // return here, there is something wrong thererfore test will fail.
-        }
-        //commandPing should be initialized by the @Before method of the test
-        commandPing.put("_send_", "Ping");
-        caseClient.sendFrame(commandPing);  
-        replyInt = caseClient.getFrame();
-        return replyInt;   
-    } 
+     protected String getSource(String SourceString) throws ParseException
+     {
+        JSONObject tempJSON = stringToJSON(SourceString);
+             String value = tempJSON.get("value").toString();
+             return value;
+     }
 }
