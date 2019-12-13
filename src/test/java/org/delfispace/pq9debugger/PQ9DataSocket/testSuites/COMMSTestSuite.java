@@ -10,18 +10,20 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 /**
  *
- * @author LocalAdmin
+ * @author Michael van den Bos
  */
 
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses({
-        //genericLowVoltageTest.class,
+        RadioTransmissionTest.class,
+        /*
+        genericLowVoltageTest.class,
         PingTestValidParameters.class,
         PingTestInvalidParameters.class,
         TestInvalidService.class,
         ResetTestValidParameters.class,
-        
+        */
 })
 
 public class COMMSTestSuite {   
@@ -30,8 +32,9 @@ public class COMMSTestSuite {
     {
         System.out.println("setting up");
         TestParameters.setDestination("COMMS");
-        System.out.print(" Testing :" );
-        System.out.println(TestParameters.getDestination());
+        System.out.print("Testing :" );
+        System.out.print(TestParameters.getDestination());
+         System.out.print(" Board adress is : " );
         System.out.println(TestParameters.getDestinationInt());
     }
 

@@ -46,9 +46,6 @@ public class TestParameters
         destint = 0;
         int runner = 0;
         do{
-            System.out.println("runner");
-            System.out.println(SUBSYSTEMS[runner]);
-                System.out.println(runner);
             if (destination.equals(SUBSYSTEMS[runner]))
             {
                 

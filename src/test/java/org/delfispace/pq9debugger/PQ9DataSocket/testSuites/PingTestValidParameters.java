@@ -20,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 /**
  *
- * @author LocalAdmin
+ * @author Michael van den Bos
  */
 public class PingTestValidParameters 
 { 

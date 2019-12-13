@@ -33,7 +33,7 @@ import org.xtce.toolkit.XTCETMStream;
 
 /**
  *
- * @author LocalAdmin
+ * @author Michael van den Bos
  */
 public class EPSPowerSupplyTests implements TestClassInterface
 {
@@ -179,7 +179,7 @@ public class EPSPowerSupplyTests implements TestClassInterface
         caseClient.sendFrame(commandGetTelemetry); 
         reply = caseClient.getFrame(); 
         Thread.sleep(100);
-        Assert.assertTrue("GO", assertBus(1,true));
+        Assert.assertTrue("System is not working", assertBus(1,true));
 
         double d = 3.5;
         
@@ -342,10 +342,10 @@ public class EPSPowerSupplyTests implements TestClassInterface
         {
             keySH.insert(25,String.valueOf(0));
         }
-        Assert.assertEquals(servicePB, reply.get("Service").toString());
-        Assert.assertEquals(replyPB, reply.get("Request").toString()); 
-        Assert.assertEquals("PowerBusReply", reply.get("_received_").toString());
-        Assert.assertEquals(keySH.toString(), reply.get("State").toString());// validate response
+        Assert.assertEquals(servicePB, reply1.get("Service").toString());
+        Assert.assertEquals(replyPB, reply1.get("Request").toString()); 
+        Assert.assertEquals("PowerBusReply", reply1.get("_received_").toString());
+        Assert.assertEquals(keySH.toString(), reply1.get("State").toString());// validate response
     }
     protected double getURBVoltage() throws IOException, ParseException, TimeoutException
     {

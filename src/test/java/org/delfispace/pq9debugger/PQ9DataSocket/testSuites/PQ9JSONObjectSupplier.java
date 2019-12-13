@@ -7,18 +7,8 @@ package org.delfispace.pq9debugger.PQ9DataSocket.testSuites;
 
 /**
  *
- * @author Michael van den Bos
+ * @author LocalAdmin
  */
-public class PQ9PingTestException extends Exception{
+public class PQ9JSONObjectSupplier {
     
-   
-    public PQ9PingTestException(){
-        
-    }
-    public PQ9PingTestException(String problem){
-        super(problem);
-    }
 }
-
-    
-

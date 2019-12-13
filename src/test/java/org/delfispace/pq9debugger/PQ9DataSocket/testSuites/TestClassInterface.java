@@ -18,7 +18,7 @@ import org.xtce.toolkit.XTCETMStream;
 
 /**
  *
- * @author LocalAdmin
+ * @author Michael van den Bos
  */
 interface TestClassInterface
 {

@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 /**
  *
- * @author LocalAdmin
+ * @author Michael van den Bos
  */
 
 @RunWith(Suite.class)
