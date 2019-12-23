@@ -44,6 +44,20 @@ public class TestConcepts {
     static PQ9DataClient client;
     public static void main(String[]args)throws IOException, ParseException, TimeoutException, PQ9Exception, XTCEDatabaseException 
     {  
+        JSONObject commandRaw = new JSONObject();
+        commandRaw.put("_send_", "SendRaw");
+        commandRaw.put("dest", "COMMS");
+        commandRaw.put("src", "1");
+        commandRaw.put("data", "20 3"); // 20 3 = transmit
+        commandRaw.put("data2","{\"valid\":\"true\",\"value\":\"2\"}");
+        
+        PQ9JSONObjectInterpreter intep = new PQ9JSONObjectInterpreter(commandRaw);
+        System.out.println(intep.getStringFromKey("_send_"));
+        System.out.println(intep.getStringFromKey("dest"));
+        System.out.println(intep.getStringFromKey("src"));
+        System.out.println(intep.getStringFromKey("data"));
+        System.out.println(intep.getStringFromSubKey("data2","valid"));
+        /*
         referencetime = System.nanoTime();     
         client = new PQ9DataClient("localhost", 10000);
         client.setTimeout(TIMEOUT);

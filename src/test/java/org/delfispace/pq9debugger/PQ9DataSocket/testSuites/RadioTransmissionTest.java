@@ -60,24 +60,25 @@ public class RadioTransmissionTest
         commandPing.put("_send_", "Ping");
         commandPing.put("Destination", TestParameters.getDestination());
         commandGetFrame = new JSONObject();
-        commandGetFrame.put("_send_","GETServiceRadio");
-        commandGetFrame.put("RadioCommand","radioGDF");
-
+        commandGetFrame.put("_send_","SendRaw");
+        commandGetFrame.put("dest", String.valueOf(TestParameters.getDestinationInt()));
+        commandGetFrame.put("src", "1");
+        commandGetFrame.put("data", "20 4"); // 20 4 = request data
     }
    
     @Test
     public void testTransmission() throws IOException, ParseException, TimeoutException, InterruptedException
     {
-        String transmX = "0x01 0x02 0x04 0x08 0x10 0x20 0x40 0x80 0xA 0x0B 0x0C 0x0D 0x0E 0x0F";
+        String transmX = "0x01 0x02 0x04 0x08 0x10 0x20 0x40 0x80 0xAA 0xBB 0xCC 0xDD 0xEE 0xFF";
         caseClient.sendFrame(commandPing);
         reply = caseClient.getFrame();
         PQ9JSONObjectChecker Chk = new PQ9JSONObjectChecker(reply);
         Assert.assertTrue(Chk.checkPingReply());
-        transmX = "20 3"+" "+transmX;
+        transmX = "20 3 14"+" "+transmX;
         commandRaw.put("data", transmX); // 20 3 = transmit
         caseClient.sendFrame(commandRaw);
         caseClient.getFrame();
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         caseClient.sendFrame(commandGetFrame);
         PQ9JSONObjectInterpreter intep = new PQ9JSONObjectInterpreter(caseClient.getFrame());
         String received = intep.getStringFromKey("_raw_");
