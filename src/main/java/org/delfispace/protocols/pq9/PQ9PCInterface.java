@@ -35,9 +35,11 @@ public class PQ9PCInterface
     private readerThread reader;
     private final ByteArrayOutputStream bs = new ByteArrayOutputStream();
     private boolean startFound = false;
-    private boolean controlFound = false;
     private int sizeFrame = -1;
 
+    private boolean firstByteFound = false;
+    private short tmpValue = 0;
+    
     static final int HLDLC_START_FLAG = 0x7E;
     static final int HLDLC_CONTROL_FLAG = 0x7D;
     static final int HLDLC_STOP_FLAG = 0x7C;
@@ -45,6 +47,11 @@ public class PQ9PCInterface
     static final int HLDLC_ESCAPE_CONTROL_FLAG = 0x5D;
     static final int HLDLC_ESCAPE_STOP_FLAG = 0x5C;
 
+    static final int FIRST_BYTE = 0x80;
+    static final int SECOND_BYTE = 0x00;
+    static final int ADDRESS_BIT = 0x40;
+    static final int STOP_TRANSMISSION = 0x20;
+    
     public PQ9PCInterface(InputStream in, OutputStream out) 
     {
         this.in = in;
@@ -107,118 +114,22 @@ public class PQ9PCInterface
             if (tmprx > 0)
             {
                 byte rx = (byte) (newData[0] & 0xFF);
-                if (rx == HLDLC_START_FLAG) 
+        //System.out.println(String.format("%02X", rx & 0xFF));
+                // were we waiting for the first byte?
+                // did we receive the first byte?
+                if (!firstByteFound && ((rx & FIRST_BYTE) != 0))
                 {
-                    // clear the buffer and get ready to process a new frame
-                    if (bs.size() != 0)
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("Bytes have been discarded: ");
-                        byte[] d = bs.toByteArray();
-                        for (int i = 0; i < d.length; i++)
-                        {
-                            sb.append(String.format("%02X ", d[i]));
-                        }
-                        if (errorHdl != null)
-                        {
-                            errorHdl.error(new PQ9Exception(sb.toString()));
-                        }
-                    }
-                    bs.reset();
-                    startFound = true;
-                    controlFound = false;
-                    sizeFrame = -1;
-                } 
-                else if (startFound) 
+                    tmpValue = (short)((((int)rx) << 8) & 0xFFFF);
+                    firstByteFound = true;
+                }
+                else if (firstByteFound && ((rx & FIRST_BYTE) == 0))
                 {
-                    // only process data if a flag was found            
-                    if (rx == HLDLC_CONTROL_FLAG) 
-                    {
-                        controlFound = true;
-                    } 
-                    else if (controlFound) 
-                    {
-                        switch (rx) 
-                        {
-                            case HLDLC_ESCAPE_START_FLAG:
-                                bs.write(HLDLC_START_FLAG);
-                                break;
-                            case HLDLC_ESCAPE_CONTROL_FLAG:
-                                bs.write(HLDLC_CONTROL_FLAG);
-                                break;
-                            case HLDLC_ESCAPE_STOP_FLAG:
-                                bs.write(HLDLC_STOP_FLAG);
-                                break;
-                            default:
-                                // illegal sequence, aborting
-                                startFound = false;
-                                // throw exception here
-                                if (errorHdl != null)
-                                {
-                                    errorHdl.error(new PQ9Exception("exception 1"));
-                                }
-                                break;
-                        }
-                        controlFound = false;
-                    } 
-                    else 
-                    {
-                        // new data byte, add it to the buffer
-                        bs.write(rx);
-                    }
+                    tmpValue |= (short)rx & 0xFF;
+                    firstByteFound = false;
                     
-                    // check if we received all the bytes and can check the checksum
-                    if ((sizeFrame != -1) && (sizeFrame == bs.size() - 5))
-                    {
-                        startFound = false;
-                        controlFound = false;
-                        sizeFrame = -1;
-                        try 
-                        {
-                            PQ9 t = new PQ9(bs.toByteArray());   
-                            // clean the buffer if a valid frame was found
-                            bs.reset();
-                            return t;
-                        } catch (PQ9Exception ex) 
-                        {
-                            // the frame is not valid, throw away the data and wait for a new frame
-                            if (errorHdl != null)
-                            {
-                                errorHdl.error(ex);
-                            }
-                            return null;
-                        }                        
-                    }                    
-
-                    // initialize the counter to catch the frame size byte and use it to 
-                    // detect frame termination
-                    if (bs.size() == 2)
-                    {
-
-                        sizeFrame = rx & 0xFF;
-                    }
-                }
-                else
-                {
-                    //a byte received without having received a start
-                    if (errorHdl != null)
-                    {
-                        errorHdl.error(new PQ9Exception(String.format("Unexpected byte: %02X", tmprx & 0xFF)));
-                    }
-                }
-
-                // prevent the buffer from growing too much
-                if (bs.size() > 256)
-                {
-                    bs.reset();
-                    startFound = false;
-                    controlFound = false;
-                    sizeFrame = -1;
-                    if (errorHdl != null)
-                    {
-                        errorHdl.error(new PQ9Exception("Buffer overrun"));
-                    }
-                }
+                    // process the received short
+                    return processShort(tmpValue);
+                } 
             }
             // read new byte
             tmprx = in.read(newData);
@@ -228,33 +139,105 @@ public class PQ9PCInterface
         return null;
     }
 
-    public synchronized void send(PQ9 frame) throws IOException 
+    private PQ9 processShort(short value)
     {
-        out.write(HLDLC_START_FLAG);
-        byte[] data = frame.getFrame();
-        for (int i = 0; i < data.length; i++) 
+        byte b = 0;
+        
+        if ((value & (ADDRESS_BIT << 8)) != 0) 
         {
-            byte tx = data[i];
-            switch (tx) 
+            // first byte
+            
+            // clear the buffer and get ready to process a new frame
+            if (bs.size() != 0)
             {
-                case HLDLC_START_FLAG:
-                    out.write(HLDLC_CONTROL_FLAG);
-                    out.write(HLDLC_ESCAPE_START_FLAG);
-                    break;
-                case HLDLC_CONTROL_FLAG:
-                    out.write(HLDLC_CONTROL_FLAG);
-                    out.write(HLDLC_ESCAPE_CONTROL_FLAG);
-                    break;
-                case HLDLC_STOP_FLAG:
-                    out.write(HLDLC_CONTROL_FLAG);
-                    out.write(HLDLC_ESCAPE_STOP_FLAG);
-                    break;
-                default:
-                    out.write(tx);
-                    break;
+                StringBuilder sb = new StringBuilder();
+                sb.append("Bytes have been discarded: ");
+                byte[] d = bs.toByteArray();
+                for (int i = 0; i < d.length; i++)
+                {
+                    sb.append(String.format("%02X ", d[i]));
+                }
+                if (errorHdl != null)
+                {
+                    errorHdl.error(new PQ9Exception(sb.toString()));
+                }
+            }
+            bs.reset();
+            sizeFrame = -1;
+            startFound = true;
+        }
+        
+        if (startFound)
+        {
+            b = (byte)((((value & 0x100) >> 1) | (value & 0x7F)) & 0xFF);
+            bs.write(b);
+
+            // check if we received all the bytes and can check the checksum
+            if ((sizeFrame != -1) && (sizeFrame == bs.size() - 5))
+            {
+                try 
+                {
+                    PQ9 t = new PQ9(bs.toByteArray());   
+                    // clean the buffer if a valid frame was found
+                    bs.reset();
+                    startFound = false;
+                    return t;
+                } catch (PQ9Exception ex) 
+                {
+                    // the frame is not valid, throw away the data and wait for a new frame
+                    if (errorHdl != null)
+                    {
+                        errorHdl.error(ex);
+                    }
+                    return null;
+                }                        
+            }                    
+
+            // initialize the counter to catch the frame size byte and use it to 
+            // detect frame termination
+            if (bs.size() == 2)
+            {
+                sizeFrame = b & 0xFF;
             }
         }
-        out.write(HLDLC_STOP_FLAG);
+        else
+        {
+            //a byte received without having received a start
+            if (errorHdl != null)
+            {
+                errorHdl.error(new PQ9Exception(String.format("Unexpected byte: %02X", b & 0xFF)));
+            }
+        }
+
+        // prevent the buffer from growing too much
+        if (bs.size() > 256)
+        {
+            bs.reset();
+            startFound = false;
+            sizeFrame = -1;
+            if (errorHdl != null)
+            {
+                errorHdl.error(new PQ9Exception("Buffer overrun"));
+            }
+        }
+        return null;
+    }
+    
+    public synchronized void send(PQ9 frame) throws IOException 
+    {
+        byte[] data = frame.getFrame();
+
+        out.write( FIRST_BYTE | ADDRESS_BIT | (data[0] >> 7) & 0x01 );
+        out.write( data[0] & 0x7F );
+
+        for(int i = 1; i < data.length - 1; i++)            
+        {
+            out.write( FIRST_BYTE | (data[i] >> 7) & 0x01 );
+            out.write( data[i] & 0x7F );
+        }
+
+        out.write( FIRST_BYTE | STOP_TRANSMISSION | (data[data.length - 1] >> 7) & 0x01 );
+        out.write( data[data.length - 1] & 0x7F );
         out.flush();
     }
 

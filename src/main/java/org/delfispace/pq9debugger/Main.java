@@ -200,7 +200,7 @@ public class Main implements PQ9Receiver, Subscriber
             comPort.openPort();
 
             // configure the seriql port parameters
-            comPort.setComPortParameters(115200, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+            comPort.setComPortParameters(115200 * 2, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
             
             // set the serial port in blocking mode
             comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
