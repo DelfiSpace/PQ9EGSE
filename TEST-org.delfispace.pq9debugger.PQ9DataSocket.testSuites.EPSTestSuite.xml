@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite tests="28" failures="2" name="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSTestSuite" time="510.807" errors="0" skipped="0">
+  <properties>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="java.vm.version" value="13+33"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-13\bin"/>
+    <property name="user.country.format" value="NL"/>
+    <property name="maven.multiModuleProjectDirectory" value="D:\GitHub\PQ9EGSE"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="java.vendor.url" value="https://java.oracle.com/"/>
+    <property name="guice.disable.misplaced.annotation.check" value="true"/>
+    <property name="path.separator" value=";"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="user.script" value=""/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="test" value="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSTestSuite"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="D:\GitHub\PQ9EGSE"/>
+    <property name="java.vm.compressedOopsMode" value="32-bit"/>
+    <property name="java.runtime.version" value="13+33"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.io.tmpdir" value="C:\Users\LOCALA~1\AppData\Local\Temp\"/>
+    <property name="line.separator" value="
+"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.variant" value=""/>
+    <property name="os.name" value="Windows 10"/>
+    <property name="maven.ext.class.path" value="C:\Program Files\NetBeans-11.1\netbeans\java\maven-nblib\netbeans-eventspy.jar"/>
+    <property name="classworlds.conf" value="C:\Program Files\NetBeans-11.1\netbeans\java\maven\bin\m2.conf"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-13\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Microsoft Windows Performance Toolkit\;C:\Program Files\MATLAB\R2018b\runtime\win64;C:\Program Files\MATLAB\R2018b\bin;C:\Program Files (x86)\Wolfram Research\WolframScript\;C:\Program Files\dotnet\;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\PuTTY\;C:\Program Files\NetBeans-11.1\netbeans\java\maven\bin;C:\Program Files\Java\jdk-13\bin;C:\Users\LocalAdmin\AppData\Local\Microsoft\WindowsApps;."/>
+    <property name="jdk.debug" value="release"/>
+    <property name="java.class.version" value="57.0"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="os.version" value="10.0"/>
+    <property name="user.home" value="C:\Users\LocalAdmin"/>
+    <property name="user.timezone" value="Europe/Amsterdam"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.specification.version" value="13"/>
+    <property name="user.name" value="LocalAdmin"/>
+    <property name="java.class.path" value="C:\Program Files\NetBeans-11.1\netbeans\java\maven\boot\plexus-classworlds-2.5.2.jar"/>
+    <property name="java.vm.specification.version" value="13"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -Dtest=org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSTestSuite -Dmaven.ext.class.path=C:\Program Files\NetBeans-11.1\netbeans\java\maven-nblib\netbeans-eventspy.jar -Dfile.encoding=UTF-8 test-compile surefire:test"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk-13"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.language.format" value="nl"/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="java.version" value="13"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="maven.home" value="C:\Program Files\NetBeans-11.1\netbeans\java\maven"/>
+    <property name="file.separator" value="\"/>
+    <property name="java.version.date" value="2019-09-17"/>
+    <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+  </properties>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.PingTestValidParameters" name="pingSourceTest" time="0.053"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.PingTestValidParameters" name="pingRequestTest" time="0.044"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.PingTestValidParameters" name="PingServiceTest" time="0.046"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.PingTestValidParameters" name="PingReplyTest" time="0.045"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.PingTestValidParameters" name="PingManyTimes" time="53.091"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.PingTestInvalidParameters" name="testPingRAW" time="0.045"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.PingTestInvalidParameters" name="testPingLoopDestinations" time="5.722"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.PingTestInvalidParameters" name="testPingCommandOverflow" time="12.386"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.PingTestInvalidParameters" name="testPingDestinationOverflow" time="6.177"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest" name="testBus1" time="1.227"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest" name="testBus2" time="1.226"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest" name="testBus3" time="1.212"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest" name="testBus4" time="1.223"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest" name="testAllBusses" time="5.161"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest" name="testBus1Inv" time="1.225"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest" name="testBus2Dup" time="8.481"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest" name="testBus2Inv" time="1.211"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest" name="testBus3Dup" time="3.633"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest" name="testBus3Inv" time="1.212"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest" name="testBus4Dup" time="3.633"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSBusHandlingTest" name="testBus4Inv" time="1.211"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.ResetTestValidParameters" name="testSoftReset" time="0.284"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.ResetTestValidParameters" name="testInternalReset" time="180.167"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.ResetTestValidParameters" name="testPowerCycle" time="2.116">
+    <failure message="expected:&lt;...id&quot;:&quot;true&quot;,&quot;value&quot;:&quot;[Reply]&quot;}&gt; but was:&lt;...id&quot;:&quot;true&quot;,&quot;value&quot;:&quot;[Error]&quot;}&gt;" type="org.junit.ComparisonFailure">org.junit.ComparisonFailure: expected:&lt;...id&quot;:&quot;true&quot;,&quot;value&quot;:&quot;[Reply]&quot;}&gt; but was:&lt;...id&quot;:&quot;true&quot;,&quot;value&quot;:&quot;[Error]&quot;}&gt;
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	at org.junit.Assert.assertEquals(Assert.java:144)
+	at org.delfispace.pq9debugger.PQ9DataSocket.testSuites.ResetTestValidParameters.testPowerCycle(ResetTestValidParameters.java:131)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:567)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:252)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:141)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:112)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:567)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
+</failure>
+    <system-out>test complete
+
+</system-out>
+  </testcase>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.ResetTestValidParameters" name="testHardReset" time="0.267"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.TestInvalidService" name="testWrongService" time="11.572">
+    <failure message="No response from board 2 on commmand: 0
+No response from board 2 on commmand: 18
+No response from board 2 on commmand: 44
+No response from board 2 on commmand: 124
+No response from board 2 on commmand: 165
+" type="java.lang.AssertionError">java.lang.AssertionError: No response from board 2 on commmand: 0
+No response from board 2 on commmand: 18
+No response from board 2 on commmand: 44
+No response from board 2 on commmand: 124
+No response from board 2 on commmand: 165
+
+	at org.junit.Assert.fail(Assert.java:88)
+	at org.junit.Assert.assertTrue(Assert.java:41)
+	at org.delfispace.pq9debugger.PQ9DataSocket.testSuites.TestInvalidService.testWrongService(TestInvalidService.java:123)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:567)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:252)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:141)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:112)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:567)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
+</failure>
+    <system-out>Initializer of Service Test with random Parameters 
+runner
+EPS
+0
+Testing subSystem: 2
+getting started
+test complete
+No reply to service request. 0
+EPS replied to 1 with {&quot;valid&quot;:&quot;true&quot;,&quot;value&quot;:&quot;Execute&quot;}
+recieved error message from command: 2
+EPS replied to 3 with {&quot;valid&quot;:&quot;true&quot;,&quot;value&quot;:&quot;Housekeeping&quot;}
+recieved error message from command: 4
+recieved error message from command: 5
+recieved error message from command: 6
+recieved error message from command: 7
+recieved error message from command: 8
+recieved error message from command: 9
+recieved error message from command: 10
+recieved error message from command: 11
+recieved error message from command: 12
+recieved error message from command: 13
+recieved error message from command: 14
+recieved error message from command: 15
+recieved error message from command: 16
+EPS replied to 17 with {&quot;valid&quot;:&quot;true&quot;,&quot;value&quot;:&quot;Ping&quot;}
+No reply to service request. 18
+EPS replied to 19 with {&quot;valid&quot;:&quot;true&quot;,&quot;value&quot;:&quot;Reset&quot;}
+recieved error message from command: 20
+recieved error message from command: 21
+recieved error message from command: 22
+recieved error message from command: 23
+recieved error message from command: 24
+recieved error message from command: 25
+recieved error message from command: 26
+recieved error message from command: 27
+recieved error message from command: 28
+recieved error message from command: 29
+recieved error message from command: 30
+recieved error message from command: 31
+recieved error message from command: 32
+recieved error message from command: 33
+recieved error message from command: 34
+recieved error message from command: 35
+recieved error message from command: 36
+recieved error message from command: 37
+recieved error message from command: 38
+recieved error message from command: 39
+recieved error message from command: 40
+recieved error message from command: 41
+recieved error message from command: 42
+recieved error message from command: 43
+No reply to service request. 44
+recieved error message from command: 45
+recieved error message from command: 46
+recieved error message from command: 47
+recieved error message from command: 48
+recieved error message from command: 49
+recieved error message from command: 50
+recieved error message from command: 51
+recieved error message from command: 52
+recieved error message from command: 53
+recieved error message from command: 54
+recieved error message from command: 55
+recieved error message from command: 56
+recieved error message from command: 57
+recieved error message from command: 58
+recieved error message from command: 59
+recieved error message from command: 60
+recieved error message from command: 61
+recieved error message from command: 62
+recieved error message from command: 63
+recieved error message from command: 64
+recieved error message from command: 65
+recieved error message from command: 66
+recieved error message from command: 67
+recieved error message from command: 68
+recieved error message from command: 69
+recieved error message from command: 70
+recieved error message from command: 71
+recieved error message from command: 72
+recieved error message from command: 73
+recieved error message from command: 74
+recieved error message from command: 75
+recieved error message from command: 76
+recieved error message from command: 77
+recieved error message from command: 78
+recieved error message from command: 79
+recieved error message from command: 80
+recieved error message from command: 81
+recieved error message from command: 82
+recieved error message from command: 83
+recieved error message from command: 84
+recieved error message from command: 85
+recieved error message from command: 86
+recieved error message from command: 87
+recieved error message from command: 88
+recieved error message from command: 89
+recieved error message from command: 90
+recieved error message from command: 91
+recieved error message from command: 92
+recieved error message from command: 93
+recieved error message from command: 94
+recieved error message from command: 95
+recieved error message from command: 96
+recieved error message from command: 97
+recieved error message from command: 98
+recieved error message from command: 99
+recieved error message from command: 100
+recieved error message from command: 101
+recieved error message from command: 102
+recieved error message from command: 103
+recieved error message from command: 104
+recieved error message from command: 105
+recieved error message from command: 106
+recieved error message from command: 107
+recieved error message from command: 108
+recieved error message from command: 109
+recieved error message from command: 110
+recieved error message from command: 111
+recieved error message from command: 112
+recieved error message from command: 113
+recieved error message from command: 114
+recieved error message from command: 115
+recieved error message from command: 116
+recieved error message from command: 117
+recieved error message from command: 118
+recieved error message from command: 119
+recieved error message from command: 120
+recieved error message from command: 121
+recieved error message from command: 122
+recieved error message from command: 123
+No reply to service request. 124
+recieved error message from command: 125
+recieved error message from command: 126
+recieved error message from command: 127
+recieved error message from command: 128
+recieved error message from command: 129
+recieved error message from command: 130
+recieved error message from command: 131
+recieved error message from command: 132
+recieved error message from command: 133
+recieved error message from command: 134
+recieved error message from command: 135
+recieved error message from command: 136
+recieved error message from command: 137
+recieved error message from command: 138
+recieved error message from command: 139
+recieved error message from command: 140
+recieved error message from command: 141
+recieved error message from command: 142
+recieved error message from command: 143
+recieved error message from command: 144
+recieved error message from command: 145
+recieved error message from command: 146
+recieved error message from command: 147
+recieved error message from command: 148
+recieved error message from command: 149
+recieved error message from command: 150
+recieved error message from command: 151
+recieved error message from command: 152
+recieved error message from command: 153
+recieved error message from command: 154
+recieved error message from command: 155
+recieved error message from command: 156
+recieved error message from command: 157
+recieved error message from command: 158
+recieved error message from command: 159
+recieved error message from command: 160
+recieved error message from command: 161
+recieved error message from command: 162
+recieved error message from command: 163
+recieved error message from command: 164
+No reply to service request. 165
+recieved error message from command: 166
+recieved error message from command: 167
+recieved error message from command: 168
+recieved error message from command: 169
+recieved error message from command: 170
+recieved error message from command: 171
+recieved error message from command: 172
+recieved error message from command: 173
+recieved error message from command: 174
+recieved error message from command: 175
+recieved error message from command: 176
+recieved error message from command: 177
+recieved error message from command: 178
+recieved error message from command: 179
+recieved error message from command: 180
+recieved error message from command: 181
+recieved error message from command: 182
+recieved error message from command: 183
+recieved error message from command: 184
+recieved error message from command: 185
+recieved error message from command: 186
+recieved error message from command: 187
+recieved error message from command: 188
+recieved error message from command: 189
+recieved error message from command: 190
+recieved error message from command: 191
+recieved error message from command: 192
+recieved error message from command: 193
+recieved error message from command: 194
+recieved error message from command: 195
+recieved error message from command: 196
+recieved error message from command: 197
+recieved error message from command: 198
+recieved error message from command: 199
+recieved error message from command: 200
+recieved error message from command: 201
+recieved error message from command: 202
+recieved error message from command: 203
+recieved error message from command: 204
+recieved error message from command: 205
+recieved error message from command: 206
+recieved error message from command: 207
+recieved error message from command: 208
+recieved error message from command: 209
+recieved error message from command: 210
+recieved error message from command: 211
+recieved error message from command: 212
+recieved error message from command: 213
+recieved error message from command: 214
+recieved error message from command: 215
+recieved error message from command: 216
+recieved error message from command: 217
+recieved error message from command: 218
+recieved error message from command: 219
+recieved error message from command: 220
+recieved error message from command: 221
+recieved error message from command: 222
+recieved error message from command: 223
+recieved error message from command: 224
+recieved error message from command: 225
+recieved error message from command: 226
+recieved error message from command: 227
+recieved error message from command: 228
+recieved error message from command: 229
+recieved error message from command: 230
+recieved error message from command: 231
+recieved error message from command: 232
+recieved error message from command: 233
+recieved error message from command: 234
+recieved error message from command: 235
+recieved error message from command: 236
+recieved error message from command: 237
+recieved error message from command: 238
+recieved error message from command: 239
+recieved error message from command: 240
+recieved error message from command: 241
+recieved error message from command: 242
+recieved error message from command: 243
+recieved error message from command: 244
+recieved error message from command: 245
+recieved error message from command: 246
+recieved error message from command: 247
+recieved error message from command: 248
+recieved error message from command: 249
+recieved error message from command: 250
+recieved error message from command: 251
+recieved error message from command: 252
+recieved error message from command: 253
+recieved error message from command: 254
+recieved error message from command: 255
+
+</system-out>
+  </testcase>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.EPSPowerSupplyTests" name="underVoltageProtectionTest" time="129.666"/>
+  <testcase classname="org.delfispace.pq9debugger.PQ9DataSocket.testSuites.genericLowVoltageTest" name="voltageSweepTest" time="78.471"/>
+</testsuite>
