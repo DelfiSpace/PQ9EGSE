@@ -4,11 +4,21 @@
  * and open the template in the editor.
  */
 package org.delfispace.pq9debugger.PQ9DataSocket.testSuites.Report.XMLHandler;
+import java.util.ArrayList;
+import javax.xml.bind.annotation.*;
+
 
 /**
  *
- * @author LocalAdmin
+ * @author Michael van den Bos
  */
+
+@XmlRootElement(name = "testsuite")
+
 public class testsuite {
+    @XmlElement(name = "properties")
+    private ArrayList<property> properties;
+    
+    private ArrayList<testcase> testcases;
     
 }

@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package org.delfispace.pq9debugger.PQ9DataSocket.testSuites.Report.XMLHandler;
-
+import java.util.ArrayList;
+import javax.xml.bind.annotation.*;
 /**
  *
  * @author LocalAdmin

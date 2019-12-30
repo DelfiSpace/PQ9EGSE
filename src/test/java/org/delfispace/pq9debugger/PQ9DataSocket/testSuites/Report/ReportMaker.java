@@ -11,4 +11,13 @@ package org.delfispace.pq9debugger.PQ9DataSocket.testSuites.Report;
  */
 public class ReportMaker {
     
+    testsuite Report;
+    
+    
+    public ReportMaker(String fileName)
+    {
+        //put here a unmarshal for a fileName
+    }
+    
+    private void 
 }

@@ -7,7 +7,7 @@ package org.delfispace.pq9debugger.PQ9DataSocket.testSuites.Report.XMLHandler;
 
 /**
  *
- * @author LocalAdmin
+ * @author Michael van den Bos
  */
 public class XMLtoObject {
     
