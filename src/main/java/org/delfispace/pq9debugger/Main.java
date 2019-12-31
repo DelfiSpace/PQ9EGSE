@@ -26,17 +26,18 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.delfispace.CommandWebServer.Command;
 import org.delfispace.CommandWebServer.CommandWebServer;
 import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataSocket;
+import org.delfispace.protocols.pq9.PCInterface;
 import org.delfispace.protocols.pq9.PQ9;
 import org.delfispace.protocols.pq9.PQ9Exception;
 import org.delfispace.protocols.pq9.PQ9PCInterface;
 import org.delfispace.protocols.pq9.PQ9Receiver;
+import org.delfispace.protocols.pq9.RS485PCInterface;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -63,7 +64,7 @@ public class Main implements PQ9Receiver, Subscriber
     private static final String XTCE_FILE = "EPS.xml";
     private final CommandWebServer srv;
     private final PQ9DataSocket DatSktSrv;
-    private PQ9PCInterface pcInterface = null; 
+    private PCInterface pcInterface = null; 
     private final JSONParser parser = new JSONParser(); 
     private XTCETMStream stream;
     private SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss.SSS ");
@@ -189,7 +190,8 @@ public class Main implements PQ9Receiver, Subscriber
         if (port.equals(NULL_PORT_NAME))
         {                        
             // crete the HLDLC reader
-            pcInterface = new PQ9PCInterface(new NullInputStream(), new NullOutputStream());        
+            //pcInterface = new PQ9PCInterface(new NullInputStream(), new NullOutputStream());  
+            pcInterface = new RS485PCInterface(new NullInputStream(), new NullOutputStream());
         }
         else
         {
@@ -206,7 +208,8 @@ public class Main implements PQ9Receiver, Subscriber
             comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
             
             // crete the HLDLC reader
-            pcInterface = new PQ9PCInterface(comPort.getInputStream(), comPort.getOutputStream());
+            //pcInterface = new PQ9PCInterface(comPort.getInputStream(), comPort.getOutputStream());
+            pcInterface = new RS485PCInterface(comPort.getInputStream(), comPort.getOutputStream());
         }
         
         // setup an asynchronous callback on frame reception
