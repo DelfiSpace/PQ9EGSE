@@ -79,7 +79,7 @@ public class RS485PCInterface extends PCInterface
             if (tmprx > 0)
             {
                 byte rx = (byte) (newData[0] & 0xFF);
-//System.out.println(String.format("F %02X", rx & 0xFF));
+
                 // were we waiting for the first byte?
                 // did we receive the first byte?
                 if (!firstByteFound && ((rx & FIRST_BYTE) != 0))
@@ -162,7 +162,6 @@ public class RS485PCInterface extends PCInterface
                 if (value == 0x7D)
                 {
                     // frame found!
-                    System.out.println("Found");
                     state = 0;
                     
                     try
