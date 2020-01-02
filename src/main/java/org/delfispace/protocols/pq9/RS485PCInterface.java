@@ -107,6 +107,7 @@ public class RS485PCInterface extends PCInterface
     private PQ9 processShort(short value)
     {
         value &= 0xFF;
+        System.out.println(String.format("%02X", value));
         switch(state)
         {
             case 0:
