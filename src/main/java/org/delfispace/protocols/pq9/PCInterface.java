@@ -38,6 +38,7 @@ public abstract class PCInterface
     protected static final int ADDRESS_BIT = 0x40;
     protected static final int STOP_TRANSMISSION = 0x20;
     protected static final int COMMAND = 0x10;
+    protected static final int INITIALIZE = 0x00;
     protected static final int INTERFACE_PQ9 = 0x01;
     protected static final int INTERFACE_RS485 = 0x02;
     

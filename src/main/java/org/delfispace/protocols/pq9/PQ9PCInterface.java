@@ -35,7 +35,6 @@ public class PQ9PCInterface extends PCInterface
     private boolean firstByteFound = false;
     private short tmpValue = 0;
 
-
     public PQ9PCInterface(InputStream in, OutputStream out) 
     {
         super(in, out);
@@ -58,6 +57,7 @@ public class PQ9PCInterface extends PCInterface
         out.write( INTERFACE_PQ9 );
         out.flush();
     }
+
     @Override
     public PQ9 blockingread() throws IOException 
     {
@@ -98,18 +98,17 @@ public class PQ9PCInterface extends PCInterface
     {
         int value = rx & 0xFFFF;
         byte b = 0;
-        System.out.println(value );
+
         if (value == 0x9000)
         {
-            System.out.println("init");
             // initialization request
             init();
             return null;
         }
+        
         if ((value & (ADDRESS_BIT << 8)) != 0) 
         {
             // first byte
-            System.out.println("Address found");
             // clear the buffer and get ready to process a new frame
             if (bs.size() != 0)
             {
@@ -134,16 +133,14 @@ public class PQ9PCInterface extends PCInterface
         {
             b = (byte)((((value & 0x100) >> 1) | (value & 0x7F)) & 0xFF);
             bs.write(b);
-System.out.println("new byte");
+
             // check if we received all the bytes and can check the checksum
             if ((sizeFrame != -1) && (sizeFrame == bs.size() - 5))
             {
-                System.out.println("Check CRC");
                 try 
                 {
                     PQ9 t = new PQ9(bs.toByteArray());   
                     // clean the buffer if a valid frame was found
-                    System.out.println("found");
                     bs.reset();
                     startFound = false;
                     return t;

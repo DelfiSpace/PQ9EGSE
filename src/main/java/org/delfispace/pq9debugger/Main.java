@@ -37,7 +37,6 @@ import org.delfispace.protocols.pq9.PQ9;
 import org.delfispace.protocols.pq9.PQ9Exception;
 import org.delfispace.protocols.pq9.PQ9PCInterface;
 import org.delfispace.protocols.pq9.PQ9Receiver;
-import org.delfispace.protocols.pq9.RS485PCInterface;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -191,7 +190,6 @@ public class Main implements PQ9Receiver, Subscriber
         {                        
             // crete the HLDLC reader
             pcInterface = new PQ9PCInterface(new NullInputStream(), new NullOutputStream());  
-            //pcInterface = new RS485PCInterface(new NullInputStream(), new NullOutputStream());
         }
         else
         {
@@ -202,14 +200,13 @@ public class Main implements PQ9Receiver, Subscriber
             comPort.openPort();
 
             // configure the seriql port parameters
-            comPort.setComPortParameters(115200 * 2, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+            comPort.setComPortParameters(230400, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
             
             // set the serial port in blocking mode
             comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
             
             // crete the HLDLC reader
             pcInterface = new PQ9PCInterface(comPort.getInputStream(), comPort.getOutputStream());
-            //pcInterface = new RS485PCInterface(comPort.getInputStream(), comPort.getOutputStream());
         }
         
         // setup an asynchronous callback on frame reception
