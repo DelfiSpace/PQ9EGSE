@@ -30,18 +30,9 @@ import static org.delfispace.protocols.pq9.PQ9PCInterface.COMMAND;
 public class RS485PCInterface extends PCInterface
 {
     private final ByteArrayOutputStream bs = new ByteArrayOutputStream();
-    private boolean startFound = false;
-    private int sizeFrame = -1;
 
     private boolean firstByteFound = false;
     private short tmpValue = 0;
-    
-    static final int HLDLC_START_FLAG = 0x7E;
-    static final int HLDLC_CONTROL_FLAG = 0x7D;
-    static final int HLDLC_STOP_FLAG = 0x7C;
-    static final int HLDLC_ESCAPE_START_FLAG = 0x5E;
-    static final int HLDLC_ESCAPE_CONTROL_FLAG = 0x5D;
-    static final int HLDLC_ESCAPE_STOP_FLAG = 0x5C;
     
     static final byte START_OF_MESSAGE = (byte)0x7E;
     static final byte END_OF_MESSAGE = (byte)0x7D;
@@ -56,9 +47,7 @@ public class RS485PCInterface extends PCInterface
         
         try 
         {
-            out.write( FIRST_BYTE | COMMAND );
-            out.write( INTERFACE_RS485 );
-            out.flush();
+            init();
         } catch (IOException ex) 
         {
             if (errorHdl != null)
@@ -68,6 +57,13 @@ public class RS485PCInterface extends PCInterface
         }
     }
 
+    private void init() throws IOException
+    {
+        out.write( FIRST_BYTE | COMMAND );
+        out.write( INTERFACE_RS485 );
+        out.flush();
+    }
+        
     @Override
     public PQ9 blockingread() throws IOException 
     {
@@ -104,10 +100,17 @@ public class RS485PCInterface extends PCInterface
         return null;
     }
     
-    private PQ9 processShort(short value)
+    private PQ9 processShort(short value) throws IOException
     {
+        if (value == ((FIRST_BYTE | COMMAND) << 8 | INITIALIZE))
+        {
+            // initialization request
+            init();
+            return null;
+        }
+                
         value &= 0xFF;
-        System.out.println(String.format("%02X", value));
+
         switch(state)
         {
             case 0:

@@ -188,7 +188,7 @@ public class Main implements PQ9Receiver, Subscriber
 
         if (port.equals(NULL_PORT_NAME))
         {                        
-            // crete the HLDLC reader
+            // crete the serial port reader
             pcInterface = new PQ9PCInterface(new NullInputStream(), new NullOutputStream());  
         }
         else
@@ -205,7 +205,7 @@ public class Main implements PQ9Receiver, Subscriber
             // set the serial port in blocking mode
             comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
             
-            // crete the HLDLC reader
+            // crete the serial port reader
             pcInterface = new PQ9PCInterface(comPort.getInputStream(), comPort.getOutputStream());
         }
         
