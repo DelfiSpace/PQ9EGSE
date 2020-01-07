@@ -190,8 +190,8 @@ public class Main implements PQ9Receiver, Subscriber
         if (port.equals(NULL_PORT_NAME))
         {                        
             // crete the HLDLC reader
-            //pcInterface = new PQ9PCInterface(new NullInputStream(), new NullOutputStream());  
-            pcInterface = new RS485PCInterface(new NullInputStream(), new NullOutputStream());
+            pcInterface = new PQ9PCInterface(new NullInputStream(), new NullOutputStream());  
+            //pcInterface = new RS485PCInterface(new NullInputStream(), new NullOutputStream());
         }
         else
         {
@@ -208,8 +208,8 @@ public class Main implements PQ9Receiver, Subscriber
             comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
             
             // crete the HLDLC reader
-            //pcInterface = new PQ9PCInterface(comPort.getInputStream(), comPort.getOutputStream());
-            pcInterface = new RS485PCInterface(comPort.getInputStream(), comPort.getOutputStream());
+            pcInterface = new PQ9PCInterface(comPort.getInputStream(), comPort.getOutputStream());
+            //pcInterface = new RS485PCInterface(comPort.getInputStream(), comPort.getOutputStream());
         }
         
         // setup an asynchronous callback on frame reception

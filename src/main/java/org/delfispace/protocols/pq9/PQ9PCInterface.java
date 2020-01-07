@@ -42,9 +42,7 @@ public class PQ9PCInterface extends PCInterface
         
         try 
         {
-            out.write( FIRST_BYTE | COMMAND );
-            out.write( INTERFACE_PQ9 );
-            out.flush();
+            init();
         } catch (IOException ex) 
         {
             if (errorHdl != null)
@@ -54,6 +52,12 @@ public class PQ9PCInterface extends PCInterface
         }
     }
     
+    private void init() throws IOException
+    {
+        out.write( FIRST_BYTE | COMMAND );
+        out.write( INTERFACE_PQ9 );
+        out.flush();
+    }
     @Override
     public PQ9 blockingread() throws IOException 
     {
@@ -65,7 +69,7 @@ public class PQ9PCInterface extends PCInterface
             if (tmprx > 0)
             {
                 byte rx = (byte) (newData[0] & 0xFF);
-System.out.println(String.format("%02X", rx & 0xFF));
+
                 // were we waiting for the first byte?
                 // did we receive the first byte?
                 if (!firstByteFound && ((rx & FIRST_BYTE) != 0))
@@ -90,14 +94,22 @@ System.out.println(String.format("%02X", rx & 0xFF));
         return null;
     }
 
-    private PQ9 processShort(short value)
+    private PQ9 processShort(short rx) throws IOException
     {
+        int value = rx & 0xFFFF;
         byte b = 0;
-        
+        System.out.println(value );
+        if (value == 0x9000)
+        {
+            System.out.println("init");
+            // initialization request
+            init();
+            return null;
+        }
         if ((value & (ADDRESS_BIT << 8)) != 0) 
         {
             // first byte
-            
+            System.out.println("Address found");
             // clear the buffer and get ready to process a new frame
             if (bs.size() != 0)
             {
@@ -122,14 +134,16 @@ System.out.println(String.format("%02X", rx & 0xFF));
         {
             b = (byte)((((value & 0x100) >> 1) | (value & 0x7F)) & 0xFF);
             bs.write(b);
-
+System.out.println("new byte");
             // check if we received all the bytes and can check the checksum
             if ((sizeFrame != -1) && (sizeFrame == bs.size() - 5))
             {
+                System.out.println("Check CRC");
                 try 
                 {
                     PQ9 t = new PQ9(bs.toByteArray());   
                     // clean the buffer if a valid frame was found
+                    System.out.println("found");
                     bs.reset();
                     startFound = false;
                     return t;
