@@ -26,6 +26,7 @@
                     <xtce:Enumeration label="PROP" value="6"/>
                     <xtce:Enumeration label="DEBUG" value="7"/>
                     <xtce:Enumeration label="EGSE" value="8"/>
+                    <xtce:Enumeration label="HPI" value="100"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
             <xtce:EnumeratedParameterType name="ServiceType">
@@ -296,6 +297,7 @@
                     <xtce:Enumeration label="PROP" value="6"/>
                     <xtce:Enumeration label="DEBUG" value="7"/>
                     <xtce:Enumeration label="EGSE" value="8"/>
+                    <xtce:Enumeration label="HPI" value="100"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
             <xtce:EnumeratedArgumentType name="ServiceType">
