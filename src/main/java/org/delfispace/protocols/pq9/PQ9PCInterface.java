@@ -53,7 +53,7 @@ public class PQ9PCInterface extends PCInterface
     
     private void init() throws IOException
     {
-        out.write( FIRST_BYTE | COMMAND );
+        out.write( FIRST_BYTE | COMMAND | STOP_TRANSMISSION );
         out.write( INTERFACE_PQ9 );
         out.flush();
     }
