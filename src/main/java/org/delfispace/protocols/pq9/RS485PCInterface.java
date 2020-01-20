@@ -100,8 +100,9 @@ public class RS485PCInterface extends PCInterface
         return null;
     }
     
-    private PQ9 processShort(short value) throws IOException
+    private PQ9 processShort(short rx) throws IOException
     {
+        int value = rx & 0xFFFF;
         if (value == ((FIRST_BYTE | COMMAND) << 8 | INITIALIZE))
         {
             // initialization request
