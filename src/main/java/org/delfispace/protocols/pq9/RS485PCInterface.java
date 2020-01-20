@@ -59,7 +59,7 @@ public class RS485PCInterface extends PCInterface
 
     private void init() throws IOException
     {
-        out.write( FIRST_BYTE | COMMAND );
+        out.write( FIRST_BYTE | COMMAND | STOP_TRANSMISSION );
         out.write( INTERFACE_RS485 );
         out.flush();
     }
@@ -108,7 +108,7 @@ public class RS485PCInterface extends PCInterface
             init();
             return null;
         }
-                
+        value = (short)(((value >> 1) & 0x80) | (value & 0x7F));
         value &= 0xFF;
 
         switch(state)
