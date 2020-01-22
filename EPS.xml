@@ -21,7 +21,7 @@
                     <xtce:Enumeration label="OBC" value="1"/>
                     <xtce:Enumeration label="EPS" value="2"/>
                     <xtce:Enumeration label="ADB" value="3"/>
-                    <xtce:Enumeration label="COMMS" value="4"/>
+                    <xtce:Enumeration label="COMMS" value="204"/>
                     <xtce:Enumeration label="ADCS" value="5"/>
                     <xtce:Enumeration label="PROP" value="6"/>
                     <xtce:Enumeration label="DEBUG" value="7"/>
