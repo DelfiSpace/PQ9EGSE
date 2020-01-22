@@ -85,7 +85,6 @@ public class PQ9DataSocket extends Thread
             {
                 JSONObject obj=new JSONObject();
                 data.forEach((k,v)->obj.put(k,v));
-                System.out.print("Reply: " + obj.toJSONString() + "\n");
                 outputStream.writeBytes(obj.toJSONString() + "\n");
                 outputStream.flush();
             } catch (IOException ex) 
@@ -107,7 +106,6 @@ public class PQ9DataSocket extends Thread
             {
                 JSONObject obj=new JSONObject();
                 data.forEach((k,v)->obj.put(k,v));
-                System.out.print("Reply: " + obj.toJSONString() + "\n");
                 outputStream.writeBytes(obj.toJSONString() + "\n");
                 outputStream.flush();
             } catch (IOException ex) 
