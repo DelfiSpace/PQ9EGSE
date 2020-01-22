@@ -114,6 +114,33 @@ public class PQ9
         }
     }
     
+    public PQ9(byte[] input, boolean crc) throws PQ9Exception
+    {
+        if (input.length < 5)
+        {
+            throw new PQ9Exception("Minimum frame size is 5 bytes.");
+        }
+        
+        if (input.length > 258)
+        {
+            throw new PQ9Exception("Maximum frame size is 258 bytes.");
+        }
+
+        // check size
+        if ((input[1] & 0xFF) == input.length - 3)
+        {
+           
+                data = Arrays.copyOf(input, input.length);
+
+            
+        }
+        else
+        {
+            throw new PQ9Exception("Frame size mismatch: expected " + 
+                    (input[1] & 0xFF) + " but got " + (input.length - 5) );
+        }
+    }
+    
     /**
      *
      * @return

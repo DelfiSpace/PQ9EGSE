@@ -20,24 +20,30 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import static org.delfispace.protocols.pq9.PQ9PCInterface.COMMAND;
 
 /**
  *
  * @author Nikitas Chronas <N.ChronasFoteinakis@tudelft.nl>
  * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
-public class PQ9PCInterface extends PCInterface
+public class RS485PCInterface extends PCInterface
 {
     private final ByteArrayOutputStream bs = new ByteArrayOutputStream();
-    private boolean startFound = false;
-    private int sizeFrame = -1;
 
     private boolean firstByteFound = false;
     private short tmpValue = 0;
-
-    public PQ9PCInterface(InputStream in, OutputStream out) 
+    
+    static final byte START_OF_MESSAGE = (byte)0x7E;
+    static final byte END_OF_MESSAGE = (byte)0x7D;
+    
+    private int state = 0;
+    private int size = 0;
+    private int index = 0;
+    
+    public RS485PCInterface(InputStream in, OutputStream out) 
     {
-        super(in, out);
+        super(in, out);   
         
         try 
         {
@@ -50,14 +56,14 @@ public class PQ9PCInterface extends PCInterface
             }
         }
     }
-    
+
     private void init() throws IOException
     {
-        out.write( FIRST_BYTE | COMMAND | STOP_TRANSMISSION );
-        out.write( INTERFACE_PQ9 );
+        out.write( FIRST_BYTE | COMMAND );
+        out.write( INTERFACE_RS485 );
         out.flush();
     }
-
+        
     @Override
     public PQ9 blockingread() throws IOException 
     {
@@ -93,57 +99,81 @@ public class PQ9PCInterface extends PCInterface
         // no full frame received yet
         return null;
     }
-
-    private PQ9 processShort(short rx) throws IOException
+    
+    private PQ9 processShort(short value) throws IOException
     {
-        int value = rx & 0xFFFF;
-        byte b = 0;
-
-        if (value == 0x9000)
+        if (value == ((FIRST_BYTE | COMMAND) << 8 | INITIALIZE))
         {
             // initialization request
             init();
             return null;
         }
-        
-        if ((value & (ADDRESS_BIT << 8)) != 0) 
-        {
-            // first byte
-            // clear the buffer and get ready to process a new frame
-            if (bs.size() != 0)
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Bytes have been discarded: ");
-                byte[] d = bs.toByteArray();
-                for (int i = 0; i < d.length; i++)
-                {
-                    sb.append(String.format("%02X ", d[i]));
-                }
-                if (errorHdl != null)
-                {
-                    errorHdl.error(new PQ9Exception(sb.toString()));
-                }
-            }
-            bs.reset();
-            sizeFrame = -1;
-            startFound = true;
-        }
-        
-        if (startFound)
-        {
-            b = (byte)((((value & 0x100) >> 1) | (value & 0x7F)) & 0xFF);
-            bs.write(b);
+                
+        value &= 0xFF;
 
-            // check if we received all the bytes and can check the checksum
-            if ((sizeFrame != -1) && (sizeFrame == bs.size() - 5))
-            {
-                try 
+        switch(state)
+        {
+            case 0:
+                if (value == (short)0x7E)
                 {
-                    PQ9 t = new PQ9(bs.toByteArray());   
-                    // clean the buffer if a valid frame was found
+                    state = 1;
                     bs.reset();
-                    startFound = false;
-                    return t;
+                }
+                break;
+
+            case 1:
+                size = (((int)value) & 0xFF) << 8;
+                state = 2;
+                break;
+
+            case 2:
+                size |= ((int)value) & 0xFF;
+                index = 0;
+                state = 3;
+                break;
+
+            case 3:
+                if (index == 0)
+                {
+                    bs.write(value);
+                }
+                if (index == 1)
+                {
+                    bs.write(value);
+                }
+                if (index == 2)
+                {
+                    bs.write(value);
+                }
+                if ((index > 2) && (index < 258))
+                {
+                    bs.write(value);
+                }
+                if (index >= 258)
+                {
+                    state = 0;
+                    bs.reset();
+                }
+                if (index == size - 1)
+                {
+                    state = 4;
+                }
+                index++;
+                break;
+
+            case 4:
+                // last byte
+                if (value == 0x7D)
+                {
+                    // frame found!
+                    state = 0;
+                    
+                    try
+                    {
+                        PQ9 t = new PQ9(bs.toByteArray(), false);
+                        bs.reset();
+                        state = 0;
+                        return t;
                 } catch (PQ9Exception ex) 
                 {
                     // the frame is not valid, throw away the data and wait for a new frame
@@ -152,55 +182,46 @@ public class PQ9PCInterface extends PCInterface
                         errorHdl.error(ex);
                     }
                     return null;
-                }                        
-            }                    
+                }   
+                }
+                
+                break;
 
-            // initialize the counter to catch the frame size byte and use it to 
-            // detect frame termination
-            if (bs.size() == 2)
-            {
-                sizeFrame = b & 0xFF;
-            }
+            default:
+                state = 0;
         }
-        else
-        {
-            //a byte received without having received a start
-            if (errorHdl != null)
-            {
-                errorHdl.error(new PQ9Exception(String.format("Unexpected byte: %02X", b & 0xFF)));
-            }
-        }
-
-        // prevent the buffer from growing too much
-        if (bs.size() > 256)
-        {
-            bs.reset();
-            startFound = false;
-            sizeFrame = -1;
-            if (errorHdl != null)
-            {
-                errorHdl.error(new PQ9Exception("Buffer overrun"));
-            }
-        }
-        return null;
+return null;
     }
     
     @Override
     public synchronized void send(PQ9 frame) throws IOException 
     {
         byte[] data = frame.getFrame();
+        byte start = START_OF_MESSAGE;                
+        
+        out.write( FIRST_BYTE | (start >> 7) & 0x01 );
+        out.write( start & 0x7F );
 
-        out.write( FIRST_BYTE | ADDRESS_BIT | (data[0] >> 7) & 0x01 );
-        out.write( data[0] & 0x7F );
+        // do not transmit the CRC
+        byte lengthH = (byte)(((data.length - 2) & 0xFF00) >> 8);
+        byte lengthL = (byte)((data.length - 2) & 0x00FF);
 
-        for(int i = 1; i < data.length - 1; i++)            
+        out.write( FIRST_BYTE | (lengthH >> 7) & 0x01 );
+        out.write( lengthH & 0x7F );
+        
+        out.write( FIRST_BYTE | (lengthL >> 7) & 0x01 );
+        out.write( lengthL & 0x7F );
+        
+        // do not transmit the CRC
+        for(int i = 0; i < data.length - 2; i++)            
         {
             out.write( FIRST_BYTE | (data[i] >> 7) & 0x01 );
             out.write( data[i] & 0x7F );
         }
 
-        out.write( FIRST_BYTE | STOP_TRANSMISSION | (data[data.length - 1] >> 7) & 0x01 );
-        out.write( data[data.length - 1] & 0x7F );
+        byte end = END_OF_MESSAGE;
+        out.write( FIRST_BYTE | STOP_TRANSMISSION | (end >> 7) & 0x01 );
+        out.write( end & 0x7F );
         out.flush();
     }
 }
