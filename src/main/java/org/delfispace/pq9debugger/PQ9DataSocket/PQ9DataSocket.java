@@ -85,6 +85,7 @@ public class PQ9DataSocket extends Thread
             {
                 JSONObject obj=new JSONObject();
                 data.forEach((k,v)->obj.put(k,v));
+                System.out.print("Reply: " + obj.toJSONString() + "\n");
                 outputStream.writeBytes(obj.toJSONString() + "\n");
                 outputStream.flush();
             } catch (IOException ex) 
@@ -106,7 +107,7 @@ public class PQ9DataSocket extends Thread
             {
                 JSONObject obj=new JSONObject();
                 data.forEach((k,v)->obj.put(k,v));
-                System.out.println(obj.toJSONString());
+                System.out.print("Reply: " + obj.toJSONString() + "\n");
                 outputStream.writeBytes(obj.toJSONString() + "\n");
                 outputStream.flush();
             } catch (IOException ex) 
@@ -144,7 +145,15 @@ public class PQ9DataSocket extends Thread
                     JSONObject obj = (JSONObject)parser.parse(inputStream.readLine());
                     if (cmdHandler != null)
                     {
-                        cmdHandler.subscribe(new Command("SendCommand", (String)obj.toString()));
+                        System.out.print("Received: ");
+                        System.out.println((String)obj.toString());
+                        System.out.println("command: ");
+                        System.out.println((String)obj.get("command"));
+                        if((obj.get("command")) == null){
+                            cmdHandler.subscribe(new Command("SendCommand", (String)obj.toString()));
+                        }else{
+                            cmdHandler.subscribe(new Command((String)obj.get("command"), (String)obj.get("data"))); 
+                        }
                     }                    
                 }
             } catch (IOException | NullPointerException ex) 
