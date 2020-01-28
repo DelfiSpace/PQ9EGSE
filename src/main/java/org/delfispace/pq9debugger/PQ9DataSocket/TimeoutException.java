@@ -14,22 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.delfispace.CommandWebServer;
-
-import org.eclipse.jetty.server.Request;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+package org.delfispace.pq9debugger.PQ9DataSocket;
 
 /**
  *
  * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
-public class WebSocketErrorHandler extends org.eclipse.jetty.server.handler.ErrorHandler
+public class TimeoutException extends Exception
 {
-    @Override
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
-    {
-        response.sendRedirect(request.getContextPath() + "/");
-    }
+    
 }

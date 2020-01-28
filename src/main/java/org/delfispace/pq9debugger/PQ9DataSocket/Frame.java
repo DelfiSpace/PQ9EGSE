@@ -14,52 +14,50 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.delfispace.CommandWebServer;
+package org.delfispace.pq9debugger.PQ9DataSocket;
 
-import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.function.BiConsumer;
 
 /**
  *
  * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
-public class Command 
+public class Frame 
 {
-    private final String command;
-    private final String data;
+    private final HashMap<String, FrameValue> hmap = new HashMap<String, FrameValue>();
     
-    public Command(String command, String data)
+    public void add(String name, String value, boolean valid)
     {
-        this.command = command;
-        this.data = data;
+        hmap.put(name, new FrameValue(value, valid));
     }
     
-    public String getData()
+    public void add(String name, String value)
     {
-        return this.data;
+        hmap.put(name, new FrameValue(value, true));
     }
     
-    public String getCommand()
+    public FrameValue get(String name)
     {
-        return this.command;
+        return hmap.get(name);
     }
     
-    public String toJSON()
+    public void forEach(BiConsumer<String, FrameValue> action) 
     {
-        JSONObject obj = new JSONObject();    
-        obj.put("command", this.command);    
-        obj.put("data",this.data);  
-        return obj.toString();
+        hmap.forEach(action);
     }
     
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Command: \"");
-        sb.append(this.command);
-        sb.append("\", Data: \"");
-        sb.append(this.data);
-        sb.append("\"");
-        return sb.toString();
+        StringBuilder str = new StringBuilder(); 
+        hmap.forEach((k,v)->
+        {
+            str.append(k);
+            str.append(": ");
+            str.append(((FrameValue)v).toString());
+            str.append("\n");            
+        });
+        return str.toString();
     }
 }

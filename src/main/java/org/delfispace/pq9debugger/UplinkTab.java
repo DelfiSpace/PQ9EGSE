@@ -52,15 +52,15 @@ public class UplinkTab
 {
     private static int tabIndex = 0;
     private static final StringBuilder IDARRAY = new StringBuilder();
-    private static final List<String> IDS = new ArrayList();
+    private static final List<String> IDS = new ArrayList<>();
     
     public static String generate()
     {
         try
         {
-            List<String[]> numbers = new ArrayList();
-            numbers.add(new String[]{"raw:dest", "Destination", "7"});
-            numbers.add(new String[]{"raw:src", "Source", "1"});
+            List<String[]> numbers = new ArrayList<>();
+            numbers.add(new String[]{"Uplink:raw:dest", "Destination", "7"});
+            numbers.add(new String[]{"Uplink:raw:src", "Source", "1"});
 
             tabIndex = 0;
             IDARRAY.setLength(0);
@@ -84,12 +84,12 @@ public class UplinkTab
                             ), 
                             dd
                             (
-                                textarea("17 1").withType("text").withId("raw:data").attr("title", 
+                                textarea("17 1").withType("text").withId("Uplink:raw:data").attr("title", 
                                         "Array of integers between 0 and 255 or hex bytes separated by blanks")
                             )
                         )
                     ),
-                    button("Send").attr("id", "SendRaw").attr("onclick", "fetchData(this.id, [" + IDARRAY.toString()+ ", 'raw:data'])").attr("tabindex", tabIndex).attr("title", "Raw Frame")
+                    button("Send").attr("id", "Uplink:SendRaw").attr("onclick", "fetchData(this.id, [" + IDARRAY.toString()+ ", 'Uplink:raw:data'])").attr("tabindex", tabIndex).attr("title", "Raw Frame")
                 ),
                 each(filter(tcs, tc -> tc.isAbstract() != true), tc ->
                     fieldset
@@ -110,7 +110,7 @@ public class UplinkTab
                                 dd
                                 (
                                     iffElse(arg.getEnumerations().isEmpty(), 
-                                        input(attrs("#" + tc.getName() + ":" + arg.getName())).withType("text").
+                                        input(attrs("#" + "Uplink:" + tc.getName() + ":" + arg.getName())).withType("text").
                                                 withValue(arg.getInitialValue()).attr("title", 
                                                 arg.getLongDescription()),
                                         select 
@@ -118,13 +118,13 @@ public class UplinkTab
                                             each(arg.getEnumerations(), e -> 
                                                  option(e.getShortDescription() == null ? 
                                                  e.getLabel() : e.getShortDescription()).withValue(e.getLabel()))
-                                        ).withId(tc.getName() + ":" + arg.getName()).attr("title", 
+                                        ).withId("Uplink:" + tc.getName() + ":" + arg.getName()).attr("title", 
                                                 arg.getLongDescription())
                                     )
                                 )   
                             )
                         )),
-                        button("Send").attr("id", tc.getName()).attr("onclick", "fetchData(this.id, [" + getIDs() + "])").attr("tabindex", tabIndex++)
+                        button("Send").attr("id", "Uplink:" + tc.getName()).attr("onclick", "fetchData(this.id, [" + getIDs() + "])").attr("tabindex", tabIndex++)
                     ).attr("title", tc.getLongDescription())
                 )
             );
@@ -193,7 +193,7 @@ public class UplinkTab
                 sb.append(", ");
             }
             index++;
-            sb.append("'");
+            sb.append("'Uplink:");
             sb.append(id);
             sb.append("'");
         }

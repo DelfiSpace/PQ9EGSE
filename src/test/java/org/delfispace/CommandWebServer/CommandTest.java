@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Stefano Speretta
+ * Copyright (C) 2019 Stefano Speretta
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,20 +16,34 @@
  */
 package org.delfispace.CommandWebServer;
 
-import org.eclipse.jetty.server.Request;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  *
  * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
-public class WebSocketErrorHandler extends org.eclipse.jetty.server.handler.ErrorHandler
+public class CommandTest 
 {
-    @Override
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
+    @Test
+    public void testgetters()
     {
-        response.sendRedirect(request.getContextPath() + "/");
+        Command cmd = new Command("A", "B");
+        Assert.assertEquals("A", cmd.getCommand()); 
+        Assert.assertEquals("B", cmd.getData()); 
+    }
+    
+    @Test
+    public void testEncoding()
+    {
+        Command cmd = new Command("A", "B");
+        Assert.assertEquals("{\"data\":\"B\",\"command\":\"A\"}", cmd.toJSON());        
+    }
+    
+    @Test
+    public void testtoString() 
+    {
+        Command cmd = new Command("A", "B");
+        Assert.assertEquals("Command: \"A\", Data: \"B\"", cmd.toString());
     }
 }

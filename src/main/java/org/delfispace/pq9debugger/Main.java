@@ -50,6 +50,7 @@ import org.xtce.toolkit.XTCEFunctions;
 import org.xtce.toolkit.XTCETMStream;
 import org.xtce.toolkit.XTCETelecommand;
 import org.xtce.toolkit.XTCETelecommandContentModel;
+import org.xtce.toolkit.XTCETypedObject.EngineeringType;
 import org.xtce.toolkit.XTCEValidRange;
 
 /**
@@ -59,6 +60,7 @@ import org.xtce.toolkit.XTCEValidRange;
 public class Main implements PQ9Receiver, Subscriber
 {
     private static final String NULL_PORT_NAME = " ";
+    private static final String XTCE_FILE = "EPS.xml";
     private final CommandWebServer srv;
     private final PQ9DataSocket DatSktSrv;
     private PQ9PCInterface pcInterface = null; 
@@ -66,6 +68,7 @@ public class Main implements PQ9Receiver, Subscriber
     private XTCETMStream stream;
     private SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss.SSS ");
     private SerialPort comPort = null;
+    private SimpleDateFormat dateFormatJSONSocket = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); 
     
     /**
      *
@@ -92,42 +95,17 @@ public class Main implements PQ9Receiver, Subscriber
     public Main(String defaultSerialPort) throws Exception 
     {
         Logger.getLogger(Main.class.getName()).log(Level.INFO, "PQ9 EGSE started");
-        String file = "EPS.xml";
+        
         try 
         {
-            Configuration.getInstance().setXTCEDatabase( new XTCEDatabase(new File(file), true, true, true) );
-            stream = Configuration.getInstance().getXTCEDatabase().getStream( "PQ9bus" );  
-            if (Configuration.getInstance().getXTCEDatabase().getErrorCount() != 0)
-            {
-                Configuration.getInstance().getXTCEDatabase().getDocumentWarnings().forEach((item) -> 
-                {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "XML parsing error: {0}", item);
-                });
-            }
+            loadXTCEFile(XTCE_FILE);
         } catch (XTCEDatabaseException ex) 
         {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        SerialPort[] sp = SerialPort.getCommPorts();
-
-        List<String> spl = new ArrayList();
-        spl.add(NULL_PORT_NAME);
-        for (SerialPort sp1 : sp) 
-        {
-            spl.add(sp1.getSystemPortName());
-        }
+        enumerateSerialPorts(defaultSerialPort);
         
-        // make sure the provided serial port exists, if not terminate the application
-        if (!spl.contains(defaultSerialPort))
-        {
-            throw new Exception("Invalid serial port " + defaultSerialPort);
-        }
-        
-        Configuration.getInstance().setSerialPorts(spl);
-        // set the default serial port
-        Configuration.getInstance().setSerialPort(defaultSerialPort);
-                        
         srv = new CommandWebServer(8080);         
         DatSktSrv = new PQ9DataSocket(10000);
     }
@@ -155,6 +133,44 @@ public class Main implements PQ9Receiver, Subscriber
         DatSktSrv.start();
         
         srv.join();        
+    }
+    
+    private void loadXTCEFile(String file) throws XTCEDatabaseException
+    {
+        // first de-allocate the previous instance (in case it exists)
+        Configuration.getInstance().setXTCEDatabase(null);
+        // now create a new instance
+        Configuration.getInstance().setXTCEDatabase( new XTCEDatabase(new File(file), true, true, true) );
+        stream = Configuration.getInstance().getXTCEDatabase().getStream( "PQ9bus" );  
+        if (Configuration.getInstance().getXTCEDatabase().getErrorCount() != 0)
+        {
+            Configuration.getInstance().getXTCEDatabase().getDocumentWarnings().forEach((item) -> 
+            {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "XML parsing error: {0}", item);
+            });
+        }
+    }
+    private void enumerateSerialPorts(String defaultSerialPort)
+    {
+        SerialPort[] sp = SerialPort.getCommPorts();
+
+        List<String> spl = new ArrayList<>();
+        spl.add(NULL_PORT_NAME);
+        for (SerialPort sp1 : sp) 
+        {
+            spl.add(sp1.getSystemPortName());
+        }
+        
+        // make sure the provided serial port exists, if not terminate the application
+        if (!spl.contains(defaultSerialPort))
+        {
+            handleException(new Exception("Unknown default serial port: " + defaultSerialPort));
+            defaultSerialPort = NULL_PORT_NAME;
+        }
+        
+        Configuration.getInstance().setSerialPorts(spl);
+        // set the default serial port
+        Configuration.getInstance().setSerialPort(defaultSerialPort);
     }
     
     private void connectToSerialPort(String port) throws IOException
@@ -212,57 +228,50 @@ public class Main implements PQ9Receiver, Subscriber
         srv.send(new Command("log", sb.toString())); 
     }
     
-    private String processFrame(XTCETMStream stream, byte[] data, HashMap<String, String> values) throws XTCEDatabaseException, Exception 
+    private void processFrame(XTCETMStream stream, byte[] data, HashMap<String, String> values) throws XTCEDatabaseException
     {
-        StringBuilder sb = new StringBuilder();
-        
-        XTCEContainerContentModel model = stream.processStream( data );
- 
+        XTCEContainerContentModel model = stream.processStream( data );    
         List<XTCEContainerContentEntry> entries = model.getContentList();
 
         values.put("_received_", model.getName());
-        sb.append(model.getName());
-        sb.append("\n");
         
-        for (XTCEContainerContentEntry entry : entries) 
-        {                        
+        entries.forEach((XTCEContainerContentEntry entry) -> 
+        {
             XTCEContainerEntryValue val = entry.getValue();
-
             if (val != null) 
-            {
-                values.put(entry.getName(), val.getCalibratedValue());
-                
-                sb.append("\t");
-                sb.append(entry.getParameter().getShortDescription().isEmpty() ? entry.getName() : entry.getParameter().getShortDescription());
-                sb.append(": ");
-                sb.append(val.getCalibratedValue());
-                sb.append(" ");
-                sb.append(entry.getParameter().getUnits());
-                sb.append(" (");
-                sb.append(val.getRawValueHex());
-                sb.append(")");
-
-                if (!isWithinValidRange(entry))
+            {          
+                String value;
+                if (entry.getParameter().getEngineeringType() == EngineeringType.FLOAT32)
                 {
-                    sb.append(" INVALID!");
-                    sb.append("\n");
+                    value = Float.valueOf(val.getCalibratedValue()).toString();
+                }
+                else if (entry.getParameter().getEngineeringType() == EngineeringType.FLOAT64)
+                {
+                    value = Double.valueOf(val.getCalibratedValue()).toString();
                 }
                 else
                 {
-                    sb.append("\n");
+                    value = val.getCalibratedValue();
                 }
+                
+                JSONObject obj=new JSONObject();
+                obj.put("value", value);
+                obj.put("valid", "true");
+                
+                if (!isWithinValidRange(entry))
+                {
+                    obj.put("valid", "false");
+                }
+                else
+                {
+                    obj.put("valid", "true");
+                }
+                
+                values.put(entry.getName(), obj.toJSONString());
             }
-        }
-        List<String> warnings = model.getWarnings();
-        Iterator<String> it = warnings.iterator();
-        while(it.hasNext())
-        {
-            sb.append("WARNING: ");
-            sb.append(it.next());
-            sb.append("\n");
-        }
-        sb.append("\n");
-        return sb.toString();
+        });
+        //List<String> warnings = model.getWarnings();
+        //Iterator<String> it = warnings.iterator();
     }
     
     private boolean isWithinValidRange(XTCEContainerContentEntry entry)
@@ -314,7 +323,6 @@ public class Main implements PQ9Receiver, Subscriber
 
     private void newFrameToGUI(PQ9 msg, Date time, boolean received) throws XTCEDatabaseException, Exception
     {
-        StringBuilder sb = new StringBuilder();
         HashMap<String, String> data = new HashMap<>();
         
         byte[] frame = msg.getFrame();
@@ -331,49 +339,25 @@ public class Main implements PQ9Receiver, Subscriber
         }
         sb1.append("]");
         data.put("_raw_", sb1.toString());
-        data.put("_timestamp_", time.toString());
+        data.put("_timestamp_", dateFormatJSONSocket.format(time));
         
-        if (received)
+        try
         {
-            sb.append("<font color=\"black\">");
+            // process the frame
+            processFrame(stream, msg.getFrame(), data);
         }
-        else
-        {
-            sb.append("<font color=\"yellow\">");
-        }
-        // print time
-        sb.append(df.format(time));
-        // print the received frame
-        if (received)
-        {
-            sb.append("New frame received: <br>");
-        }
-        else
-        {
-            sb.append("New frame transmitted: <br>");
-        }
-        sb.append("&emsp;&emsp;&emsp;&emsp;");
-        sb.append(msg.toString().replace("\n", "<br>").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
-        sb.append("</font>");
-        srv.send(new Command("datalog", sb.toString()));
+        finally
+        {        
+            // always execute he finally
+            // report the received message even if the message could not be parsed
+            JSONObject obj=new JSONObject();
+            data.forEach((k,v)->obj.put(k,v));
+            srv.send(new Command("downlink", obj.toJSONString() + "\n"));  
 
-        sb.setLength(0);
-        if (received)
-        {
-            sb.append("<font color=\"black\">");
-        }
-        else
-        {
-            sb.append("<font color=\"yellow\">");
-        }
-        sb.append("&emsp;&emsp;&emsp;&emsp;Decoded frame: ");
-        sb.append(processFrame(stream, msg.getFrame(), data).replace("\n", "<br>&emsp;&emsp;&emsp;&emsp;").replace("\t", "&emsp;&emsp;&emsp;&emsp;"));
-        sb.append("</font>");
-        srv.send(new Command("datalog", sb.toString()));  
-        
-        if (received)
-        {
-            DatSktSrv.send(data);
+            if (received)
+            {
+                DatSktSrv.send(data);
+            }
         }
     }
     /**
@@ -384,8 +368,7 @@ public class Main implements PQ9Receiver, Subscriber
     @Override
     public void received(PQ9 msg) 
     {        
-        Date rxTime = new Date();                         
-        
+        Date rxTime = new Date();                                 
         
         try
         {
@@ -400,8 +383,7 @@ public class Main implements PQ9Receiver, Subscriber
         catch (Exception ex)
         {
             handleException(ex);
-        }
-        
+        }        
     }
 
     /**
@@ -424,7 +406,20 @@ public class Main implements PQ9Receiver, Subscriber
                     connectToSerialPort(cmd.getData());
                     // TODO: update the header for all existing conenctions
                     break;
+                    
+                case "reloadSerialPorts":
+                    enumerateSerialPorts(Configuration.getInstance().getSerialPort());
+                    srv.send(new Command("header", HeaderTab.generate()));
+                    break;
 
+                case "reloadXTCEFile":
+                    // reload the XTCE file
+                    loadXTCEFile(XTCE_FILE);
+                    // force an update in the Uplink panel
+                    srv.send(new Command("uplink", UplinkTab.generate()));
+                    srv.send(new Command("downlinkgui", DownlinkTab.generate()));
+                    break;
+                    
                 case "ping":
                     // ignore ping commands, they are only used 
                     // to keep the websocket connection alive
@@ -432,6 +427,10 @@ public class Main implements PQ9Receiver, Subscriber
 
                 case "uplink":
                     srv.send(new Command("uplink", UplinkTab.generate()));
+                    break;
+                    
+                case "downlinkgui":
+                    srv.send(new Command("downlinkgui", DownlinkTab.generate()));                    
                     break;
                 default:
                     handleException(new Exception("Unknown command: " + cmd));
@@ -446,7 +445,7 @@ public class Main implements PQ9Receiver, Subscriber
     {
         try
         {
-            PQ9 frame = null;
+            PQ9 frame;
             String data = cmd.getData();
             JSONObject obj = (JSONObject)parser.parse(data);
             switch((String)obj.get("_send_"))
@@ -514,13 +513,13 @@ public class Main implements PQ9Receiver, Subscriber
                      
         } catch (java.lang.NumberFormatException ex)
         {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
-                    String.format("Invalid value: %s", cmd.toString()), ex);
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
+            //        String.format("Invalid value: %s", cmd.toString()), ex);
             handleException(ex);
         } catch (Exception ex)
         {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
-                    String.format("Invalid value: %s", cmd.toString()), ex);
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
+            //        String.format("Invalid value: %s", cmd.toString()), ex);
             handleException(ex);
         } 
     }

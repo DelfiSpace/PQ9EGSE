@@ -66,7 +66,30 @@ public class PQ9DataClient implements Closeable
         outToServer.flush();
     }
     
-    public JSONObject getFrame(int timeout) throws IOException, ParseException
+    public void sendFrame2(Frame frame) throws IOException
+    {
+        JSONObject command = new JSONObject();
+        frame.forEach((String k, FrameValue v) ->
+        {
+            if (k.charAt(0) =='_')
+            {
+                // command
+                command.put(k, frame.get(k).getValue());
+            }
+            else
+            {
+                JSONObject value = new JSONObject();
+                value.put("value", v.getValue());
+                value.put("valid", v.isValid());
+                command.put(k, value.toJSONString());
+            }
+        });
+        System.out.println(command.toJSONString());
+        outToServer.writeBytes(command.toJSONString() + "\n");
+        outToServer.flush();
+    }
+    
+    public JSONObject getFrame(int timeout) throws IOException, ParseException, TimeoutException
     {
         boolean found = false;
         Date before = new Date();
@@ -86,11 +109,41 @@ public class PQ9DataClient implements Closeable
         {       
             return (JSONObject)parser.parse(inFromServer.readLine());            
         }             
-        return null;                   
+        throw new TimeoutException();                   
     }
     
-    public JSONObject getFrame() throws IOException, ParseException
+    public JSONObject getFrame() throws IOException, ParseException, TimeoutException
     {
+        
         return getFrame(this.timeout);
+    }
+    
+    public Frame getFrame2() throws IOException, ParseException, TimeoutException
+    {        
+        Frame f = new Frame();
+        JSONObject obj = getFrame(this.timeout);
+        obj.forEach((Object k, Object v) -> 
+        {
+            try
+            {
+                String parsed = ((String)v).replace("\\\"", "\"");
+                //System.out.println(parsed);
+                JSONObject subobj = (JSONObject) parser.parse(parsed);
+                
+                // check if the valid field is present: if not, default is true
+                if (subobj.get("valid") != null)
+                {
+                    f.add((String)k, (String)subobj.get("value"), subobj.get("valid").equals("true"));
+                }
+                else
+                {
+                    f.add((String)k, (String)subobj.get("value"));
+                }
+            } catch (ParseException ex)
+            {
+                // todo: fix it somehow
+            }
+        });
+        return f;
     }
 }

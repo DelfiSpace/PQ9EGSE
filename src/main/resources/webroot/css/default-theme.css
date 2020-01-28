@@ -2,7 +2,6 @@
 .lm_header,
 .lm_header .lm_tab{
 	background: -webkit-linear-gradient(#dadada, #f6f6f6);
-	/*background: url(http://subtlepatterns.com/patterns/p2.png);*/
 }
 
 .lm_splitter{
@@ -13,15 +12,6 @@
 	border-bottom: 1px solid #ccc;
 	height: 19px !important;
 }
-
-
-
-
-/*.lm_splitter.lm_vertical{
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAFCAIAAAAL5hHIAAAAHElEQVR4nGNYtGgJk7a2JtPPnz+ZGBgYmFhYWABG7AVnGY/wNAAAAABJRU5ErkJggg==);
-	background-repeat: repeat-x;
-}
-*/
 
 .lm_header .lm_tab{
 	color: #4c4c51;

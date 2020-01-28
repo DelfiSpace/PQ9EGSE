@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Stefano Speretta
+ * Copyright (C) 2019 Stefano Speretta
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,22 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.delfispace.CommandWebServer;
+package org.delfispace.pq9debugger.PQ9DataSocket;
 
-import org.eclipse.jetty.server.Request;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.junit.Test;
 
 /**
  *
  * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
-public class WebSocketErrorHandler extends org.eclipse.jetty.server.handler.ErrorHandler
+public class FrameTest 
 {
-    @Override
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
+    @Test
+    public void testgetters() throws IOException 
     {
-        response.sendRedirect(request.getContextPath() + "/");
+        
     }
 }

@@ -1,0 +1,38 @@
+.balancedColumns {
+    -webkit-column-fill: balance;
+    -moz-column-fill: balance;
+    column-fill: balance;
+    margin-bottom: 1em;
+    column-count: 2;
+}
+fieldset {
+-webkit-column-break-inside: avoid;
+          page-break-inside: avoid;
+               break-inside: avoid;
+               color: inherit;
+}
+.unitsColumn {
+  text-align: left;
+  width: 30px;
+}
+.namesColumn {
+  text-align: left;
+}
+.valuesColumn {
+  text-align: right;
+  padding-right:0.5em;
+}
+.outdatedFrame {
+    width: 100%;
+    color: gray;
+}
+.updatedFrame {
+    width: 100%;
+    color: inherit;
+}
+.invalidValue {
+    color: red;
+    font-weight: bold;
+      text-align: right;
+  padding-right:0.5em;
+}
