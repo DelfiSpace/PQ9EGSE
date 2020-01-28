@@ -28,7 +28,8 @@ public class Configuration
     private static Configuration instance;
     private static List<String> serialPorts;
     private static String serialPort;
-    private static XTCEDatabase db = null;
+    private static XTCEDatabase db = null;    
+    private String EGSEMode = "PQ9";
     
     private Configuration()
     {
@@ -47,6 +48,16 @@ public class Configuration
     public String getFile()
     {
         return "EPS.xml";
+    }
+    
+    public String getEGSEMode()
+    {
+        return EGSEMode;
+    }
+    
+    public void setEGSEMode (String mode)
+    {
+        EGSEMode = mode;
     }
     
     public void setSerialPorts(List<String> sp)

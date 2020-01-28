@@ -26,6 +26,7 @@ import static j2html.TagCreator.span;
 import j2html.tags.Tag;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,10 +40,19 @@ public class HeaderTab
         try
         {
             List<String> spl = Configuration.getInstance().getSerialPorts();
-
+            List<String> modes = Arrays.asList(new String[]{"PQ9", "RS485"});
+            
             Tag t1 = div
             (                
-                div(),    
+                div(), 
+                div
+                (
+                    span("Mode: "),
+                    select
+                    (
+                        each(modes, p -> option(p).withValue(p).condAttr(Configuration.getInstance().getEGSEMode().equals(p), "selected",  "selected"))
+                    ).withId("EGSEMode").attr("onChange", "setMode();")
+                ),
                 div
                 (
                     span("Serial port: "),

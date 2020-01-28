@@ -35,6 +35,7 @@ import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataSocket;
 import org.delfispace.protocols.pq9.PCInterface;
 import org.delfispace.protocols.pq9.PQ9;
 import org.delfispace.protocols.pq9.PQ9Exception;
+import org.delfispace.protocols.pq9.PQ9PCInterface;
 import org.delfispace.protocols.pq9.PQ9Receiver;
 import org.delfispace.protocols.pq9.RS485PCInterface;
 import org.json.simple.JSONObject;
@@ -187,9 +188,18 @@ public class Main implements PQ9Receiver, Subscriber
         }
 
         if (port.equals(NULL_PORT_NAME))
-        {                        
+        {     
             // crete the serial port reader
-            pcInterface = new RS485PCInterface(new NullInputStream(), new NullOutputStream());  
+            if (Configuration.getInstance().getEGSEMode().equals("RS485"))
+            {
+                Logger.getLogger(Main.class.getName()).log(Level.INFO, "Setting EGSE in RS485 mode");
+                pcInterface = new RS485PCInterface(new NullInputStream(), new NullOutputStream());  
+            }
+            else
+            {
+                Logger.getLogger(Main.class.getName()).log(Level.INFO, "Setting EGSE in PQ9 mode");
+                pcInterface = new PQ9PCInterface(new NullInputStream(), new NullOutputStream());  
+            }
         }
         else
         {
@@ -206,7 +216,16 @@ public class Main implements PQ9Receiver, Subscriber
             comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
             
             // crete the serial port reader
-            pcInterface = new RS485PCInterface(comPort.getInputStream(), comPort.getOutputStream());
+            if (Configuration.getInstance().getEGSEMode().equals("RS485"))
+            {                
+                Logger.getLogger(Main.class.getName()).log(Level.INFO, "Setting EGSE in RS485 mode");
+                pcInterface = new RS485PCInterface(comPort.getInputStream(), comPort.getOutputStream());
+            }
+            else
+            {
+                Logger.getLogger(Main.class.getName()).log(Level.INFO, "Setting EGSE in PQ9 mode");
+                pcInterface = new PQ9PCInterface(comPort.getInputStream(), comPort.getOutputStream());
+            }
         }
         
         // setup an asynchronous callback on frame reception
@@ -402,6 +421,11 @@ public class Main implements PQ9Receiver, Subscriber
                     handleSendCommand(cmd);
                 break;
 
+                case "setMode":
+                    Configuration.getInstance().setEGSEMode(cmd.getData());
+                    connectToSerialPort(Configuration.getInstance().getSerialPort());
+                    break;
+                    
                 case "setSerialPort":
                     connectToSerialPort(cmd.getData());
                     // TODO: update the header for all existing conenctions
