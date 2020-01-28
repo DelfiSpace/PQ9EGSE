@@ -48,9 +48,11 @@ public class PQ9PCInterface extends PCInterface
     @Override
     protected PQ9 processWord(int value) throws IOException
     {
+        int byteValue = ((value >> 1) & 0x80) | (value & 0xFF);
+                
         if ((value & (ADDRESS_BIT << 8)) != 0) 
         {
-            // first byte
+            // first byte of the packet
             // clear the buffer and get ready to process a new frame
             if (bs.size() != 0)
             {
@@ -73,7 +75,7 @@ public class PQ9PCInterface extends PCInterface
         
         if (startFound)
         {            
-            bs.write(value & 0xFF);
+            bs.write( byteValue );
 
             // check if we received all the bytes and can check the checksum
             if ((sizeFrame != -1) && (sizeFrame == bs.size() - 5))
@@ -100,7 +102,7 @@ public class PQ9PCInterface extends PCInterface
             // detect frame termination
             if (bs.size() == 2)
             {
-                sizeFrame = value & 0xFF;
+                sizeFrame = byteValue;
             }
         }
         else
@@ -108,7 +110,7 @@ public class PQ9PCInterface extends PCInterface
             //a byte received without having received a start
             if (errorHdl != null)
             {
-                errorHdl.error(new PQ9Exception(String.format("Unexpected byte: %02X", value & 0xFF)));
+                errorHdl.error(new PQ9Exception(String.format("Unexpected byte: %02X", byteValue)));
             }
         }
 

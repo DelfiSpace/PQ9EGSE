@@ -54,13 +54,12 @@ public class RS485PCInterface extends PCInterface
     @Override
     protected PQ9 processWord(int value) throws IOException
     {
-
-        value &= 0xFF;
+        int byteValue = ((value >> 1) & 0x80) | (value & 0xFF);
 
         switch(state)
         {
             case 0:
-                if (value == 0x7E)
+                if (byteValue == 0x7E)
                 {
                     state = 1;
                     bs.reset();
@@ -68,12 +67,12 @@ public class RS485PCInterface extends PCInterface
                 break;
 
             case 1:
-                size = value << 8;
+                size = byteValue << 8;
                 state = 2;
                 break;
 
             case 2:
-                size |= value & 0xFF;
+                size |= byteValue & 0xFF;
                 index = 0;
                 state = 3;
                 break;
@@ -81,19 +80,19 @@ public class RS485PCInterface extends PCInterface
             case 3:
                 if (index == 0)
                 {
-                    bs.write(value);
+                    bs.write( byteValue );
                 }
                 if (index == 1)
                 {
-                    bs.write(value);
+                    bs.write( byteValue );
                 }
                 if (index == 2)
                 {
-                    bs.write(value);
+                    bs.write( byteValue );
                 }
                 if ((index > 2) && (index < 258))
                 {
-                    bs.write(value);
+                    bs.write( byteValue );
                 }
                 if (index >= 258)
                 {
@@ -109,26 +108,26 @@ public class RS485PCInterface extends PCInterface
 
             case 4:
                 // CRC first byte
-//                state = 5;
-//                bs.write(value);
-//                break;
+                state = 5;
+                bs.write(byteValue);
+                break;
                 
             case 5:
                 // CRC second byte
-//                state = 6;
-//                bs.write(value);
-//                break;
+                state = 6;
+                bs.write(byteValue);
+                break;
                 
-//            case 6:
+            case 6:
                 // last byte
-                if (value == 0x7D)
+                if (byteValue == 0x7D)
                 {
                     // frame found!
                     state = 0;
                     
                     try
                     {
-                        PQ9 t = new PQ9(bs.toByteArray(), false);
+                        PQ9 t = new PQ9(bs.toByteArray());
                         bs.reset();
                         state = 0;
                         return t;
@@ -171,7 +170,7 @@ public class RS485PCInterface extends PCInterface
         out.write( lengthL & 0x7F );
         
         // transmit the packet and the CRC
-        for(int i = 0; i < data.length - 2; i++)            
+        for(int i = 0; i < data.length; i++)            
         {
             out.write( FIRST_BYTE | (data[i] >> 7) & 0x01 );
             out.write( data[i] & 0x7F );

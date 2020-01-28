@@ -111,18 +111,18 @@ public abstract class PCInterface
         {
             if (tmprx > 0)
             {
-                byte rx = (byte) (newData[0] & 0xFF);
+                int rx = newData[0] & 0xFF;
 
                 // were we waiting for the first byte?
                 // did we receive the first byte?
                 if (!firstByteFound && ((rx & FIRST_BYTE) != 0))
                 {
-                    tmpValue = (((int)rx) << 8) & 0xFFFF;
+                    tmpValue = rx << 8;
                     firstByteFound = true;
                 }
                 else if (firstByteFound && ((rx & FIRST_BYTE) == 0))
                 {
-                    tmpValue |= (int)rx & 0xFF;
+                    tmpValue |= rx;
                     firstByteFound = false;
                     
                     if (tmpValue == ((FIRST_BYTE | COMMAND) << 8 | INITIALIZE))
@@ -134,7 +134,7 @@ public abstract class PCInterface
                     else
                     {
                         // process the received short
-                        return processWord( ((tmpValue >> 1) & 0x80) | (tmpValue & 0x7F) );
+                        return processWord( tmpValue );
                     }
                 } 
             }
