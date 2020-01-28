@@ -40,7 +40,7 @@ public class RS485PCInterface extends PCInterface
     
     public RS485PCInterface(InputStream in, OutputStream out) 
     {
-        super(in, out);   
+        super(in, out); 
     }
 
     @Override
@@ -109,17 +109,17 @@ public class RS485PCInterface extends PCInterface
 
             case 4:
                 // CRC first byte
-                state = 5;
-                bs.write(value);
-                break;
+//                state = 5;
+//                bs.write(value);
+//                break;
                 
             case 5:
                 // CRC second byte
-                state = 6;
-                bs.write(value);
-                break;
+//                state = 6;
+//                bs.write(value);
+//                break;
                 
-            case 6:
+//            case 6:
                 // last byte
                 if (value == 0x7D)
                 {
@@ -128,7 +128,7 @@ public class RS485PCInterface extends PCInterface
                     
                     try
                     {
-                        PQ9 t = new PQ9(bs.toByteArray());
+                        PQ9 t = new PQ9(bs.toByteArray(), false);
                         bs.reset();
                         state = 0;
                         return t;
@@ -161,8 +161,8 @@ public class RS485PCInterface extends PCInterface
         out.write( start & 0x7F );
 
         // transmit the packet and the CRC
-        byte lengthH = (byte)((data.length & 0xFF00) >> 8);
-        byte lengthL = (byte)(data.length & 0x00FF);
+        byte lengthH = (byte)(((data.length - 2) & 0xFF00) >> 8);
+        byte lengthL = (byte)((data.length - 2) & 0x00FF);
 
         out.write( FIRST_BYTE | (lengthH >> 7) & 0x01 );
         out.write( lengthH & 0x7F );
@@ -171,7 +171,7 @@ public class RS485PCInterface extends PCInterface
         out.write( lengthL & 0x7F );
         
         // transmit the packet and the CRC
-        for(int i = 0; i < data.length; i++)            
+        for(int i = 0; i < data.length - 2; i++)            
         {
             out.write( FIRST_BYTE | (data[i] >> 7) & 0x01 );
             out.write( data[i] & 0x7F );
