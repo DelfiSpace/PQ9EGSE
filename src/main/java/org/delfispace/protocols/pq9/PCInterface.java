@@ -31,7 +31,10 @@ public abstract class PCInterface
     protected final OutputStream out;
     protected PQ9Receiver callback;
     protected PQ9ErrorHandler errorHdl;
-    protected readerThread reader;
+    private readerThread reader;
+    
+    private boolean firstByteFound = false;
+    private int tmpValue = 0;
     
     protected static final int FIRST_BYTE = 0x80;
     protected static final int SECOND_BYTE = 0x00;
@@ -45,9 +48,11 @@ public abstract class PCInterface
     public PCInterface(InputStream in, OutputStream out) 
     {
         this.in = in;
-        this.out = out;        
+        this.out = out;          
     }
-        
+
+    protected abstract void init() throws IOException;
+            
     public void close() throws IOException
     {
         if (reader != null)
@@ -64,6 +69,7 @@ public abstract class PCInterface
             }
         }
     }
+
     public void setReceiverCallback(PQ9Receiver clb) 
     {
         if (callback != null) 
@@ -94,11 +100,57 @@ public abstract class PCInterface
         return null;
     }
 
-    public abstract PQ9 blockingread() throws IOException;
+    protected abstract PQ9 processWord(int value) throws IOException;
+    
+    public PQ9 blockingread() throws IOException
+    {
+        byte[] newData = new byte[1];
+        int tmprx = in.read(newData);
+
+        while (tmprx >= 0) 
+        {
+            if (tmprx > 0)
+            {
+                byte rx = (byte) (newData[0] & 0xFF);
+
+                // were we waiting for the first byte?
+                // did we receive the first byte?
+                if (!firstByteFound && ((rx & FIRST_BYTE) != 0))
+                {
+                    tmpValue = (((int)rx) << 8) & 0xFFFF;
+                    firstByteFound = true;
+                }
+                else if (firstByteFound && ((rx & FIRST_BYTE) == 0))
+                {
+                    tmpValue |= (int)rx & 0xFF;
+                    firstByteFound = false;
+                    
+                    if (tmpValue == ((FIRST_BYTE | COMMAND) << 8 | INITIALIZE))
+                    {
+                        // initialization request
+                        init();
+                        return null;
+                    }
+                    else
+                    {
+                        // process the received short
+                        return processWord( ((tmpValue >> 1) & 0x80) | (tmpValue & 0x7F) );
+                    }
+                } 
+            }
+            // read new byte
+            tmprx = in.read(newData);
+        }
+
+        // no full frame received yet
+        return null;
+    }
 
     public abstract void send(PQ9 frame) throws IOException;
+    
+    public abstract void sendRaw(byte[] data) throws IOException;
 
-    class readerThread extends Thread 
+    private class readerThread extends Thread 
     {
         public boolean running;
 
@@ -108,6 +160,8 @@ public abstract class PCInterface
             running = true;
             try 
             {
+                init();
+                
                 while (running) 
                 {
                     PQ9 d = blockingread();

@@ -30,9 +30,6 @@ import static org.delfispace.protocols.pq9.PQ9PCInterface.COMMAND;
 public class RS485PCInterface extends PCInterface
 {
     private final ByteArrayOutputStream bs = new ByteArrayOutputStream();
-
-    private boolean firstByteFound = false;
-    private short tmpValue = 0;
     
     static final byte START_OF_MESSAGE = (byte)0x7E;
     static final byte END_OF_MESSAGE = (byte)0x7D;
@@ -44,78 +41,26 @@ public class RS485PCInterface extends PCInterface
     public RS485PCInterface(InputStream in, OutputStream out) 
     {
         super(in, out);   
-        
-        try 
-        {
-            init();
-        } catch (IOException ex) 
-        {
-            if (errorHdl != null)
-            {
-                errorHdl.error(new PQ9Exception(ex));
-            }
-        }
     }
 
-    private void init() throws IOException
+    @Override
+    protected void init() throws IOException
     {
         out.write( FIRST_BYTE | COMMAND | STOP_TRANSMISSION );
         out.write( INTERFACE_RS485 );
         out.flush();
-    }
-        
-    @Override
-    public PQ9 blockingread() throws IOException 
-    {
-        byte[] newData = new byte[1];
-        int tmprx = in.read(newData);
-
-        while (tmprx >= 0) 
-        {
-            if (tmprx > 0)
-            {
-                byte rx = (byte) (newData[0] & 0xFF);
-
-                // were we waiting for the first byte?
-                // did we receive the first byte?
-                if (!firstByteFound && ((rx & FIRST_BYTE) != 0))
-                {
-                    tmpValue = (short)((((int)rx) << 8) & 0xFFFF);
-                    firstByteFound = true;
-                }
-                else if (firstByteFound && ((rx & FIRST_BYTE) == 0))
-                {
-                    tmpValue |= (short)rx & 0xFF;
-                    firstByteFound = false;
-                    
-                    // process the received short
-                    return processShort(tmpValue);
-                } 
-            }
-            // read new byte
-            tmprx = in.read(newData);
-        }
-
-        // no full frame received yet
-        return null;
-    }
+    }       
     
-    private PQ9 processShort(short rx) throws IOException
+    @Override
+    protected PQ9 processWord(int value) throws IOException
     {
-        int value = rx & 0xFFFF;
-        if (value == ((FIRST_BYTE | COMMAND) << 8 | INITIALIZE))
-        {
-            // initialization request
-            init();
-            return null;
-        }
-        value = (short)(((value >> 1) & 0x80) | (value & 0x7F));
+
         value &= 0xFF;
 
         switch(state)
         {
             case 0:
-                if (value == (short)0x7E)
+                if (value == 0x7E)
                 {
                     state = 1;
                     bs.reset();
@@ -123,12 +68,12 @@ public class RS485PCInterface extends PCInterface
                 break;
 
             case 1:
-                size = (((int)value) & 0xFF) << 8;
+                size = value << 8;
                 state = 2;
                 break;
 
             case 2:
-                size |= ((int)value) & 0xFF;
+                size |= value & 0xFF;
                 index = 0;
                 state = 3;
                 break;
@@ -163,6 +108,18 @@ public class RS485PCInterface extends PCInterface
                 break;
 
             case 4:
+                // CRC first byte
+                state = 5;
+                bs.write(value);
+                break;
+                
+            case 5:
+                // CRC second byte
+                state = 6;
+                bs.write(value);
+                break;
+                
+            case 6:
                 // last byte
                 if (value == 0x7D)
                 {
@@ -171,7 +128,7 @@ public class RS485PCInterface extends PCInterface
                     
                     try
                     {
-                        PQ9 t = new PQ9(bs.toByteArray(), false);
+                        PQ9 t = new PQ9(bs.toByteArray());
                         bs.reset();
                         state = 0;
                         return t;
@@ -191,7 +148,7 @@ public class RS485PCInterface extends PCInterface
             default:
                 state = 0;
         }
-return null;
+        return null;
     }
     
     @Override
@@ -203,9 +160,9 @@ return null;
         out.write( FIRST_BYTE | (start >> 7) & 0x01 );
         out.write( start & 0x7F );
 
-        // do not transmit the CRC
-        byte lengthH = (byte)(((data.length - 2) & 0xFF00) >> 8);
-        byte lengthL = (byte)((data.length - 2) & 0x00FF);
+        // transmit the packet and the CRC
+        byte lengthH = (byte)((data.length & 0xFF00) >> 8);
+        byte lengthL = (byte)(data.length & 0x00FF);
 
         out.write( FIRST_BYTE | (lengthH >> 7) & 0x01 );
         out.write( lengthH & 0x7F );
@@ -213,8 +170,8 @@ return null;
         out.write( FIRST_BYTE | (lengthL >> 7) & 0x01 );
         out.write( lengthL & 0x7F );
         
-        // do not transmit the CRC
-        for(int i = 0; i < data.length - 2; i++)            
+        // transmit the packet and the CRC
+        for(int i = 0; i < data.length; i++)            
         {
             out.write( FIRST_BYTE | (data[i] >> 7) & 0x01 );
             out.write( data[i] & 0x7F );
@@ -223,6 +180,20 @@ return null;
         byte end = END_OF_MESSAGE;
         out.write( FIRST_BYTE | STOP_TRANSMISSION | (end >> 7) & 0x01 );
         out.write( end & 0x7F );
+        out.flush();
+    }
+    
+    @Override
+    public synchronized void sendRaw(byte[] data) throws IOException 
+    {
+        for(int i = 0; i < data.length - 1; i++)            
+        {
+            out.write( FIRST_BYTE | (data[i] >> 7) & 0x01 );
+            out.write( data[i] & 0x7F );
+        }
+
+        out.write( FIRST_BYTE | STOP_TRANSMISSION | (data[data.length - 1] >> 7) & 0x01 );
+        out.write( data[data.length - 1] & 0x7F );
         out.flush();
     }
 }
