@@ -1162,8 +1162,9 @@
                     </xtce:BaseMetaCommand>
                     <xtce:ArgumentList>
                         <xtce:Argument name="PropUnitParam" argumentTypeRef="UnitParameterType"/>
-                        <xtce:Argument name="PropWorkParam" argumentTypeRef="/Delfi-PQ/short" shortDescription="Total Duration (ms)"/>
-                        <xtce:Argument name="PropBeforeParam" argumentTypeRef="/Delfi-PQ/short" shortDescription="First Delay (ms)"/>
+                        <xtce:Argument name="PropWorkParam" argumentTypeRef="/Delfi-PQ/byte" shortDescription="Duration Valve (s)"/>
+                        <xtce:Argument name="PropBeforeParam" argumentTypeRef="/Delfi-PQ/byte" shortDescription="Heat Only (s)"/>
+                        <xtce:Argument name="PropDCHeatParam" argumentTypeRef="/Delfi-PQ/byte" shortDescription="Duty Cycle Heat (%)"/>
                         <xtce:Argument name="PropPeriodParam" argumentTypeRef="/Delfi-PQ/short" shortDescription="Period (ms)"/>
                         <xtce:Argument name="PropHoldParam" argumentTypeRef="/Delfi-PQ/short" shortDescription="Hold Time (ms)"/>
                         <xtce:Argument name="PropSpikeParam" argumentTypeRef="/Delfi-PQ/short" shortDescription="Spike Time (μs)"/>
@@ -1173,6 +1174,7 @@
                             <xtce:ArgumentRefEntry argumentRef="PropUnitParam"/>
                             <xtce:ArgumentRefEntry argumentRef="PropWorkParam"/>
                             <xtce:ArgumentRefEntry argumentRef="PropBeforeParam"/>
+                            <xtce:ArgumentRefEntry argumentRef="PropDCHeatParam"/>
                             <xtce:ArgumentRefEntry argumentRef="PropPeriodParam"/>
                             <xtce:ArgumentRefEntry argumentRef="PropHoldParam"/>
                             <xtce:ArgumentRefEntry argumentRef="PropSpikeParam"/>
