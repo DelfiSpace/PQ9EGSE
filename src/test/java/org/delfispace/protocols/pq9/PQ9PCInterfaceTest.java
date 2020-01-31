@@ -36,7 +36,7 @@ import org.junit.Test;
  */
 public class PQ9PCInterfaceTest 
 {
-    private PQ9PCInterface protocol;
+    private PCInterface protocol;
     private int receivedFrames = 0;
             
     @BeforeClass
