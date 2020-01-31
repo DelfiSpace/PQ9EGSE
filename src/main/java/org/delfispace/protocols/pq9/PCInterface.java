@@ -32,6 +32,7 @@ public abstract class PCInterface
     protected PQ9Receiver callback;
     protected PQ9ErrorHandler errorHdl;
     private readerThread reader;
+    private boolean ready = false;
     
     private boolean firstByteFound = false;
     private int tmpValue = 0;
@@ -83,6 +84,7 @@ public abstract class PCInterface
         {
             reader = new readerThread();
             reader.start();
+            while (!ready) {}
         }
     }
 
@@ -164,6 +166,7 @@ public abstract class PCInterface
             try 
             {
                 init();
+                ready = true;
                 
                 while (running) 
                 {
