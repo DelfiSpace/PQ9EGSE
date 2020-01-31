@@ -129,12 +129,15 @@ public abstract class PCInterface
                     {
                         // initialization request
                         init();
-                        return null;
                     }
                     else
                     {
                         // process the received short
-                        return processWord( tmpValue );
+                        PQ9 frame = processWord( tmpValue );
+                        if (frame != null)
+                        {
+                            return frame;
+                        }
                     }
                 } 
             }
