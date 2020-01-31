@@ -48,7 +48,7 @@ public class PQ9PCInterface extends PCInterface
     @Override
     protected PQ9 processWord(int value) throws IOException
     {
-        int byteValue = ((value >> 1) & 0x80) | (value & 0xFF);
+        int byteValue = ((value >> 1) & 0x80) | (value & 0x7F);
                 
         if ((value & (ADDRESS_BIT << 8)) != 0) 
         {
