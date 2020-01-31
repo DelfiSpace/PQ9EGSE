@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.delfispace.pq9debugger.LoopbackStream;
+import org.delfispace.pq9debugger.NullOutputStream;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -62,8 +63,8 @@ public class PQ9PCInterfaceTest
     private void runTest(byte[] input, byte[] output) throws IOException
     {
         ByteArrayInputStream is = new ByteArrayInputStream(input);
-        protocol = new PQ9PCInterface(is, null);
-  
+        protocol = new PQ9PCInterface(is, new NullOutputStream());
+          
         byte[] data = protocol.read().getFrame();
         for (int i = 0; i < data.length; i++)
         {
@@ -89,13 +90,27 @@ public class PQ9PCInterfaceTest
             Logger.getLogger(PQ9PCInterfaceTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x04, (byte)0x04, (byte)0x0B, (byte)0x7D, (byte)0x5C, (byte)0x11, (byte)0x02, (byte)0x65, (byte)0x7D, (byte)0x5E}, 
-                new byte[]{(byte)0x01, (byte)0x04, (byte)0x04, (byte)0x0B, (byte)0x7C, (byte)0x11, (byte)0x02, (byte)0x65, (byte)0x7e});
-        runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x00, (byte)0x02, (byte)0xDB, (byte)0xEE}, 
+        runTest(new byte[]{(byte)0xC0, (byte)0x01, (byte)0x80, (byte)0x03, (byte)0x80, 
+                           (byte)0x02, (byte)0x80, (byte)0x7E, (byte)0x80, (byte)0x7D, 
+                           (byte)0x80, (byte)0x7C, (byte)0x80, (byte)0x4A, (byte)0x80, 
+                           (byte)0x1D}, 
+                new byte[]{(byte)0x01, (byte)0x03, (byte)0x02, (byte)0x7E, (byte)0x7D, 
+                           (byte)0x7C, (byte)0x4A, (byte)0x1D});
+        runTest(new byte[]{(byte)0xC0, (byte)0x01, (byte)0x80, (byte)0x00, (byte)0x80, 
+                           (byte)0x02, (byte)0x81, (byte)0x5B, (byte)0x81, (byte)0x6E}, 
                 new byte[]{(byte)0x01, (byte)0x00, (byte)0x02, (byte)0xDB, (byte)0xEE});
-        runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x01, (byte)0x02, (byte)0x01, (byte)0xB3, (byte)0x07}, 
-                new byte[]{(byte)0x01, (byte)0x01, (byte)0x02, (byte)0x01, (byte)0xB3, (byte)0x07});        
-        runTest(new byte[]{(byte)0x7E, (byte)0x01, (byte)0x03, (byte)0x02, (byte)0x7D, (byte)0x5E, (byte)0x7D, (byte)0x5D, (byte)0x7D, (byte)0x5C, (byte)0x4A, (byte)0x1D}, 
+        runTest(new byte[]{(byte)0xC0, (byte)0x01, (byte)0x80, (byte)0x01, (byte)0x80, 
+                           (byte)0x02, (byte)0x80, (byte)0x01, (byte)0x81, (byte)0x33, 
+                           (byte)0x80, (byte)0x07}, 
+                new byte[]{(byte)0x01, (byte)0x01, (byte)0x02, (byte)0x01, (byte)0xB3, 
+                           (byte)0x07});        
+        runTest(new byte[]{(byte)0xC0, (byte)0x01, (byte)0x80, (byte)0x03, (byte)0x80, 
+                           (byte)0x02, (byte)0x80, (byte)0x7E, (byte)0x80, (byte)0x7D, 
+                           (byte)0x80, (byte)0x7C, (byte)0x80, (byte)0x4A, (byte)0x80, 
+                           (byte)0x1D, (byte)0xC0, (byte)0x01, (byte)0x80, (byte)0x03, 
+                           (byte)0x80, (byte)0x02, (byte)0x80, (byte)0x7E, (byte)0x80, 
+                           (byte)0x7D, (byte)0x80, (byte)0x7C, (byte)0x80, (byte)0x4A, 
+                           (byte)0x80, (byte)0x1D}, 
                 new byte[]{(byte)0x01, (byte)0x03, (byte)0x02, (byte)0x7E, (byte)0x7D, (byte)0x7C, (byte)0x4A, (byte)0x1D});      
     }
 
@@ -107,12 +122,19 @@ public class PQ9PCInterfaceTest
 
         System.out.println( "Test Case: " + methodName + "()" );
         
-        byte[] input = new byte[]{(byte)0x7E, (byte)0x01, (byte)0x01, (byte)0x02, 
-            (byte)0x01, (byte)0xB3, (byte)0x07, (byte)0xFF, (byte)0x7E, (byte)0x01, 
-            (byte)0x00, (byte)0x02, (byte)0xDB, (byte)0xEE};
+        byte[] input = new byte[]{(byte)0xC0, (byte)0x01, (byte)0x80, (byte)0x01, 
+                                  (byte)0x80, (byte)0x02, (byte)0x80, (byte)0x01, 
+                                  (byte)0x81, (byte)0x33, (byte)0x80, (byte)0x07, 
+                                  (byte)0x81, (byte)0x7F, (byte)0xC0, (byte)0x01, 
+                                  (byte)0x80, (byte)0x00, (byte)0x80, (byte)0x02, 
+                                  (byte)0x81, (byte)0x5B, (byte)0x81, (byte)0x6E,
+                                  (byte)0xC0, (byte)0x01, (byte)0xC0, (byte)0x01, 
+                                  (byte)0x80, (byte)0x01, (byte)0x80, (byte)0x02, 
+                                  (byte)0x80, (byte)0x01, (byte)0x81, (byte)0x33, 
+                                  (byte)0x80, (byte)0x07};
         
         ByteArrayInputStream is = new ByteArrayInputStream(input);
-        protocol = new PQ9PCInterface(is, null);
+        protocol = new PQ9PCInterface(is, new NullOutputStream());
   
         PQ9 f = protocol.read();
     
@@ -122,6 +144,11 @@ public class PQ9PCInterfaceTest
         f = protocol.read();       
         System.out.println(f);
         Assert.assertArrayEquals("Error", f.getFrame(), new byte[] {(byte)0x01, (byte)0x00, (byte)0x02, (byte)0xDB, (byte)0xEE});
+        
+        f = protocol.read(); 
+        System.out.println(f);
+        Assert.assertArrayEquals("Error", f.getFrame(), new byte[] {(byte)0x01, (byte)0x01, (byte)0x02, (byte)0x01, (byte)0xB3, (byte)0x07});
+        
     }
 
     @Test
@@ -138,12 +165,12 @@ public class PQ9PCInterfaceTest
         LoopbackStream ls = new LoopbackStream();
         
         protocol = new PQ9PCInterface(ls.getInputStream(), os);
-        byte[] output = new byte[]{(byte)0x7E, (byte)0x01, (byte)0x03, (byte)0x02, 
-                    (byte)0x7D, (byte)0x5E, (byte)0x7D, (byte)0x5D, (byte)0x7D, 
-                    (byte)0x5C, (byte)0x4A, (byte)0x1D, (byte)0x7C, (byte)0x7E, 
-                    (byte)0x01, (byte)0x03, (byte)0x02, (byte)0x7D, (byte)0x5E, 
-                    (byte)0x7D, (byte)0x5D, (byte)0x7D, (byte)0x5C, (byte)0x4A, 
-                    (byte)0x1D, (byte)0x7C};
+        byte[] output = new byte[]{(byte)0xC0, (byte)0x01, (byte)0x80, (byte)0x03, 
+           (byte)0x80, (byte)0x02, (byte)0x80, (byte)0x7E, (byte)0x80, (byte)0x7D, 
+           (byte)0x80, (byte)0x7C, (byte)0x80, (byte)0x4A, (byte)0xA0, (byte)0x1D,
+           (byte)0xC0, (byte)0x01, (byte)0x80, (byte)0x03, (byte)0x80, (byte)0x02, 
+           (byte)0x80, (byte)0x7E, (byte)0x80, (byte)0x7D, (byte)0x80, (byte)0x7C, 
+           (byte)0x80, (byte)0x4A, (byte)0xA0, (byte)0x1D};
   
         protocol.send(frame);
         protocol.send(frame);
@@ -193,21 +220,28 @@ public class PQ9PCInterfaceTest
 
         System.out.println( "Test Case: " + methodName + "()" );
         
-        PQ9 frame = new PQ9(1, 2, new byte[130]);
+        PQ9[] frames = new PQ9[4];
+        frames[0] = new PQ9(1, 2, new byte[100]);
+        frames[1] = new PQ9(1, 2, new byte[120]);
+        frames[2] = new PQ9(1, 2, new byte[250]);
+        frames[3] = new PQ9(1, 2, new byte[255]);
         LoopbackStream ls = new LoopbackStream();
         
         protocol = new PQ9PCInterface(ls.getInputStream(), ls.getOutputStream());
-               
+
         receivedFrames = 0;
         protocol.setReceiverCallback((PQ9 data) -> {
-            Assert.assertArrayEquals("Error", data.getFrame(), frame.getFrame());
+            Assert.assertArrayEquals("Error", data.getFrame(), frames[receivedFrames].getFrame());
+            System.out.println("RX " + receivedFrames);
             receivedFrames++;
         });
-        
-        protocol.send(frame);
-        protocol.send(frame);
+
+        for (PQ9 frame : frames) 
+        {
+            protocol.send(frame);
+        }
         
         ls.join();
-        Assert.assertEquals("Error", 2, receivedFrames);
+        Assert.assertEquals("Error", frames.length, receivedFrames);
     }
 }
