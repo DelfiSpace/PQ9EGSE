@@ -90,11 +90,11 @@ public class RS485PCInterface extends PCInterface
                 {
                     bs.write( byteValue );
                 }
-                if ((index > 2) && (index < 258))
+                if ((index > 2) && (index < 260))
                 {
                     bs.write( byteValue );
                 }
-                if (index >= 258)
+                if (index >= 260)
                 {
                     state = 0;
                     bs.reset();
