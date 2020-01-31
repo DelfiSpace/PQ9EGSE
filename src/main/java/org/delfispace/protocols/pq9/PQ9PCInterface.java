@@ -115,7 +115,7 @@ public class PQ9PCInterface extends PCInterface
         }
 
         // prevent the buffer from growing too much
-        if (bs.size() > 256)
+        if (bs.size() > 261)
         {
             bs.reset();
             startFound = false;
