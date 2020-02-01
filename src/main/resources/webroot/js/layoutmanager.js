@@ -306,6 +306,11 @@ function resetLayout()
     location.reload(true);
 }
 
+function setMode()
+{
+    rpc.send("setMode", document.getElementById('EGSEMode').value);
+}
+
 function setSerialPort()
 {
     rpc.send("setSerialPort", document.getElementById('serialPort').value);

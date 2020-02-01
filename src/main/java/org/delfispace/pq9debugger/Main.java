@@ -26,17 +26,18 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.delfispace.CommandWebServer.Command;
 import org.delfispace.CommandWebServer.CommandWebServer;
 import org.delfispace.pq9debugger.PQ9DataSocket.PQ9DataSocket;
+import org.delfispace.protocols.pq9.PCInterface;
 import org.delfispace.protocols.pq9.PQ9;
 import org.delfispace.protocols.pq9.PQ9Exception;
 import org.delfispace.protocols.pq9.PQ9PCInterface;
 import org.delfispace.protocols.pq9.PQ9Receiver;
+import org.delfispace.protocols.pq9.RS485PCInterface;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -63,7 +64,7 @@ public class Main implements PQ9Receiver, Subscriber
     private static final String XTCE_FILE = "EPS.xml";
     private final CommandWebServer srv;
     private final PQ9DataSocket DatSktSrv;
-    private PQ9PCInterface pcInterface = null; 
+    private PCInterface pcInterface = null; 
     private final JSONParser parser = new JSONParser(); 
     private XTCETMStream stream;
     private SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss.SSS ");
@@ -187,9 +188,18 @@ public class Main implements PQ9Receiver, Subscriber
         }
 
         if (port.equals(NULL_PORT_NAME))
-        {                        
-            // crete the HLDLC reader
-            pcInterface = new PQ9PCInterface(new NullInputStream(), new NullOutputStream());        
+        {     
+            // crete the serial port reader
+            if (Configuration.getInstance().getEGSEMode().equals("RS485"))
+            {
+                Logger.getLogger(Main.class.getName()).log(Level.INFO, "Setting EGSE in RS485 mode");
+                pcInterface = new RS485PCInterface(new NullInputStream(), new NullOutputStream());  
+            }
+            else
+            {
+                Logger.getLogger(Main.class.getName()).log(Level.INFO, "Setting EGSE in PQ9 mode");
+                pcInterface = new PQ9PCInterface(new NullInputStream(), new NullOutputStream());  
+            }
         }
         else
         {
@@ -200,13 +210,22 @@ public class Main implements PQ9Receiver, Subscriber
             comPort.openPort();
 
             // configure the seriql port parameters
-            comPort.setComPortParameters(115200, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+            comPort.setComPortParameters(230400, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
             
             // set the serial port in blocking mode
             comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
             
-            // crete the HLDLC reader
-            pcInterface = new PQ9PCInterface(comPort.getInputStream(), comPort.getOutputStream());
+            // crete the serial port reader
+            if (Configuration.getInstance().getEGSEMode().equals("RS485"))
+            {                
+                Logger.getLogger(Main.class.getName()).log(Level.INFO, "Setting EGSE in RS485 mode");
+                pcInterface = new RS485PCInterface(comPort.getInputStream(), comPort.getOutputStream());
+            }
+            else
+            {
+                Logger.getLogger(Main.class.getName()).log(Level.INFO, "Setting EGSE in PQ9 mode");
+                pcInterface = new PQ9PCInterface(comPort.getInputStream(), comPort.getOutputStream());
+            }
         }
         
         // setup an asynchronous callback on frame reception
@@ -402,6 +421,11 @@ public class Main implements PQ9Receiver, Subscriber
                     handleSendCommand(cmd);
                 break;
 
+                case "setMode":
+                    Configuration.getInstance().setEGSEMode(cmd.getData());
+                    connectToSerialPort(Configuration.getInstance().getSerialPort());
+                    break;
+                    
                 case "setSerialPort":
                     connectToSerialPort(cmd.getData());
                     // TODO: update the header for all existing conenctions
