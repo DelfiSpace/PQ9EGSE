@@ -84,7 +84,18 @@ public abstract class PCInterface
         {
             reader = new readerThread();
             reader.start();
-            while (!ready) {}
+
+            // wait till the reader task is ready
+            try 
+            {
+                while (!ready) 
+                {
+                        Thread.sleep(100);                    
+                }
+            } catch (InterruptedException ex) 
+            {
+                // just stop the loop
+            }
         }
     }
 
@@ -167,7 +178,7 @@ public abstract class PCInterface
             {
                 init();
                 ready = true;
-                
+
                 while (running) 
                 {
                     PQ9 d = blockingread();
