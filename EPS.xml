@@ -39,7 +39,8 @@
                     <xtce:Enumeration label="PacketStats" value="6"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                     <xtce:Enumeration label="Reset" value="19"/>
-                    <xtce:Enumeration label="Testing" value="21"/>
+                    <xtce:Enumeration label="Testing" value="0"/>
+                    <xtce:Enumeration label="Propulsion" value="23"/>
                     <xtce:Enumeration label="RX" value="55"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
@@ -182,6 +183,7 @@
             <!-- These are parameters that may be used in abstract telemetry or command containers to define system-level settings. -->
             <xtce:Parameter name="Destination" parameterTypeRef="AddressType"/>
             <xtce:Parameter name="Size" parameterTypeRef="byte"/>
+            <xtce:Parameter name="Action" parameterTypeRef="byte"/>
             <xtce:Parameter name="Source" parameterTypeRef="AddressType"/>
             <xtce:Parameter name="Service" parameterTypeRef="ServiceType"/>
             <xtce:Parameter name="Request" parameterTypeRef="RequestType"/>
@@ -326,6 +328,7 @@
                     <xtce:Enumeration label="Reset" value="19"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                     <xtce:Enumeration label="Testing" value="0"/>
+                    <xtce:Enumeration label="Propulsion" value="23"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
             <xtce:EnumeratedArgumentType name="RequestType">
@@ -1174,13 +1177,29 @@
         </xtce:TelemetryMetaData>
         <xtce:CommandMetaData>
             <xtce:ArgumentTypeSet>
-                <xtce:EnumeratedArgumentType name="UnitParameterType" shortDescription="Propulsion Unit">
+                <xtce:EnumeratedArgumentType name="PropUnitParameterType" shortDescription="Propulsion Unit">
                     <xtce:UnitSet/>
                     <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                     <xtce:EnumerationList>
-                        <xtce:Enumeration label="OFF" value="0" shortDescription="OFF"/>
-                        <xtce:Enumeration label="LPM" value="1" shortDescription="LPM"/>
-                        <xtce:Enumeration label="VLM" value="2" shortDescription="VLM"/>
+                        <xtce:Enumeration label="LPM" value="0" shortDescription="LPM"/>
+                        <xtce:Enumeration label="VLM" value="1" shortDescription="VLM"/>
+                    </xtce:EnumerationList>
+                </xtce:EnumeratedArgumentType>
+				<xtce:EnumeratedArgumentType name="PropSaveParameterType" shortDescription="Save Data">
+                    <xtce:UnitSet/>
+                    <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                    <xtce:EnumerationList>
+                        <xtce:Enumeration label="NO"  value="0" shortDescription="NO"/>
+                        <xtce:Enumeration label="YES" value="1" shortDescription="YES"/>
+                    </xtce:EnumerationList>
+                </xtce:EnumeratedArgumentType>
+				<xtce:EnumeratedArgumentType name="PropMemParameterType" shortDescription="Action">
+                    <xtce:UnitSet/>
+                    <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                    <xtce:EnumerationList>
+                        <xtce:Enumeration label="SEND"  value="0" shortDescription="SEND"/>
+                        <xtce:Enumeration label="COUNT" value="1" shortDescription="COUNT"/>
+                        <xtce:Enumeration label="ERASE" value="2" shortDescription="ERASE"/>
                     </xtce:EnumerationList>
                 </xtce:EnumeratedArgumentType>
             </xtce:ArgumentTypeSet>
@@ -1190,14 +1209,16 @@
                     <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
                         <xtce:ArgumentAssignmentList>
                             <xtce:ArgumentAssignment argumentName="Destination" argumentValue="PROP"/>
-                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="14"/>
                             <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
-                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="Testing"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="Propulsion"/>
                             <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                            <xtce:ArgumentAssignment argumentName="Action" argumentValue="1"/>
                         </xtce:ArgumentAssignmentList>
                     </xtce:BaseMetaCommand>
                     <xtce:ArgumentList>
-                        <xtce:Argument name="PropUnitParam" argumentTypeRef="UnitParameterType"/>
+                        <xtce:Argument name="PropSaveParam" argumentTypeRef="PropSaveParameterType"/>
+                        <xtce:Argument name="PropUnitParam" argumentTypeRef="PropUnitParameterType"/>
                         <xtce:Argument name="PropWorkParam" argumentTypeRef="/Delfi-PQ/byte" shortDescription="Duration Valve (s)"/>
                         <xtce:Argument name="PropBeforeParam" argumentTypeRef="/Delfi-PQ/byte" shortDescription="Heat Only (s)"/>
                         <xtce:Argument name="PropDCHeatParam" argumentTypeRef="/Delfi-PQ/byte" shortDescription="Duty Cycle Heat (%)"/>
@@ -1207,6 +1228,7 @@
                     </xtce:ArgumentList>
                     <xtce:CommandContainer name="PROPCtrlSW">
                         <xtce:EntryList>
+                            <xtce:ArgumentRefEntry argumentRef="PropSaveParam"/>
                             <xtce:ArgumentRefEntry argumentRef="PropUnitParam"/>
                             <xtce:ArgumentRefEntry argumentRef="PropWorkParam"/>
                             <xtce:ArgumentRefEntry argumentRef="PropBeforeParam"/>
@@ -1214,6 +1236,40 @@
                             <xtce:ArgumentRefEntry argumentRef="PropPeriodParam"/>
                             <xtce:ArgumentRefEntry argumentRef="PropHoldParam"/>
                             <xtce:ArgumentRefEntry argumentRef="PropSpikeParam"/>
+                        </xtce:EntryList>
+                    </xtce:CommandContainer>
+                </xtce:MetaCommand>
+                <xtce:MetaCommand name="PROPStop" shortDescription="Stop Propulsion">
+                    <xtce:LongDescription>Stop Propulsion</xtce:LongDescription>
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="PROP"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="3"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="Propulsion"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                            <xtce:ArgumentAssignment argumentName="Action" argumentValue="0"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                </xtce:MetaCommand>
+				<xtce:MetaCommand name="PROPMem" shortDescription="Propulsion Data">
+                    <xtce:LongDescription>Propulsion Data</xtce:LongDescription>
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="PROP"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="4"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="OBC"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="Propulsion"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                            <xtce:ArgumentAssignment argumentName="Action" argumentValue="2"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                    <xtce:ArgumentList>
+                        <xtce:Argument name="PropMemParam" argumentTypeRef="PropMemParameterType"/>
+                    </xtce:ArgumentList>
+                    <xtce:CommandContainer name="PROPMemSW">
+                        <xtce:EntryList>
+                            <xtce:ArgumentRefEntry argumentRef="PropMemParam"/>
                         </xtce:EntryList>
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
