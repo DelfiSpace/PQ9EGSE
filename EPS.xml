@@ -128,7 +128,7 @@
                         </xtce:MathOperationCalibrator>
                     </xtce:DefaultCalibrator>
                 </xtce:IntegerDataEncoding>
-                <xtce:ValidRange minExclusive="-0.001" maxExclusive="2.5" validRangeAppliesToCalibrated="true"/>
+                <xtce:ValidRange minInclusive="0" maxExclusive="1.5" validRangeAppliesToCalibrated="true"/>
             </xtce:FloatParameterType>
             <xtce:IntegerParameterType name="SUBSSYSuptime">
                 <xtce:UnitSet>
@@ -453,21 +453,21 @@
                     </xtce:IntegerDataEncoding>
                     <xtce:ValidRange minExclusive="0.0" maxExclusive="6.0" validRangeAppliesToCalibrated="true"/>
                 </xtce:FloatParameterType>
-				<xtce:FloatParameterType name="BatteryCurrent">
-                <xtce:UnitSet>
-                    <xtce:Unit>A</xtce:Unit>
-                </xtce:UnitSet>
-                <xtce:IntegerDataEncoding encoding="twosComplement" sizeInBits="16">
-                    <xtce:DefaultCalibrator>
-                        <xtce:MathOperationCalibrator>
-                            <xtce:ThisParameterOperand/>
-                            <xtce:ValueOperand>0.001</xtce:ValueOperand>
-                            <xtce:Operator>*</xtce:Operator>
-                        </xtce:MathOperationCalibrator>
-                    </xtce:DefaultCalibrator>
-                </xtce:IntegerDataEncoding>
-                <xtce:ValidRange minExclusive="-1" maxExclusive="2.5" validRangeAppliesToCalibrated="true"/>
-            </xtce:FloatParameterType>
+                <xtce:FloatParameterType name="BatteryCurrent">
+                    <xtce:UnitSet>
+                        <xtce:Unit>A</xtce:Unit>
+                    </xtce:UnitSet>
+                    <xtce:IntegerDataEncoding encoding="twosComplement" sizeInBits="16">
+                        <xtce:DefaultCalibrator>
+                            <xtce:MathOperationCalibrator>
+                                <xtce:ThisParameterOperand/>
+                                <xtce:ValueOperand>0.001</xtce:ValueOperand>
+                                <xtce:Operator>*</xtce:Operator>
+                            </xtce:MathOperationCalibrator>
+                        </xtce:DefaultCalibrator>
+                    </xtce:IntegerDataEncoding>
+                    <xtce:ValidRange minInclusive="-1.5" maxExclusive="1.5" validRangeAppliesToCalibrated="true"/>
+                </xtce:FloatParameterType>
                 <xtce:IntegerParameterType name="LTCcapacity">
                     <xtce:UnitSet>
                     	<xtce:Unit>mAh</xtce:Unit>
