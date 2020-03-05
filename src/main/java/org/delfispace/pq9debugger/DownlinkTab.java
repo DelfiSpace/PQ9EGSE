@@ -91,7 +91,11 @@ public class DownlinkTab
                                         p("")
                                     ).attr("class", "unitsColumn")
                                 ),
-                                each(filter(container.getContentList(), containerEntry -> (containerEntry.getParameter() != null) && (!containerEntry.getParameter().getEngineeringType().equals(EngineeringType.ARRAY))), containerEntry -> tr
+                                each(filter(container.getContentList(), 
+                                        containerEntry -> (containerEntry.getParameter() != null) && 
+                                                (!containerEntry.getParameter().getEngineeringType().equals(EngineeringType.ARRAY))
+                                        && (containerEntry.getParameter().getAncillaryData("Ignore").isEmpty())), 
+                                                containerEntry -> tr
                                 (
                                     tr
                                     (

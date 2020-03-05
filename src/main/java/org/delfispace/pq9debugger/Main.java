@@ -257,7 +257,8 @@ public class Main implements PQ9Receiver, Subscriber
         entries.forEach((XTCEContainerContentEntry entry) -> 
         {
             XTCEContainerEntryValue val = entry.getValue();
-            if (val != null) 
+            // only process the field is it has a value and it should not be ignored
+            if ((val != null) && (entry.getParameter().getAncillaryData("Ignore").isEmpty()))
             {          
                 String value;
                 if (entry.getParameter().getEngineeringType() == EngineeringType.FLOAT32)
@@ -275,7 +276,6 @@ public class Main implements PQ9Receiver, Subscriber
                 
                 JSONObject obj=new JSONObject();
                 obj.put("value", value);
-                obj.put("valid", "true");
                 
                 if (!isWithinValidRange(entry))
                 {

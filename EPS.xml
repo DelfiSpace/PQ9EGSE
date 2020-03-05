@@ -190,10 +190,26 @@
             <xtce:Parameter name="Uptime" parameterTypeRef="SUBSSYSuptime"/>
             <xtce:Parameter name="BootCounter" parameterTypeRef="short"/>
             <xtce:Parameter name="SoftwareBootCounter" parameterTypeRef="byte"/>
-            <xtce:Parameter name="Sensor0Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor1Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor2Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor3Status" parameterTypeRef="sensorBitStatus"/>
+            <xtce:Parameter name="Sensor0Status" parameterTypeRef="sensorBitStatus">
+                <xtce:AncillaryDataSet>
+                    <xtce:AncillaryData name="Ignore"/>
+                </xtce:AncillaryDataSet>
+            </xtce:Parameter>
+            <xtce:Parameter name="Sensor1Status" parameterTypeRef="sensorBitStatus">
+                <xtce:AncillaryDataSet>
+                    <xtce:AncillaryData name="Ignore"/>
+                </xtce:AncillaryDataSet>
+            </xtce:Parameter>
+            <xtce:Parameter name="Sensor2Status" parameterTypeRef="sensorBitStatus">
+                <xtce:AncillaryDataSet>
+                    <xtce:AncillaryData name="Ignore"/>
+                </xtce:AncillaryDataSet>
+            </xtce:Parameter>
+            <xtce:Parameter name="Sensor3Status" parameterTypeRef="sensorBitStatus">
+                <xtce:AncillaryDataSet>
+                    <xtce:AncillaryData name="Ignore"/>
+                </xtce:AncillaryDataSet>
+            </xtce:Parameter>
             <xtce:Parameter name="Sensor4Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor5Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor6Status" parameterTypeRef="sensorBitStatus"/>
