@@ -151,23 +151,6 @@
                 </xtce:IntegerDataEncoding>
                 <xtce:ValidRange minExclusive="-60.0" maxExclusive="130.0" validRangeAppliesToCalibrated="true"/>
             </xtce:FloatParameterType>
-            <xtce:FloatParameterType name="MCUtemperature">
-                <xtce:UnitSet>
-                    <xtce:Unit>°C</xtce:Unit>
-                </xtce:UnitSet>
-                <xtce:IntegerDataEncoding sizeInBits="16">
-                    <xtce:DefaultCalibrator>
-                        <xtce:MathOperationCalibrator>
-                            <xtce:ThisParameterOperand/>
-                            <xtce:ValueOperand>55</xtce:ValueOperand>
-                            <xtce:Operator>*</xtce:Operator>
-                            <xtce:ValueOperand>30</xtce:ValueOperand>
-                            <xtce:Operator>+</xtce:Operator>
-                        </xtce:MathOperationCalibrator>
-                    </xtce:DefaultCalibrator>
-                </xtce:IntegerDataEncoding>
-                <xtce:ValidRange minExclusive="0.0" maxExclusive="81.0" validRangeAppliesToCalibrated="true"/>
-            </xtce:FloatParameterType>
             <xtce:EnumeratedParameterType name="bitStatus">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
@@ -222,7 +205,7 @@
             <xtce:Parameter name="Sensor13Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor14Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor15Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="MCUTemp" parameterTypeRef="MCUtemperature"/>
+            <xtce:Parameter name="MCUTemp" parameterTypeRef="Temperature"/>
         </xtce:ParameterSet>
         <xtce:ContainerSet>
             <xtce:SequenceContainer name="PQ9" abstract="true" shortDescription="PQ9 frame">
