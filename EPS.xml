@@ -467,13 +467,21 @@
                     </xtce:IntegerDataEncoding>
                     <xtce:ValidRange minInclusive="-1.5" maxExclusive="1.5" validRangeAppliesToCalibrated="true"/>
                 </xtce:FloatParameterType>
-                <xtce:IntegerParameterType name="LTCcapacity">
+                <xtce:FloatParameterType name="LTCcapacity">
                     <xtce:UnitSet>
                     	<xtce:Unit>mAh</xtce:Unit>
                     </xtce:UnitSet>
-                    <xtce:IntegerDataEncoding sizeInBits="16" />
-                    <xtce:ValidRange minInclusive="0" maxInclusive="32000" validRangeAppliesToCalibrated="true"/>
-                </xtce:IntegerParameterType>
+                    <xtce:IntegerDataEncoding sizeInBits="16">
+                        <xtce:DefaultCalibrator>
+                            <xtce:MathOperationCalibrator>
+                                <xtce:ThisParameterOperand/>
+                                <xtce:ValueOperand>0.1</xtce:ValueOperand>
+                                <xtce:Operator>*</xtce:Operator>
+                            </xtce:MathOperationCalibrator>
+                        </xtce:DefaultCalibrator>
+                    </xtce:IntegerDataEncoding>
+                    <xtce:ValidRange minInclusive="0" maxInclusive="1500" validRangeAppliesToCalibrated="true"/>
+                </xtce:FloatParameterType>
             </xtce:ParameterTypeSet>
             <xtce:ParameterSet>
                 <xtce:Parameter name="SP_XP_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
