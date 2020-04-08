@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Stefano Speretta <s.speretta@tudelft.nl>
  */
-public class WebpageServlet extends HttpServlet
+public class LogpageServlet extends HttpServlet
 {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -42,22 +42,25 @@ public class WebpageServlet extends HttpServlet
 //            response.sendRedirect(request.getContextPath() + "/");
 //        }        
         response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);        
+        response.setStatus(HttpServletResponse.SC_OK);    
+
         response.getWriter().write(
             html
             (
                 head
                 (
-                    title("PQ9 EGSE"),
+                    title("Listen"),
                     script().withSrc("/js/jquery-2.1.3.min.js").withType("text/javascript"),
                     script().withSrc("/js/goldenlayout.js").withType("text/javascript"),
                     script().withSrc("/js/jsonrpc.js").withType("text/javascript"),
+                    script().withSrc("https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js").withType("text/javascript"),
+                    link().withRel("stylesheet").withType("text/css").withHref("/css/jquery.dataTables.min.css"),
                     link().withRel("stylesheet").withType("text/css").withHref("/css/goldenlayout-base.css"),
                     link().withRel("stylesheet").withType("text/css").withHref("/css/goldenlayout-translucent-theme.css")
                 ),
                 body
                 (
-                    script().withSrc("/js/layoutmanager.js").withType("text/javascript")
+                    script().withSrc("/js/logmanager.js").withType("text/javascript")
                 ).attr("translate", "no")
             ).render());
     }

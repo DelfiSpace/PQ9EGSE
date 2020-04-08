@@ -371,7 +371,8 @@ public class Main implements PQ9Receiver, Subscriber
             // report the received message even if the message could not be parsed
             JSONObject obj=new JSONObject();
             data.forEach((k,v)->obj.put(k,v));
-            srv.send(new Command("downlink", obj.toJSONString() + "\n"));  
+            Command cmd = new Command("downlink", obj.toJSONString() + "\n");
+            srv.send(cmd);  
 
             if (received)
             {

@@ -48,6 +48,7 @@ public class CommandWebServer
         server.setHandler(context);
 
         // Add a servlet
+        context.addServlet(LogpageServlet.class, "/log");
         ServletHolder holderHello = context.addServlet(WebpageServlet.class,"/");
         holderHello.setInitOrder(0);
 
