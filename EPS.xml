@@ -51,8 +51,6 @@
                     <xtce:Enumeration label="Error" value="0"/>
                     <xtce:Enumeration label="Request" value="1"/>
                     <xtce:Enumeration label="Reply" value="2"/>
-                    <xtce:Enumeration label="ACKErrorReply" value="4"/>
-                    <xtce:Enumeration label="RF_TX" value="6"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
             <xtce:EnumeratedParameterType name="ResetType">
@@ -334,10 +332,6 @@
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
                     <xtce:Enumeration label="Request" value="1"/>
-                    <xtce:Enumeration label="Reply" value="2"/>
-                    <xtce:Enumeration label="Set" value="3"/>
-                    <xtce:Enumeration label="ACK_error" value="4"/>
-                    <xtce:Enumeration label="Freeze" value="6"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
             <xtce:IntegerArgumentType name="byte" shortDescription="Value">
