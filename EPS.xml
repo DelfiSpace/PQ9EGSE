@@ -38,6 +38,7 @@
                     <xtce:Enumeration label="Ackownledgment" value="4"/>
                     <xtce:Enumeration label="PacketStats" value="6"/>
                     <xtce:Enumeration label="Ping" value="17"/>
+                    <xtce:Enumeration label="SoftwareUpdate" value="18"/>
                     <xtce:Enumeration label="Reset" value="19"/>
                     <xtce:Enumeration label="Testing" value="0"/>
                     <xtce:Enumeration label="Propulsion" value="23"/>
@@ -159,6 +160,61 @@
             </xtce:EnumeratedParameterType>
             <xtce:ArrayParameterType name="bitStatusArray" arrayTypeRef="bitStatus" numberOfDimensions="1"/>
             <xtce:ArrayParameterType name="shortArray" arrayTypeRef="short" numberOfDimensions="1"/>
+            <xtce:EnumeratedParameterType name="OTACommandType" shortDescription="Software Update Command">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Start" value="0"/>
+                    <xtce:Enumeration label="SetMetadata" value="1"/>
+                    <xtce:Enumeration label="GetMetadata" value="2"/>
+                    <xtce:Enumeration label="SetPartialCRCs" value="3"/>
+                    <xtce:Enumeration label="SendMissedPartials" value="4"/>
+                    <xtce:Enumeration label="SetBlock" value="5"/>
+                    <xtce:Enumeration label="CheckMD5" value="6"/>
+                    <xtce:Enumeration label="Stop" value="7"/>
+                    <xtce:Enumeration label="EraseSlot" value="8"/>
+                    <xtce:Enumeration label="SetBootSlot" value="9"/>
+                    <xtce:Enumeration label="GetNumMissedBlocks" value="10"/>
+                    <xtce:Enumeration label="GetMissedBlocks" value="11"/>
+                    <xtce:Enumeration label="GetMissedCRC" value="12"/>
+                    <xtce:Enumeration label="GetVersion" value="13"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedParameterType>
+            <xtce:EnumeratedParameterType name="OTAErrorType" shortDescription="Software Update Error">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="Success" value="0"/>
+                    <xtce:Enumeration label="NoFRAMAccess" value="1"/>
+                    <xtce:Enumeration label="NoSlotAccess" value="2"/>
+                    <xtce:Enumeration label="SlotOutOfRange" value="15"/>
+                    <xtce:Enumeration label="MemoryFull" value="3"/>
+                    <xtce:Enumeration label="ParameterMismatch" value="4"/>
+                    <xtce:Enumeration label="UpdateNotStarted" value="5"/>
+                    <xtce:Enumeration label="UpdateAlreadyStarted" value="6"/>
+                    <xtce:Enumeration label="UpdateNotCurrentSession" value="7"/>
+                    <xtce:Enumeration label="UpdateTooBig" value="8"/>
+                    <xtce:Enumeration label="MetadataAlreadyReceived" value="9"/>
+                    <xtce:Enumeration label="MetadataNotReceived" value="10"/>
+                    <xtce:Enumeration label="PartialAlreadyReceived" value="11"/>
+                    <xtce:Enumeration label="PartialNotReceived" value="12"/>
+                    <xtce:Enumeration label="CRCMismatch" value="13"/>
+                    <xtce:Enumeration label="MD5Mismatch" value="14"/>
+                    <xtce:Enumeration label="OffsetOutOfRange" value="16"/>
+                    <xtce:Enumeration label="SlotNotEmpty" value="17"/>                    
+                    <xtce:Enumeration label="SlotNotProgrammed" value="18"/>                    
+                    <xtce:Enumeration label="SelfAction" value="19"/>
+                    <xtce:Enumeration label="NoVersionNumber" value="20"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedParameterType>
+            <xtce:EnumeratedParameterType name="OTASlotType" shortDescription="Software Update Slot">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                <xtce:EnumerationList>
+                    <xtce:Enumeration label="1" value="1"/>
+                    <xtce:Enumeration label="2" value="2"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedParameterType>
         </xtce:ParameterTypeSet>
         <xtce:ParameterSet>
             <!-- These are parameters that may be used in abstract telemetry or command containers to define system-level settings. -->
@@ -204,6 +260,9 @@
             <xtce:Parameter name="Sensor14Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="Sensor15Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="MCUTemp" parameterTypeRef="Temperature"/>
+            <xtce:Parameter name="OTACommand" parameterTypeRef="OTACommandType"/>
+            <xtce:Parameter name="OTAError" parameterTypeRef="OTAErrorType"/>
+            <xtce:Parameter name="OTASlot" parameterTypeRef="OTASlotType"/>
         </xtce:ParameterSet>
         <xtce:ContainerSet>
             <xtce:SequenceContainer name="PQ9" abstract="true" shortDescription="PQ9 frame">
@@ -281,6 +340,48 @@
                         <xtce:ComparisonList>
                             <xtce:Comparison parameterRef="Service" value="Housekeeping"/>
                             <xtce:Comparison parameterRef="Request" value="RF_TX"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+            <xtce:SequenceContainer name="SoftwareUpdateRequest" shortDescription="Software Update Request">
+                <xtce:LongDescription>Software Update request</xtce:LongDescription>
+                <xtce:EntryList>
+                    <xtce:ParameterRefEntry parameterRef="OTACommand"/>
+                    <xtce:ParameterRefEntry parameterRef="OTASlot"/>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Request" value="Request"/>
+                            <xtce:Comparison parameterRef="Service" value="SoftwareUpdate"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+            <xtce:SequenceContainer name="SoftwareUpdateResponse" shortDescription="Software Update Response">
+                <xtce:LongDescription>Software Update response</xtce:LongDescription>
+                <xtce:EntryList>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Request" value="Reply"/>
+                            <xtce:Comparison parameterRef="Service" value="SoftwareUpdate"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+            <xtce:SequenceContainer name="SoftwareUpdateError" shortDescription="Software Update Error">
+                <xtce:LongDescription>Software Update error</xtce:LongDescription>
+                <xtce:EntryList>
+                    <xtce:ParameterRefEntry parameterRef="OTAError"/>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="PQ9">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Request" value="Error"/>
+                            <xtce:Comparison parameterRef="Service" value="SoftwareUpdate"/>
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
