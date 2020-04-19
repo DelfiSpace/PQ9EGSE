@@ -323,6 +323,7 @@
                     <xtce:Enumeration label="PacketStats" value="6"/>
                     <xtce:Enumeration label="Reset" value="19"/>
                     <xtce:Enumeration label="Ping" value="17"/>
+                    <xtce:Enumeration label="SoftwareUpdate" value="18"/>
                     <xtce:Enumeration label="Testing" value="0"/>
                     <xtce:Enumeration label="Propulsion" value="23"/>
                 </xtce:EnumerationList>
@@ -354,6 +355,15 @@
                     <xtce:Enumeration label="Soft" value="1"/>
                     <xtce:Enumeration label="Hard" value="2"/>
                     <xtce:Enumeration label="PowerCycle" value="3"/>
+                </xtce:EnumerationList>
+            </xtce:EnumeratedArgumentType>
+            <xtce:EnumeratedArgumentType name="OTASlot" shortDescription="Slot">
+                <xtce:LongDescription>Software Update Memory Slot</xtce:LongDescription>
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="2" encoding="unsigned"/>
+                <xtce:EnumerationList>  
+                    <xtce:Enumeration label="1" value="1"/>
+                    <xtce:Enumeration label="2" value="2"/>                    
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
         </xtce:ArgumentTypeSet>
@@ -423,7 +433,28 @@
                     	<xtce:ArgumentRefEntry argumentRef="Type"/>
                     </xtce:EntryList>
                 </xtce:CommandContainer>
-            </xtce:MetaCommand>            
+            </xtce:MetaCommand>
+            <xtce:MetaCommand name="StartOTA" shortDescription="Start Software Update">
+                <xtce:LongDescription>Start Over-The-Air Software Update </xtce:LongDescription>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="EGSE"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="SoftwareUpdate"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:ArgumentList>
+                        <xtce:Argument name="Slot" argumentTypeRef="/Delfi-PQ/OTASlot"/>
+                    </xtce:ArgumentList>
+                <xtce:CommandContainer name="StartOTA">
+                    <xtce:EntryList>
+                        <xtce:FixedValueEntry binaryValue="00" sizeInBits="8"/>
+                        <xtce:FixedValueEntry binaryValue="00" sizeInBits="6"/>
+                        <xtce:ArgumentRefEntry argumentRef="Slot"/>
+                    </xtce:EntryList>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
         </xtce:MetaCommandSet>
     </xtce:CommandMetaData>
 	
