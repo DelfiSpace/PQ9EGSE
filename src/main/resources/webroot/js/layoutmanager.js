@@ -280,6 +280,31 @@ function appendToDiv(id, data)
     {
         document.getElementById(id).scrollIntoView(false);
     }
+	
+	if (id == "log"){
+		var divHeight = document.getElementById(id).offsetHeight;
+		var lineHeight = document.getElementById(id).style.lineHeight;
+		if (lineHeight == ""){
+			lineHeight = 36;
+		}
+		var linecount = divHeight/lineHeight
+		
+		while (linecount > 50){
+			var str = document.getElementById(id).innerHTML;
+			var n = str.search("<br>\n");
+			str = str.substring(n+10);
+			document.getElementById(id).innerHTML = str;
+			
+			var divHeight = document.getElementById(id).offsetHeight;
+			var lineHeight = document.getElementById(id).style.lineHeight;
+			if (lineHeight == ""){
+				lineHeight = 36;
+			}
+			var linecount = divHeight/lineHeight
+		
+		}
+		//console.log(linecount);
+	}
 }
 
 function setDiv(id, data)
