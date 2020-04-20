@@ -344,17 +344,29 @@
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
             </xtce:SequenceContainer>
-            <xtce:SequenceContainer name="SoftwareUpdateRequest" shortDescription="Software Update Request">
-                <xtce:LongDescription>Software Update request</xtce:LongDescription>
+            <xtce:SequenceContainer name="SoftwareUpdateService" abstract="true" shortDescription="Software Update Service">
+                <xtce:LongDescription>Ping subsystem.</xtce:LongDescription>
                 <xtce:EntryList>
                     <xtce:ParameterRefEntry parameterRef="OTACommand"/>
-                    <xtce:ParameterRefEntry parameterRef="OTASlot"/>
                 </xtce:EntryList>
                 <xtce:BaseContainer containerRef="PQ9">
                     <xtce:RestrictionCriteria>
                         <xtce:ComparisonList>
-                            <xtce:Comparison parameterRef="Request" value="Request"/>
                             <xtce:Comparison parameterRef="Service" value="SoftwareUpdate"/>
+                        </xtce:ComparisonList>
+                    </xtce:RestrictionCriteria>
+                </xtce:BaseContainer>
+            </xtce:SequenceContainer>
+            <xtce:SequenceContainer name="StartSoftwareUpdateRequest" shortDescription="Start Software Update Request">
+                <xtce:LongDescription>Software Update request</xtce:LongDescription>
+                <xtce:EntryList>
+                    <xtce:ParameterRefEntry parameterRef="OTASlot"/>
+                </xtce:EntryList>
+                <xtce:BaseContainer containerRef="SoftwareUpdateService">
+                    <xtce:RestrictionCriteria>
+                        <xtce:ComparisonList>
+                            <xtce:Comparison parameterRef="Request" value="Request"/>
+                            <xtce:Comparison parameterRef="OTACommand" value="Start"/>
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
@@ -363,11 +375,10 @@
                 <xtce:LongDescription>Software Update response</xtce:LongDescription>
                 <xtce:EntryList>
                 </xtce:EntryList>
-                <xtce:BaseContainer containerRef="PQ9">
+                <xtce:BaseContainer containerRef="SoftwareUpdateService">
                     <xtce:RestrictionCriteria>
                         <xtce:ComparisonList>
                             <xtce:Comparison parameterRef="Request" value="Reply"/>
-                            <xtce:Comparison parameterRef="Service" value="SoftwareUpdate"/>
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
@@ -377,11 +388,10 @@
                 <xtce:EntryList>
                     <xtce:ParameterRefEntry parameterRef="OTAError"/>
                 </xtce:EntryList>
-                <xtce:BaseContainer containerRef="PQ9">
+                <xtce:BaseContainer containerRef="SoftwareUpdateService">
                     <xtce:RestrictionCriteria>
                         <xtce:ComparisonList>
                             <xtce:Comparison parameterRef="Request" value="Error"/>
-                            <xtce:Comparison parameterRef="Service" value="SoftwareUpdate"/>
                         </xtce:ComparisonList>
                     </xtce:RestrictionCriteria>
                 </xtce:BaseContainer>
@@ -553,6 +563,48 @@
                         <xtce:FixedValueEntry binaryValue="00" sizeInBits="8"/>
                         <xtce:FixedValueEntry binaryValue="00" sizeInBits="6"/>
                         <xtce:ArgumentRefEntry argumentRef="Slot"/>
+                    </xtce:EntryList>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>            
+            <xtce:MetaCommand name="OTAEraseSlot" shortDescription="Erase Software Slot">
+                <xtce:LongDescription>Erase one memory slot for the Over-The-Air Software Update service</xtce:LongDescription>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="EGSE"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="SoftwareUpdate"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:ArgumentList>
+                        <xtce:Argument name="Slot" argumentTypeRef="/Delfi-PQ/OTASlot"/>
+                    </xtce:ArgumentList>
+                <xtce:CommandContainer name="OTAEraseSlot">
+                    <xtce:EntryList>
+                        <xtce:FixedValueEntry binaryValue="08" sizeInBits="8"/>
+                        <xtce:FixedValueEntry binaryValue="00" sizeInBits="6"/>
+                        <xtce:ArgumentRefEntry argumentRef="Slot"/>
+                        <!--xtce:ArgumentAssignment argumentName="Slot" argumentValue="1"/-->
+                    </xtce:EntryList>
+                </xtce:CommandContainer>
+            </xtce:MetaCommand>
+            <xtce:MetaCommand name="OTAEraseConfirmation" shortDescription="Confirm Software slot erase">
+                <xtce:LongDescription>Start Over-The-Air Software Update </xtce:LongDescription>
+                <xtce:BaseMetaCommand metaCommandRef="PQ9">
+                    <xtce:ArgumentAssignmentList>
+                        <xtce:ArgumentAssignment argumentName="Size" argumentValue="2"/>
+                        <xtce:ArgumentAssignment argumentName="Source" argumentValue="EGSE"/>
+                        <xtce:ArgumentAssignment argumentName="Service" argumentValue="SoftwareUpdate"/>
+                        <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                    </xtce:ArgumentAssignmentList>
+                </xtce:BaseMetaCommand>
+                <xtce:ArgumentList>
+                    </xtce:ArgumentList>
+                <xtce:CommandContainer name="OTAEraseConfirmation">
+                    <xtce:EntryList>
+                        <xtce:FixedValueEntry binaryValue="08" sizeInBits="8"/>
+                        <xtce:FixedValueEntry binaryValue="0D" sizeInBits="8"/>
                     </xtce:EntryList>
                 </xtce:CommandContainer>
             </xtce:MetaCommand>
