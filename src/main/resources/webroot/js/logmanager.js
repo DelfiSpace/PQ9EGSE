@@ -203,13 +203,6 @@ $(document).ready(function() {
             { title: "Type" },
             { title: "Request" },
             { title: "RAW" }
-        ],
-		"columnDefs": [
-            {
-                "targets": [ 5 ],
-                "visible": false,
-                "searchable": false
-            }
         ]
     } );
 } );
