@@ -33,16 +33,13 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
-                    <xtce:Enumeration label="Execute" value="1"/>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
                     <xtce:Enumeration label="Ackownledgment" value="4"/>
-                    <xtce:Enumeration label="PacketStats" value="6"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                     <xtce:Enumeration label="SoftwareUpdate" value="18"/>
                     <xtce:Enumeration label="Reset" value="19"/>
                     <xtce:Enumeration label="Testing" value="0"/>
                     <xtce:Enumeration label="Propulsion" value="23"/>
-                    <xtce:Enumeration label="RX" value="55"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
             <xtce:EnumeratedParameterType name="RequestType">
@@ -599,8 +596,6 @@
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
-                <xtce:ArgumentList>
-                    </xtce:ArgumentList>
                 <xtce:CommandContainer name="OTAEraseConfirmation">
                     <xtce:EntryList>
                         <xtce:FixedValueEntry binaryValue="08" sizeInBits="8"/>
