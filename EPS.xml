@@ -34,7 +34,6 @@
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
-                    <xtce:Enumeration label="Ackownledgment" value="4"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                     <xtce:Enumeration label="SoftwareUpdate" value="18"/>
                     <xtce:Enumeration label="Reset" value="19"/>
