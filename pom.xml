@@ -61,7 +61,7 @@
             <version>1.1</version>  
         </dependency> 
 
-<dependency>  
+        <dependency>  
             <groupId>org.json</groupId>  
             <artifactId>json</artifactId>  
             <version>20190722</version>  
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>org.xtce</groupId>
             <artifactId>xtcetools</artifactId>
-            <version>[1.1.4,)</version>
+            <version>1.1.5</version>
         </dependency>
     
         <dependency>
@@ -117,6 +117,7 @@
             <plugin> 
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
                 <configuration>
                     <archive>
                         <manifest>
