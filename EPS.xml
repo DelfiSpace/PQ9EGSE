@@ -68,6 +68,10 @@
                     <xtce:Enumeration label="Error" value="0"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
+            <xtce:IntegerParameterType name="BitType">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="1"/>
+            </xtce:IntegerParameterType>
             <xtce:IntegerParameterType name="byte">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8"/>
@@ -223,38 +227,11 @@
             <xtce:Parameter name="Uptime" parameterTypeRef="SUBSSYSuptime"/>
             <xtce:Parameter name="BootCounter" parameterTypeRef="short"/>
             <xtce:Parameter name="SoftwareBootCounter" parameterTypeRef="byte"/>
-            <xtce:Parameter name="Sensor0Status" parameterTypeRef="sensorBitStatus">
+            <xtce:Parameter name="SingleBitPadding" parameterTypeRef="BitType">
                 <xtce:AncillaryDataSet>
                     <xtce:AncillaryData name="Ignore"/>
                 </xtce:AncillaryDataSet>
             </xtce:Parameter>
-            <xtce:Parameter name="Sensor1Status" parameterTypeRef="sensorBitStatus">
-                <xtce:AncillaryDataSet>
-                    <xtce:AncillaryData name="Ignore"/>
-                </xtce:AncillaryDataSet>
-            </xtce:Parameter>
-            <xtce:Parameter name="Sensor2Status" parameterTypeRef="sensorBitStatus">
-                <xtce:AncillaryDataSet>
-                    <xtce:AncillaryData name="Ignore"/>
-                </xtce:AncillaryDataSet>
-            </xtce:Parameter>
-            <xtce:Parameter name="Sensor3Status" parameterTypeRef="sensorBitStatus">
-                <xtce:AncillaryDataSet>
-                    <xtce:AncillaryData name="Ignore"/>
-                </xtce:AncillaryDataSet>
-            </xtce:Parameter>
-            <xtce:Parameter name="Sensor4Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor5Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor6Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor7Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor8Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor9Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor10Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor11Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor12Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor13Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor14Status" parameterTypeRef="sensorBitStatus"/>
-            <xtce:Parameter name="Sensor15Status" parameterTypeRef="sensorBitStatus"/>
             <xtce:Parameter name="MCUTemp" parameterTypeRef="Temperature"/>
             <xtce:Parameter name="OTACommand" parameterTypeRef="OTACommandType"/>
             <xtce:Parameter name="OTAError" parameterTypeRef="OTAErrorType"/>
@@ -747,10 +724,10 @@
                         <xtce:ParameterRefEntry parameterRef="SA_XP_TMP_Status"/>
                         <xtce:ParameterRefEntry parameterRef="SA_YM_TMP_Status"/>
                         <xtce:ParameterRefEntry parameterRef="SA_YP_TMP_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor0Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor1Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor2Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor3Status"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
                         <xtce:ParameterRefEntry parameterRef="SP_XM_INA_Status"/>
                         <xtce:ParameterRefEntry parameterRef="SP_XP_INA_Status"/>
                         <xtce:ParameterRefEntry parameterRef="SP_YM_INA_Status"/>
@@ -944,12 +921,12 @@
                 <xtce:SequenceContainer name="OBCHousekeepingContainer" shortDescription="OBC Housekeeping container">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor0Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor1Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor2Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor3Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor4Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor5Status"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
                         <xtce:ParameterRefEntry parameterRef="OBC_INA_Status"/>
                         <xtce:ParameterRefEntry parameterRef="OBC_TMP_Status"/>
                         <xtce:ParameterRefEntry parameterRef="OBCCurrent"/>
@@ -994,9 +971,9 @@
                 <xtce:SequenceContainer name="ADCSHousekeepingContainer" shortDescription="ADCS Housekeeping container">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor0Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor1Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor2Status"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
                         <xtce:ParameterRefEntry parameterRef="TorquerZStatus"/>
                         <xtce:ParameterRefEntry parameterRef="TorquerYStatus"/>
                         <xtce:ParameterRefEntry parameterRef="TorquerXStatus"/>
@@ -1061,12 +1038,12 @@
                 <xtce:SequenceContainer name="ADBHousekeepingContainer" shortDescription="ADB Housekeeping container">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor0Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor1Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor2Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor3Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor4Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor5Status"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
                         <xtce:ParameterRefEntry parameterRef="ADB_INA_Status"/>
                         <xtce:ParameterRefEntry parameterRef="ADB_TMP_Status"/>
                         <xtce:ParameterRefEntry parameterRef="ADBCurrent"/>
@@ -1335,9 +1312,9 @@
                 <xtce:SequenceContainer name="PROPHousekeepingContainer" shortDescription="PROP Housekeeping container">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor0Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor1Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/Sensor2Status"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
                         <xtce:ParameterRefEntry parameterRef="HeatersStatus"/>
                         <xtce:ParameterRefEntry parameterRef="ValveSpikeStatus"/>
                         <xtce:ParameterRefEntry parameterRef="ValveHoldStatus"/>
