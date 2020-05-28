@@ -45,6 +45,7 @@ public abstract class PCInterface
     protected static final int INITIALIZE = 0x00;
     protected static final int INTERFACE_PQ9 = 0x01;
     protected static final int INTERFACE_RS485 = 0x02;
+    protected static final int RESET_EGSE = 0x03;
     
     public PCInterface(InputStream in, OutputStream out) 
     {
@@ -166,6 +167,8 @@ public abstract class PCInterface
     
     public abstract void sendRaw(byte[] data) throws IOException;
 
+    public abstract void resetEGSE() throws IOException;
+    
     private class readerThread extends Thread 
     {
         public boolean running;

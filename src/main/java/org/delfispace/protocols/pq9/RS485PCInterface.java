@@ -182,4 +182,12 @@ public class RS485PCInterface extends PCInterface
         out.write( data[data.length - 1] & 0x7F );
         out.flush();
     }
+    
+    @Override
+    public synchronized void resetEGSE() throws IOException
+    {
+        out.write( FIRST_BYTE | COMMAND | STOP_TRANSMISSION );
+        out.write( RESET_EGSE );
+        out.flush();
+    }
 }

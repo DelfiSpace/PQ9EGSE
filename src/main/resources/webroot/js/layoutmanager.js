@@ -346,6 +346,11 @@ function reloadXTCEFile()
     rpc.send("reloadXTCEFile", "");
 }
 
+function resetEGSE()
+{
+    rpc.send("resetEGSE", "");
+}
+
 function reloadSerialPorts()
 {
     rpc.send("reloadSerialPorts", "");

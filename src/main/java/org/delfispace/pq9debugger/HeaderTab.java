@@ -73,6 +73,10 @@ public class HeaderTab
                 (
                     button("Reset Layout").attr("onclick", "resetLayout();")
                 ),
+                div
+                (
+                    button("Reset EGSE").attr("onclick", "resetEGSE();")
+                ),
                 div()
             ).attr("style","display: flex; justify-content: space-between;");
             return t1.render();

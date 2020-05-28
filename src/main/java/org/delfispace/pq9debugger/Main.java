@@ -427,6 +427,11 @@ public class Main implements PQ9Receiver, Subscriber
                     connectToSerialPort(Configuration.getInstance().getSerialPort());
                     break;
                     
+                case "resetEGSE":
+                    System.out.println("RESET COMMAND RECEIVED!");
+                    resetEGSE();
+                    break;
+                    
                 case "setSerialPort":
                     connectToSerialPort(cmd.getData());
                     // TODO: update the header for all existing conenctions
@@ -438,7 +443,7 @@ public class Main implements PQ9Receiver, Subscriber
                     break;
 
                 case "reloadXTCEFile":
-                    // reload the XTCE file
+                    // reload the XTCE file  
                     loadXTCEFile(XTCE_FILE);
                     // force an update in the Uplink panel
                     srv.send(new Command("uplink", UplinkTab.generate()));
@@ -466,6 +471,23 @@ public class Main implements PQ9Receiver, Subscriber
         }   
     }
 
+    private void resetEGSE ()
+    {
+        try{
+            pcInterface.resetEGSE();
+        } catch (java.lang.NumberFormatException ex)
+        {
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
+            //        String.format("Invalid value: %s", cmd.toString()), ex);
+            handleException(ex);
+        } catch (Exception ex)
+        {
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
+            //        String.format("Invalid value: %s", cmd.toString()), ex);
+            handleException(ex);
+        } 
+    }
+    
     private void handleSendCommand(Command cmd) throws ParseException, PQ9Exception, IOException, XTCEDatabaseException
     {
         try

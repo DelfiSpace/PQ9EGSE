@@ -44,7 +44,7 @@ public class PQ9PCInterface extends PCInterface
         out.write( INTERFACE_PQ9 );
         out.flush();
     }
-
+    
     @Override
     protected PQ9 processWord(int value) throws IOException
     {
@@ -163,4 +163,13 @@ public class PQ9PCInterface extends PCInterface
         out.write( data[data.length - 1] & 0x7F );
         out.flush();
     }
+    
+    @Override
+    public synchronized void resetEGSE() throws IOException
+    {
+        out.write( FIRST_BYTE | COMMAND | STOP_TRANSMISSION );
+        out.write( RESET_EGSE );
+        out.flush();
+    }
+    
 }
