@@ -127,6 +127,7 @@ public class PQ9DataSocket extends Thread
     @Override
     public void run() 
     {
+        String line = "";
         while (true) 
         {           
             try 
@@ -140,16 +141,16 @@ public class PQ9DataSocket extends Thread
                 
                 while(connectionSocket.isConnected())
                 {
-                    JSONObject obj = (JSONObject)parser.parse(inputStream.readLine());
+                    line = inputStream.readLine();
+                    JSONObject obj = (JSONObject)parser.parse(line);
                     if (cmdHandler != null)
                     {
-                        System.out.print("Received: ");
-                        System.out.println((String)obj.toString());
-                        System.out.println("command: ");
-                        System.out.println((String)obj.get("command"));
-                        if((obj.get("command")) == null){
+                        if((obj.get("command")) == null)
+                        {
                             cmdHandler.subscribe(new Command("SendCommand", (String)obj.toString()));
-                        }else{
+                        }
+                        else
+                        {
                             cmdHandler.subscribe(new Command((String)obj.get("command"), (String)obj.get("data"))); 
                         }
                     }                    
@@ -160,6 +161,7 @@ public class PQ9DataSocket extends Thread
             } catch (ParseException ex) 
             {   
                 Logger.getLogger(PQ9DataSocket.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(PQ9DataSocket.class.getName()).log(Level.SEVERE, line);
             } 
             outputStream = null;
             connectionSocket = null;

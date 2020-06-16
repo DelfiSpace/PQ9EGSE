@@ -84,7 +84,6 @@ public class PQ9DataClient implements Closeable
                 command.put(k, value.toJSONString());
             }
         });
-        System.out.println(command.toJSONString());
         outToServer.writeBytes(command.toJSONString() + "\n");
         outToServer.flush();
     }
