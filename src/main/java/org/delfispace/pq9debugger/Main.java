@@ -228,10 +228,10 @@ public class Main implements PQ9Receiver, Subscriber
             }
         }
         
-        // setup an asynchronous callback on frame reception
-        pcInterface.setReceiverCallback(this);  
         // setup an asynchronous callback on error
         pcInterface.setErrorHandler((error) -> { handleException(error); });
+        // setup an asynchronous callback on frame reception
+        pcInterface.setReceiverCallback(this);  
         // set the current serial port
         Configuration.getInstance().setSerialPort(port);
     }
@@ -428,7 +428,6 @@ public class Main implements PQ9Receiver, Subscriber
                     break;
                     
                 case "resetEGSE":
-                    System.out.println("RESET COMMAND RECEIVED!");
                     resetEGSE();
                     break;
                     
