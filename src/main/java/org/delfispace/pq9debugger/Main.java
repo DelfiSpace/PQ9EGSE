@@ -181,7 +181,7 @@ public class Main implements PQ9Receiver, Subscriber
             comPort.closePort();
             comPort = null;
         }
-
+        
         if (pcInterface != null)
         {
             pcInterface.close();
@@ -203,7 +203,7 @@ public class Main implements PQ9Receiver, Subscriber
         }
         else
         {
-            // first time we connectot  a serial port            
+            // first time we connect to a serial port            
             comPort = SerialPort.getCommPort(port);
 
             // open con port
