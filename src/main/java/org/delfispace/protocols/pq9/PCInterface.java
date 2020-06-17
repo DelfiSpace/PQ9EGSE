@@ -32,7 +32,6 @@ public abstract class PCInterface
     protected PQ9Receiver callback;
     protected PQ9ErrorHandler errorHdl;
     private readerThread reader;
-    private boolean ready = false;
     
     private boolean firstByteFound = false;
     private int tmpValue = 0;
@@ -59,8 +58,15 @@ public abstract class PCInterface
     {
         if (reader != null)
         {
-            this.in.close();
-            this.out.close();
+            if (this.in != null)
+            {
+                this.in.close();
+            }
+            if (this.out != null)
+            {
+                this.out.close();
+            }
+            // tell the reader to stop
             reader.running = false;
             try 
             {
@@ -76,6 +82,7 @@ public abstract class PCInterface
     {
         if (callback != null) 
         {            
+            // tell the reader to stop
             reader.running = false;
         }
 
@@ -85,13 +92,14 @@ public abstract class PCInterface
         {
             reader = new readerThread();
             reader.start();
-
+            
             // wait till the reader task is ready
             try 
             {
-                while (!ready) 
+                // wait for maximum 2 seconds
+                for(int i = 0; ((i < 20) && (!reader.ready) && reader.running); i++)
                 {
-                        Thread.sleep(100);                    
+                    Thread.sleep(100);                    
                 }
             } catch (InterruptedException ex) 
             {
@@ -171,11 +179,21 @@ public abstract class PCInterface
     
     private class readerThread extends Thread 
     {
-        public boolean running;
+        public boolean running = false;
+        public boolean ready = false;
 
+        @Override
+        public void start() 
+        {
+            ready = false;
+            super.start();
+            running = true;
+        }
+        
         @Override
         public void run() 
         {
+            this.setName("PCInterface readerThread");
             running = true;
             try 
             {
@@ -192,9 +210,13 @@ public abstract class PCInterface
                 }            
             } catch (IOException ex)
             {
-                running = false;
                 errorHdl.error(ex);
-            }
+            } 
+            catch (NullPointerException ex)
+            {
+                errorHdl.error(new Exception("Serial port is busy"));
+            } 
+            running = false;
         }
     }
 }
