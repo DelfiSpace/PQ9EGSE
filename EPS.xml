@@ -637,8 +637,11 @@
                 <xtce:Parameter name="SP_XM_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="SP_YP_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="SP_YM_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+				<xtce:Parameter name="MPPT_XP_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPT_XM_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPT_YP_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPT_YM_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="Battery_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-
                 <xtce:Parameter name="EPS_B1_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="EPS_B2_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="EPS_B3_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
@@ -670,6 +673,16 @@
                 <xtce:Parameter name="SA_YM_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="SA_XP_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="SA_XM_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+				
+				<xtce:Parameter name="MPPT_YP_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="MPPT_YM_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="MPPT_XP_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="MPPT_XM_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="MPPT_YP_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="MPPT_YM_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="MPPT_XP_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="MPPT_XM_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+				
                 <xtce:Parameter name="SP_YP_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="SP_YM_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="SP_XP_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
@@ -724,10 +737,12 @@
                         <xtce:ParameterRefEntry parameterRef="SA_XP_TMP_Status"/>
                         <xtce:ParameterRefEntry parameterRef="SA_YM_TMP_Status"/>
                         <xtce:ParameterRefEntry parameterRef="SA_YP_TMP_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+						
+						<xtce:ParameterRefEntry parameterRef="MPPT_XM_INA_Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_XP_INA_Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_YM_INA_Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_YP_INA_Status"/>
+						
                         <xtce:ParameterRefEntry parameterRef="SP_XM_INA_Status"/>
                         <xtce:ParameterRefEntry parameterRef="SP_XP_INA_Status"/>
                         <xtce:ParameterRefEntry parameterRef="SP_YM_INA_Status"/>
@@ -781,6 +796,16 @@
                         <xtce:ParameterRefEntry parameterRef="IntVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="URBCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="URBVoltage"/>
+						
+						<xtce:ParameterRefEntry parameterRef="MPPT_YP_current"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_YM_current"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_XP_current"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_XM_current"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_YP_voltage"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_YM_voltage"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_XP_voltage"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_XM_voltage"/>
+						
                     </xtce:EntryList>                    
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="EPSHousekeepingReply" shortDescription="EPS Housekeeping frame">
