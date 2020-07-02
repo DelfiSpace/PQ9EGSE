@@ -715,6 +715,8 @@
                 
                 <xtce:Parameter name="PowerBus" parameterTypeRef="/Delfi-PQ/byte"/>
                 <xtce:Parameter name="State" parameterTypeRef="/Delfi-PQ/byte"/>
+				
+				<xtce:Parameter name="BatteryTemp20" parameterTypeRef="/Delfi-PQ/Temperature"/>
                 
             </xtce:ParameterSet>
             <xtce:ContainerSet>
@@ -805,7 +807,7 @@
                         <xtce:ParameterRefEntry parameterRef="MPPT_YM_voltage"/>
                         <xtce:ParameterRefEntry parameterRef="MPPT_XP_voltage"/>
                         <xtce:ParameterRefEntry parameterRef="MPPT_XM_voltage"/>
-						
+						<xtce:ParameterRefEntry parameterRef="BatteryTemp20"/>
                     </xtce:EntryList>                    
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="EPSHousekeepingReply" shortDescription="EPS Housekeeping frame">
