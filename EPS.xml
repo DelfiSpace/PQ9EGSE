@@ -33,6 +33,7 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                 <xtce:EnumerationList>
+                    <xtce:Enumeration label="Execute" value="1"/>
                     <xtce:Enumeration label="Housekeeping" value="3"/>
                     <xtce:Enumeration label="Ping" value="17"/>
                     <xtce:Enumeration label="SoftwareUpdate" value="18"/>
@@ -631,13 +632,32 @@
                     </xtce:IntegerDataEncoding>
                     <xtce:ValidRange minInclusive="0" maxInclusive="1500" validRangeAppliesToCalibrated="true"/>
                 </xtce:FloatParameterType>
+                <xtce:EnumeratedParameterType name="BusParameterType" shortDescription="Bus">
+                    <xtce:UnitSet/>
+                    <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                    <xtce:EnumerationList>
+                        <xtce:Enumeration label="Error" value="0" shortDescription="Error"/>
+                        <xtce:Enumeration label="1" value="1" shortDescription="Bus 1"/>
+                        <xtce:Enumeration label="2" value="2" shortDescription="Bus 2"/>
+                        <xtce:Enumeration label="3" value="3" shortDescription="Bus 3"/>
+                        <xtce:Enumeration label="4" value="4" shortDescription="Bus 4"/>
+                    </xtce:EnumerationList>
+                </xtce:EnumeratedParameterType>
+                <xtce:EnumeratedParameterType name="BusStateParameterType" shortDescription="Status">
+                    <xtce:UnitSet/>
+                    <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                    <xtce:EnumerationList>
+                        <xtce:Enumeration label="OFF" value="0" shortDescription="OFF"/>
+                        <xtce:Enumeration label="ON" value="1" shortDescription="ON"/>
+                    </xtce:EnumerationList>
+                </xtce:EnumeratedParameterType>
             </xtce:ParameterTypeSet>
             <xtce:ParameterSet>
                 <xtce:Parameter name="panelOut_Xp_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="panelOut_Xm_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="panelOut_Yp_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="panelOut_Ym_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-				<xtce:Parameter name="MPPT_Xp_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPT_Xp_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="MPPT_Xm_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="MPPT_Yp_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="MPPT_Ym_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
@@ -674,7 +694,7 @@
                 <xtce:Parameter name="cellOut_Xp_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="cellOut_Xm_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
 				
-				<xtce:Parameter name="MPPT_Yp_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="MPPT_Yp_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="MPPT_Ym_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="MPPT_Xp_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="MPPT_Xm_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
@@ -713,11 +733,11 @@
                 <xtce:Parameter name="Unregulated_INA_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="Unregulated_INA_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 
-                <xtce:Parameter name="PowerBus" parameterTypeRef="/Delfi-PQ/byte"/>
-                <xtce:Parameter name="State" parameterTypeRef="/Delfi-PQ/byte"/>
+                <xtce:Parameter name="PowerBus" parameterTypeRef="BusParameterType"/>
+                <xtce:Parameter name="State" parameterTypeRef="BusStateParameterType"/>
 				
-				<xtce:Parameter name="Battery_TMP20_temp" parameterTypeRef="/Delfi-PQ/Temperature"/>
-                
+                <xtce:Parameter name="Battery_TMP20_temp" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                                                
             </xtce:ParameterSet>
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="EPSHousekeepingContainer" shortDescription="EPS Housekeeping container">
@@ -740,7 +760,7 @@
                         <xtce:ParameterRefEntry parameterRef="cellOut_Ym_TMP_Status"/>
                         <xtce:ParameterRefEntry parameterRef="cellOut_Yp_TMP_Status"/>
 						
-						<xtce:ParameterRefEntry parameterRef="MPPT_Xm_INA_Status"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_Xm_INA_Status"/>
                         <xtce:ParameterRefEntry parameterRef="MPPT_Xp_INA_Status"/>
                         <xtce:ParameterRefEntry parameterRef="MPPT_Ym_INA_Status"/>
                         <xtce:ParameterRefEntry parameterRef="MPPT_Yp_INA_Status"/>
@@ -799,7 +819,7 @@
                         <xtce:ParameterRefEntry parameterRef="Unregulated_INA_current"/>
                         <xtce:ParameterRefEntry parameterRef="Unregulated_INA_voltage"/>
 						
-						<xtce:ParameterRefEntry parameterRef="MPPT_Yp_current"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_Yp_current"/>
                         <xtce:ParameterRefEntry parameterRef="MPPT_Ym_current"/>
                         <xtce:ParameterRefEntry parameterRef="MPPT_Xp_current"/>
                         <xtce:ParameterRefEntry parameterRef="MPPT_Xm_current"/>
@@ -807,7 +827,7 @@
                         <xtce:ParameterRefEntry parameterRef="MPPT_Ym_voltage"/>
                         <xtce:ParameterRefEntry parameterRef="MPPT_Xp_voltage"/>
                         <xtce:ParameterRefEntry parameterRef="MPPT_Xm_voltage"/>
-						<xtce:ParameterRefEntry parameterRef="Battery_TMP20_temp"/>
+                        <xtce:ParameterRefEntry parameterRef="Battery_TMP20_temp"/>
                     </xtce:EntryList>                    
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="EPSHousekeepingReply" shortDescription="EPS Housekeeping frame">
@@ -822,7 +842,7 @@
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
                 </xtce:SequenceContainer>  
-                <xtce:SequenceContainer name="PowerBusCommand" shortDescription="Power Bus Command">
+                <xtce:SequenceContainer name="PowerBusControl" shortDescription="Power Bus Command">
                     <xtce:LongDescription>Power Bus control command</xtce:LongDescription>
                      <xtce:EntryList>
                         <xtce:ParameterRefEntry parameterRef="PowerBus"/>
@@ -874,18 +894,18 @@
                     <xtce:UnitSet/>
                     <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                     <xtce:EnumerationList>
-                        <xtce:Enumeration label="Bus1" value="1" shortDescription="Bus 1"/>
-                        <xtce:Enumeration label="Bus2" value="2" shortDescription="Bus 2"/>
-                        <xtce:Enumeration label="Bus3" value="3" shortDescription="Bus 3"/>
-                        <xtce:Enumeration label="Bus4" value="4" shortDescription="Bus 4"/>
+                        <xtce:Enumeration label="1" value="1" shortDescription="Bus 1"/>
+                        <xtce:Enumeration label="2" value="2" shortDescription="Bus 2"/>
+                        <xtce:Enumeration label="3" value="3" shortDescription="Bus 3"/>
+                        <xtce:Enumeration label="4" value="4" shortDescription="Bus 4"/>
                     </xtce:EnumerationList>
                 </xtce:EnumeratedArgumentType>
                 <xtce:EnumeratedArgumentType name="BusStateParameterType" shortDescription="Status">
                     <xtce:UnitSet/>
                     <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                     <xtce:EnumerationList>
-                        <xtce:Enumeration label="BusOff" value="0" shortDescription="OFF"/>
-                        <xtce:Enumeration label="BusOn" value="1" shortDescription="ON"/>
+                        <xtce:Enumeration label="OFF" value="0" shortDescription="OFF"/>
+                        <xtce:Enumeration label="ON" value="1" shortDescription="ON"/>
                     </xtce:EnumerationList>
                 </xtce:EnumeratedArgumentType>
             </xtce:ArgumentTypeSet>
@@ -902,13 +922,13 @@
                         </xtce:ArgumentAssignmentList>
                     </xtce:BaseMetaCommand>
                     <xtce:ArgumentList>
-                        <xtce:Argument name="PowerBusParam" argumentTypeRef="BusParameterType"/>
-                        <xtce:Argument name="PowerBusState" argumentTypeRef="BusStateParameterType"/>
+                        <xtce:Argument name="PowerBus" argumentTypeRef="BusParameterType"/>
+                        <xtce:Argument name="State" argumentTypeRef="BusStateParameterType"/>
                     </xtce:ArgumentList>
                     <xtce:CommandContainer name="EPSBusSW">
                         <xtce:EntryList>
-                            <xtce:ArgumentRefEntry argumentRef="PowerBusParam"/>
-                            <xtce:ArgumentRefEntry argumentRef="PowerBusState"/>
+                            <xtce:ArgumentRefEntry argumentRef="PowerBus"/>
+                            <xtce:ArgumentRefEntry argumentRef="State"/>
                         </xtce:EntryList>
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
@@ -1382,7 +1402,7 @@
                         <xtce:Enumeration label="VLM" value="1" shortDescription="VLM"/>
                     </xtce:EnumerationList>
                 </xtce:EnumeratedArgumentType>
-				<xtce:EnumeratedArgumentType name="PropSaveParameterType" shortDescription="Save Data">
+                <xtce:EnumeratedArgumentType name="PropSaveParameterType" shortDescription="Save Data">
                     <xtce:UnitSet/>
                     <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                     <xtce:EnumerationList>
@@ -1390,7 +1410,7 @@
                         <xtce:Enumeration label="YES" value="1" shortDescription="YES"/>
                     </xtce:EnumerationList>
                 </xtce:EnumeratedArgumentType>
-				<xtce:EnumeratedArgumentType name="PropMemParameterType" shortDescription="Action">
+                <xtce:EnumeratedArgumentType name="PropMemParameterType" shortDescription="Action">
                     <xtce:UnitSet/>
                     <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
                     <xtce:EnumerationList>
@@ -1424,7 +1444,7 @@
                     </xtce:ArgumentList>
                     <xtce:CommandContainer name="PROPCtrlSW">
                         <xtce:EntryList>
-							<xtce:FixedValueEntry binaryValue="01" sizeInBits="8"/>
+                            <xtce:FixedValueEntry binaryValue="01" sizeInBits="8"/>
                             <xtce:ArgumentRefEntry argumentRef="PropSaveParam"/>
                             <xtce:ArgumentRefEntry argumentRef="PropUnitParam"/>
                             <xtce:ArgumentRefEntry argumentRef="PropWorkParam"/>
@@ -1449,7 +1469,7 @@
                     </xtce:BaseMetaCommand>
                     <xtce:CommandContainer name="PROPStopSW">
                         <xtce:EntryList>
-							<xtce:FixedValueEntry binaryValue="00" sizeInBits="8"/>
+                            <xtce:FixedValueEntry binaryValue="00" sizeInBits="8"/>
                         </xtce:EntryList>
                     </xtce:CommandContainer>
                 </xtce:MetaCommand>
@@ -1469,7 +1489,7 @@
                     </xtce:ArgumentList>
                     <xtce:CommandContainer name="PROPMemSW">
                         <xtce:EntryList>
-							<xtce:FixedValueEntry binaryValue="02" sizeInBits="8"/>
+                            <xtce:FixedValueEntry binaryValue="02" sizeInBits="8"/>
                             <xtce:ArgumentRefEntry argumentRef="PropMemParam"/>
                         </xtce:EntryList>
                     </xtce:CommandContainer>
