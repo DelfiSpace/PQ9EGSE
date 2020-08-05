@@ -272,6 +272,10 @@ public class Main implements PQ9Receiver, Subscriber
                 else
                 {
                     value = val.getCalibratedValue();
+                    if (value.isEmpty())
+                    {
+                        value = "(" + val.getRawValueHex() + ")";
+                    }
                 }
                 
                 JSONObject obj=new JSONObject();
