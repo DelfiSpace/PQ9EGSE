@@ -77,6 +77,10 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="8"/>
             </xtce:IntegerParameterType>
+            <xtce:IntegerParameterType name="3byte">
+                <xtce:UnitSet/>
+                <xtce:IntegerDataEncoding sizeInBits="24"/>
+            </xtce:IntegerParameterType>
             <xtce:IntegerParameterType name="short">
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="16"/>
@@ -226,7 +230,11 @@
             <xtce:Parameter name="Request" parameterTypeRef="RequestType"/>
             <xtce:Parameter name="Reset" parameterTypeRef="ResetType"/>
             <xtce:Parameter name="Uptime" parameterTypeRef="SUBSSYSuptime"/>
-            <xtce:Parameter name="BootCounter" parameterTypeRef="short"/>
+            <xtce:Parameter name="TotalUptime" parameterTypeRef="SUBSSYSuptime"/>
+            <xtce:Parameter name="ResetCause" parameterTypeRef="3byte"/>
+            <xtce:Parameter name="BootCounter" parameterTypeRef="byte"/>
+            <xtce:Parameter name="Status" parameterTypeRef="byte"/>
+            <xtce:Parameter name="VersionNumber" parameterTypeRef="byte"/>
             <xtce:Parameter name="SoftwareBootCounter" parameterTypeRef="byte"/>
             <xtce:Parameter name="SingleBitPadding" parameterTypeRef="BitType">
                 <xtce:AncillaryDataSet>
@@ -252,9 +260,13 @@
             <xtce:SequenceContainer name="HousekeepingHeader" shortDescription="Common Housekeeping frame header">
                 <xtce:LongDescription>Header for all housekeeping frames.</xtce:LongDescription>
                 <xtce:EntryList>
-                    <xtce:ParameterRefEntry parameterRef="Uptime"/>
+                    <xtce:ParameterRefEntry parameterRef="Status"/>
                     <xtce:ParameterRefEntry parameterRef="BootCounter"/>
-                    <xtce:ParameterRefEntry parameterRef="SoftwareBootCounter"/>
+                    <xtce:ParameterRefEntry parameterRef="ResetCause"/>
+                    <xtce:ParameterRefEntry parameterRef="Uptime"/>
+                    <xtce:ParameterRefEntry parameterRef="TotalUptime"/>
+                    <xtce:ParameterRefEntry parameterRef="VersionNumber"/>
+                    <xtce:ParameterRefEntry parameterRef="MCUTemp"/>
                 </xtce:EntryList>
             </xtce:SequenceContainer>
             <xtce:SequenceContainer name="PingService" shortDescription="Ping Service">
@@ -653,181 +665,196 @@
                 </xtce:EnumeratedParameterType>
             </xtce:ParameterTypeSet>
             <xtce:ParameterSet>
-                <xtce:Parameter name="panelOut_Xp_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="panelOut_Xm_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="panelOut_Yp_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="panelOut_Ym_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="MPPT_Xp_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="MPPT_Xm_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="MPPT_Yp_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="MPPT_Ym_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="Battery_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="Bus_1_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="Bus_2_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="Bus_3_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="Bus_4_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="Internal_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="Unregulated_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="cellOut_Xp_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="cellOut_Xm_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="cellOut_Yp_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="cellOut_Ym_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="cellOut_Xp_TMP_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="cellOut_Xm_TMP_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="cellOut_Yp_TMP_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="cellOut_Ym_TMP_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="Battery_GG_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="B1_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="B2_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="B3_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="B4_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="B1_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="B2_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="B3_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="B4_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="cellOut_Yp_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="cellOut_Ym_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="cellOut_Xp_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="cellOut_Xm_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="cellOut_Yp_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="cellOut_Ym_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="cellOut_Xp_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="cellOut_Xm_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-				
-                <xtce:Parameter name="MPPT_Yp_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="MPPT_Ym_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="MPPT_Xp_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="MPPT_Xm_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="MPPT_Yp_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="MPPT_Ym_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="MPPT_Xp_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="MPPT_Xm_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-				
-                <xtce:Parameter name="panelOut_Yp_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="panelOut_Ym_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="panelOut_Xp_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="panelOut_Xm_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="panelOut_Yp_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="panelOut_Ym_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="panelOut_Xp_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="panelOut_Xm_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="cellOut_Yp_temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
-                <xtce:Parameter name="cellOut_Ym_temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
-                <xtce:Parameter name="cellOut_Xp_temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
-                <xtce:Parameter name="cellOut_Xm_temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
-                <xtce:Parameter name="Battery_GG_voltage" parameterTypeRef="LTCvoltage"/>
-                <xtce:Parameter name="Battery_INA_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="Battery_INA_current" parameterTypeRef="BatteryCurrent"/>
-                <xtce:Parameter name="Battery_GG_capacity" parameterTypeRef="LTCcapacity"/>
-                <xtce:Parameter name="Battery_GG_temp" parameterTypeRef="/Delfi-PQ/Temperature"/>                
-                <xtce:Parameter name="B4_state" parameterTypeRef="/Delfi-PQ/bitStatus"/>
-                <xtce:Parameter name="B3_state" parameterTypeRef="/Delfi-PQ/bitStatus"/>
-                <xtce:Parameter name="B2_state" parameterTypeRef="/Delfi-PQ/bitStatus"/>
-                <xtce:Parameter name="B1_state" parameterTypeRef="/Delfi-PQ/bitStatus"/>                                
-                <xtce:Parameter name="B4_status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="B3_status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="B2_status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="B1_status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>                                
-                <xtce:Parameter name="Internal_INA_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="Internal_INA_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="Unregulated_INA_current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="Unregulated_INA_voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                
+                <xtce:Parameter name="BATTERY_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="BATTERY_GG_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+
+                <xtce:Parameter name="INTERNAL_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="UNREGULATED_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+
+                <xtce:Parameter name="BUS1_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="BUS2_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="BUS3_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="BUS4_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+
+                <xtce:Parameter name="BUS4_ERROR" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="BUS3_ERROR" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="BUS2_ERROR" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="BUS1_ERROR" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>   
+
+                <xtce:Parameter name="BUS4_STATE" parameterTypeRef="/Delfi-PQ/bitStatus"/>
+                <xtce:Parameter name="BUS3_STATE" parameterTypeRef="/Delfi-PQ/bitStatus"/>
+                <xtce:Parameter name="BUS2_STATE" parameterTypeRef="/Delfi-PQ/bitStatus"/>
+                <xtce:Parameter name="BUS1_STATE" parameterTypeRef="/Delfi-PQ/bitStatus"/>         
+
+                <xtce:Parameter name="CELLOUT_YP_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="CELLOUT_YM_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="CELLOUT_XP_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="CELLOUT_XM_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="CELLOUT_YP_TMP_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="CELLOUT_YM_TMP_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="CELLOUT_XP_TMP_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="CELLOUT_XM_TMP_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+
+                <xtce:Parameter name="MPPT_YP_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPT_YM_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPT_XP_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="MPPT_XM_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+
+                <xtce:Parameter name="PANELOUT_YP_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="PANELOUT_YM_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="PANELOUT_XP_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="PANELOUT_XM_INA_STATUS" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+
+                <xtce:Parameter name="INTERNAL_INA_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="INTERNAL_INA_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="UNREGULATED_INA_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="UNREGULATED_INA_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+
+                <xtce:Parameter name="BATTERY_GG_VOLTAGE" parameterTypeRef="LTCvoltage"/>
+                <xtce:Parameter name="BATTERY_INA_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="BATTERY_INA_CURRENT" parameterTypeRef="BatteryCurrent"/>
+                <xtce:Parameter name="BATTERY_GG_CAPACITY" parameterTypeRef="LTCcapacity"/>
+                <xtce:Parameter name="BATTERY_GG_TEMP" parameterTypeRef="/Delfi-PQ/Temperature"/>   
+                <xtce:Parameter name="BATTERY_TMP20_TEMP" parameterTypeRef="/Delfi-PQ/Temperature"/>
+
+                <xtce:Parameter name="BUS4_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="BUS3_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="BUS2_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="BUS1_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="BUS4_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="BUS3_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="BUS2_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="BUS1_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+
+                <xtce:Parameter name="CELLOUT_YP_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="CELLOUT_YM_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="CELLOUT_XP_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="CELLOUT_XM_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="CELLOUT_YP_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="CELLOUT_YM_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="CELLOUT_XP_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="CELLOUT_XM_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="CELLOUT_YP_TEMPERATURE" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="CELLOUT_YM_TEMPERATURE" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="CELLOUT_XP_TEMPERATURE" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="CELLOUT_XM_TEMPERATURE" parameterTypeRef="/Delfi-PQ/Temperature"/>
+
+                <xtce:Parameter name="MPPT_YP_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="MPPT_YM_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="MPPT_XP_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="MPPT_XM_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="MPPT_YP_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="MPPT_YM_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="MPPT_XP_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="MPPT_XM_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+
+                <xtce:Parameter name="PANELOUT_YP_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="PANELOUT_YM_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="PANELOUT_XP_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="PANELOUT_XM_VOLTAGE" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="PANELOUT_YP_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="PANELOUT_YM_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="PANELOUT_XP_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="PANELOUT_XM_CURRENT" parameterTypeRef="/Delfi-PQ/INAcurrent"/>        
+
                 <xtce:Parameter name="PowerBus" parameterTypeRef="BusParameterType"/>
                 <xtce:Parameter name="State" parameterTypeRef="BusStateParameterType"/>
-				
-                <xtce:Parameter name="Battery_TMP20_temp" parameterTypeRef="/Delfi-PQ/Temperature"/>
-                                                
             </xtce:ParameterSet>
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="EPSHousekeepingContainer" shortDescription="EPS Housekeeping container">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
-                        <xtce:ParameterRefEntry parameterRef="Battery_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="Battery_GG_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Xm_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Xp_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Ym_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Yp_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="Unregulated_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="Internal_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="Bus_4_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="Bus_3_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="Bus_2_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="Bus_1_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Xm_TMP_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Xp_TMP_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Ym_TMP_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Yp_TMP_Status"/>
-						
-                        <xtce:ParameterRefEntry parameterRef="MPPT_Xm_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPT_Xp_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPT_Ym_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPT_Yp_INA_Status"/>
-						
-                        <xtce:ParameterRefEntry parameterRef="panelOut_Xm_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="panelOut_Xp_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="panelOut_Ym_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="panelOut_Yp_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Yp_temperature"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Ym_temperature"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Xp_temperature"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Xm_temperature"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Yp_current"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Ym_current"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Xp_current"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Xm_current"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Yp_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Ym_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Xp_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="cellOut_Xm_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="panelOut_Yp_current"/>
-                        <xtce:ParameterRefEntry parameterRef="panelOut_Ym_current"/>
-                        <xtce:ParameterRefEntry parameterRef="panelOut_Xp_current"/>
-                        <xtce:ParameterRefEntry parameterRef="panelOut_Xm_current"/>
-                        <xtce:ParameterRefEntry parameterRef="panelOut_Yp_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="panelOut_Ym_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="panelOut_Xp_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="panelOut_Xm_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="B1_current"/>
-                        <xtce:ParameterRefEntry parameterRef="B2_current"/>
-                        <xtce:ParameterRefEntry parameterRef="B3_current"/>
-                        <xtce:ParameterRefEntry parameterRef="B4_current"/>
-                        <xtce:ParameterRefEntry parameterRef="B1_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="B2_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="B3_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="B4_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="Battery_GG_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="Battery_INA_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="Battery_INA_current"/>
-                        <xtce:ParameterRefEntry parameterRef="Battery_GG_capacity"/>
-                        <xtce:ParameterRefEntry parameterRef="Battery_GG_temp"/>
-                        
-                        <xtce:ParameterRefEntry parameterRef="B4_status"/>
-                        <xtce:ParameterRefEntry parameterRef="B3_status"/>
-                        <xtce:ParameterRefEntry parameterRef="B2_status"/>
-                        <xtce:ParameterRefEntry parameterRef="B1_status"/>  
-                                              
-                        <xtce:ParameterRefEntry parameterRef="B4_state"/>
-                        <xtce:ParameterRefEntry parameterRef="B3_state"/>
-                        <xtce:ParameterRefEntry parameterRef="B2_state"/>
-                        <xtce:ParameterRefEntry parameterRef="B1_state"/>
-                        
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/MCUTemp"/>
-                        <xtce:ParameterRefEntry parameterRef="Internal_INA_current"/>
-                        <xtce:ParameterRefEntry parameterRef="Internal_INA_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="Unregulated_INA_current"/>
-                        <xtce:ParameterRefEntry parameterRef="Unregulated_INA_voltage"/>
-						
-                        <xtce:ParameterRefEntry parameterRef="MPPT_Yp_current"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPT_Ym_current"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPT_Xp_current"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPT_Xm_current"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPT_Yp_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPT_Ym_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPT_Xp_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="MPPT_Xm_voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="Battery_TMP20_temp"/>
+                        <xtce:ParameterRefEntry parameterRef="BATTERY_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="BATTERY_GG_STATUS"/>
+
+                        <xtce:ParameterRefEntry parameterRef="INTERNAL_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="UNREGULATED_INA_STATUS"/>
+
+                        <xtce:ParameterRefEntry parameterRef="BUS1_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS2_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS3_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS4_INA_STATUS"/>
+
+                        <xtce:ParameterRefEntry parameterRef="BUS4_ERROR"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS3_ERROR"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS2_ERROR"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS1_ERROR"/>   
+
+                        <xtce:ParameterRefEntry parameterRef="BUS4_STATE"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS3_STATE"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS2_STATE"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS1_STATE"/>         
+
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_YP_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_YM_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_XP_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_XM_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_YP_TMP_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_YM_TMP_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_XP_TMP_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_XM_TMP_STATUS"/>
+
+                        <xtce:ParameterRefEntry parameterRef="MPPT_YP_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_YM_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_XP_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_XM_INA_STATUS"/>
+
+                        <xtce:ParameterRefEntry parameterRef="PANELOUT_YP_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="PANELOUT_YM_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="PANELOUT_XP_INA_STATUS"/>
+                        <xtce:ParameterRefEntry parameterRef="PANELOUT_XM_INA_STATUS"/>
+
+                        <xtce:ParameterRefEntry parameterRef="INTERNAL_INA_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="INTERNAL_INA_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="UNREGULATED_INA_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="UNREGULATED_INA_VOLTAGE"/>
+
+                        <xtce:ParameterRefEntry parameterRef="BATTERY_GG_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="BATTERY_INA_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="BATTERY_INA_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="BATTERY_GG_CAPACITY"/>
+                        <xtce:ParameterRefEntry parameterRef="BATTERY_GG_TEMP"/>   
+                        <xtce:ParameterRefEntry parameterRef="BATTERY_TMP20_TEMP"/>
+
+                        <xtce:ParameterRefEntry parameterRef="BUS4_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS3_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS2_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS1_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS4_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS3_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS2_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="BUS1_CURRENT"/>
+
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_YP_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_YM_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_XP_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_XM_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_YP_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_YM_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_XP_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_XM_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_YP_TEMPERATURE"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_YM_TEMPERATURE"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_XP_TEMPERATURE"/>
+                        <xtce:ParameterRefEntry parameterRef="CELLOUT_XM_TEMPERATURE"/>
+
+                        <xtce:ParameterRefEntry parameterRef="MPPT_YP_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_YM_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_XP_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_XM_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_YP_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_YM_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_XP_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="MPPT_XM_VOLTAGE"/>
+
+                        <xtce:ParameterRefEntry parameterRef="PANELOUT_YP_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="PANELOUT_YM_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="PANELOUT_XP_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="PANELOUT_XM_VOLTAGE"/>
+                        <xtce:ParameterRefEntry parameterRef="PANELOUT_YP_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="PANELOUT_YM_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="PANELOUT_XP_CURRENT"/>
+                        <xtce:ParameterRefEntry parameterRef="PANELOUT_XM_CURRENT"/> 
                     </xtce:EntryList>                    
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="EPSHousekeepingReply" shortDescription="EPS Housekeeping frame">
