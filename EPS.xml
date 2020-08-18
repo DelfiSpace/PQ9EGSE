@@ -1123,35 +1123,6 @@
                         <xtce:ParameterRefEntry parameterRef="ADBCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="ADBVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="ADBTemperature"/>
-                        <xtce:ArrayParameterRefEntry parameterRef="DEPSwitchesSetting">
-                            <xtce:DimensionList>
-                                <xtce:Size>
-                                    <xtce:FixedValue>4</xtce:FixedValue>
-                                </xtce:Size>
-                            </xtce:DimensionList>
-                        </xtce:ArrayParameterRefEntry>
-                        <xtce:ArrayParameterRefEntry parameterRef="DEPSwitchesSetting">
-                            <xtce:DimensionList>
-                                <xtce:Size>
-                                    <xtce:FixedValue>4</xtce:FixedValue>
-                                </xtce:Size>
-                            </xtce:DimensionList>
-                        </xtce:ArrayParameterRefEntry>
-                        <xtce:ArrayParameterRefEntry parameterRef="DEPSwitchesSetting">
-                            <xtce:DimensionList>
-                                <xtce:Size>
-                                    <xtce:FixedValue>4</xtce:FixedValue>
-                                </xtce:Size>
-                            </xtce:DimensionList>
-                        </xtce:ArrayParameterRefEntry>
-                        <xtce:ArrayParameterRefEntry parameterRef="DEPSwitchesStatus">
-                            <xtce:DimensionList>
-                                <xtce:Size>
-                                    <xtce:FixedValue>4</xtce:FixedValue>
-                                </xtce:Size>
-                            </xtce:DimensionList>
-                        </xtce:ArrayParameterRefEntry>
-                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/MCUTemp"/>
                     </xtce:EntryList>
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="ADBHousekeepingReply" shortDescription="ADB Housekeeping frame">
