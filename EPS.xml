@@ -40,6 +40,7 @@
                     <xtce:Enumeration label="Reset" value="19"/>
                     <xtce:Enumeration label="Testing" value="0"/>
                     <xtce:Enumeration label="Propulsion" value="23"/>
+                    <xtce:Enumeration label="Burn" value="99"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
             <xtce:EnumeratedParameterType name="RequestType">
@@ -560,12 +561,12 @@
                         <xtce:ArgumentAssignment argumentName="Source" argumentValue="EGSE"/>
                         <xtce:ArgumentAssignment argumentName="Service" argumentValue="SoftwareUpdate"/>
                         <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
-                        
+
                     </xtce:ArgumentAssignmentList>
                 </xtce:BaseMetaCommand>
                 <xtce:ArgumentList>
-                        <xtce:Argument name="Slot" argumentTypeRef="/Delfi-PQ/OTASlot"/>
-                    </xtce:ArgumentList>
+                    <xtce:Argument name="Slot" argumentTypeRef="/Delfi-PQ/OTASlot"/>
+                </xtce:ArgumentList>
                 <xtce:CommandContainer name="OTAEraseSlot">
                     <xtce:EntryList>
                         <xtce:FixedValueEntry binaryValue="08" sizeInBits="8"/>
@@ -1087,26 +1088,13 @@
 	
     <xtce:SpaceSystem name="ADB">
         <xtce:TelemetryMetaData>
-            <xtce:ParameterTypeSet>
-                <xtce:EnumeratedParameterType name="DEPStatus">
-                    <xtce:UnitSet/>
-                    <xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
-                    <xtce:EnumerationList>
-                        <xtce:Enumeration label="OFF" value="1"/>
-                        <xtce:Enumeration label="ON" value="0"/>
-                    </xtce:EnumerationList>
-                </xtce:EnumeratedParameterType>
-                <xtce:ArrayParameterType name="DEPStatusArray" arrayTypeRef="DEPStatus" numberOfDimensions="1"/>
-            </xtce:ParameterTypeSet>
             <xtce:ParameterSet>
-                <xtce:Parameter name="TxADBCounter" parameterTypeRef="/Delfi-PQ/short"/>
-                <xtce:Parameter name="ADBCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="ADBVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="ADB_TMP_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADB_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADBTemperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
-                <xtce:Parameter name="DEPSwitchesSetting" parameterTypeRef="/Delfi-PQ/bitStatusArray"/>
-                <xtce:Parameter name="DEPSwitchesStatus" parameterTypeRef="DEPStatusArray"/>
+                <xtce:Parameter name="Current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="Voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="TMPStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="INAStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="Temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+
             </xtce:ParameterSet>
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="ADBHousekeepingContainer" shortDescription="ADB Housekeeping container">
@@ -1118,11 +1106,11 @@
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
-                        <xtce:ParameterRefEntry parameterRef="ADB_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADB_TMP_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADBCurrent"/>
-                        <xtce:ParameterRefEntry parameterRef="ADBVoltage"/>
-                        <xtce:ParameterRefEntry parameterRef="ADBTemperature"/>
+                        <xtce:ParameterRefEntry parameterRef="INAStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="TMPStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="Current"/>
+                        <xtce:ParameterRefEntry parameterRef="Voltage"/>
+                        <xtce:ParameterRefEntry parameterRef="Temperature"/>
                     </xtce:EntryList>
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="ADBHousekeepingReply" shortDescription="ADB Housekeeping frame">
@@ -1136,57 +1124,13 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
-                </xtce:SequenceContainer>
+                </xtce:SequenceContainer>            
+
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
+        
         <xtce:CommandMetaData>
-            <xtce:ArgumentTypeSet>
-                <xtce:EnumeratedArgumentType name="ADBDEPType">
-                    <xtce:UnitSet/>
-                    <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
-                    <xtce:EnumerationList>
-                        <xtce:Enumeration label="DEP1Sw" value="1" shortDescription="1"/>
-                        <xtce:Enumeration label="DEP2Sw" value="2" shortDescription="2"/>
-                        <xtce:Enumeration label="DEP3Sw" value="3" shortDescription="3"/>
-                        <xtce:Enumeration label="DEP4Sw" value="4" shortDescription="4"/>
-                    </xtce:EnumerationList>
-                </xtce:EnumeratedArgumentType>
-                <xtce:EnumeratedArgumentType name="ADBFeedbackParameterType">
-                    <xtce:UnitSet/>
-                    <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
-                    <xtce:EnumerationList>
-                        <xtce:Enumeration label="Feedbackoff" value="0" shortDescription="Feedback off"/>
-                        <xtce:Enumeration label="Feedbackon" value="1" shortDescription="Feedback on"/>
-                    </xtce:EnumerationList>
-                </xtce:EnumeratedArgumentType>
-            </xtce:ArgumentTypeSet>
-            <xtce:MetaCommandSet>
-                <xtce:MetaCommand name="ADBburnParam">
-                    <xtce:LongDescription>ADB Deployment switch</xtce:LongDescription>
-                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
-                        <xtce:ArgumentAssignmentList>
-                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
-                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="6"/>
-                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="EGSE"/>
-                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="GetSetParam"/>
-                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Set"/>
-                        </xtce:ArgumentAssignmentList>
-                    </xtce:BaseMetaCommand>
-                    <xtce:ArgumentList>
-                        <xtce:Argument name="Switch" argumentTypeRef="ADBDEPType"/>
-                        <xtce:Argument name="Feedback" argumentTypeRef="ADBFeedbackParameterType"/>
-                        <xtce:Argument name="Burn_time" argumentTypeRef="/Delfi-PQ/short"/>
-                    </xtce:ArgumentList>
-                    <xtce:CommandContainer name="ADBburnParam">
-                        <xtce:EntryList>
-                            <xtce:FixedValueEntry binaryValue="31" sizeInBits="8"/>
-                            <xtce:ArgumentRefEntry argumentRef="Switch"/>
-                            <xtce:ArgumentRefEntry argumentRef="Feedback"/>
-                            <xtce:ArgumentRefEntry argumentRef="Burn_time"/>
-                        </xtce:EntryList>
-                    </xtce:CommandContainer>
-                </xtce:MetaCommand>
-            </xtce:MetaCommandSet>
+        
         </xtce:CommandMetaData>
     </xtce:SpaceSystem>
 	
