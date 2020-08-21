@@ -190,4 +190,20 @@ public class RS485PCInterface extends PCInterface
         out.write( RESET_EGSE );
         out.flush();
     }
+    
+    @Override
+    public synchronized void toggleChargeEGSE() throws IOException
+    {
+        out.write( FIRST_BYTE | COMMAND | STOP_TRANSMISSION );
+        out.write( TOGGLE_CHARGE_EGSE );
+        out.flush();
+    }
+    
+    @Override
+    public synchronized void toggleDischargeEGSE() throws IOException
+    {
+        out.write( FIRST_BYTE | COMMAND | STOP_TRANSMISSION );
+        out.write( TOGGLE_DISCHARGE_EGSE );
+        out.flush();
+    }
 }

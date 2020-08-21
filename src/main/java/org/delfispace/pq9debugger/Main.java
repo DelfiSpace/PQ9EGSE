@@ -435,6 +435,14 @@ public class Main implements PQ9Receiver, Subscriber
                     resetEGSE();
                     break;
                     
+                case "toggleChargeEGSE":
+                    toggleChargeEGSE();
+                    break;
+                    
+                case "toggleDischargeEGSE":
+                    toggleDischargeEGSE();
+                    break;
+                    
                 case "setSerialPort":
                     connectToSerialPort(cmd.getData());
                     // TODO: update the header for all existing conenctions
@@ -478,6 +486,40 @@ public class Main implements PQ9Receiver, Subscriber
     {
         try{
             pcInterface.resetEGSE();
+        } catch (java.lang.NumberFormatException ex)
+        {
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
+            //        String.format("Invalid value: %s", cmd.toString()), ex);
+            handleException(ex);
+        } catch (Exception ex)
+        {
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
+            //        String.format("Invalid value: %s", cmd.toString()), ex);
+            handleException(ex);
+        } 
+    }
+    
+    private void toggleChargeEGSE ()
+    {
+        try{
+            pcInterface.toggleChargeEGSE();
+        } catch (java.lang.NumberFormatException ex)
+        {
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
+            //        String.format("Invalid value: %s", cmd.toString()), ex);
+            handleException(ex);
+        } catch (Exception ex)
+        {
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
+            //        String.format("Invalid value: %s", cmd.toString()), ex);
+            handleException(ex);
+        } 
+    }
+    
+    private void toggleDischargeEGSE ()
+    {
+        try{
+            pcInterface.toggleDischargeEGSE();
         } catch (java.lang.NumberFormatException ex)
         {
             //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, 
