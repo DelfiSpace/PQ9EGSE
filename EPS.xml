@@ -1172,53 +1172,43 @@
                 <xtce:ArrayParameterType name="byteArray" arrayTypeRef="/Delfi-PQ/byte" numberOfDimensions="1"/>
             </xtce:ParameterTypeSet>
             <xtce:ParameterSet>
-                <xtce:Parameter name="padding" parameterTypeRef="UInt6"/>
                 <xtce:Parameter name="TMPStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADC1Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADC2Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADC3Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADC4Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADC5Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADC6Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADC7Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADC8Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="ADC9Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="TCXOTemperature" shortDescription="TCXO Temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
-                <xtce:Parameter name="SupplyCurrent" shortDescription="Supply Current" parameterTypeRef="CurrentType"/>
-                <xtce:Parameter name="RXVoltage" shortDescription="RX Supply Voltage" parameterTypeRef="VoltageType"/>
-                <xtce:Parameter name="TXVoltage" shortDescription="TX Supply Voltage" parameterTypeRef="VoltageType"/>
-                <xtce:Parameter name="TCXOVoltage" shortDescription="TCXO Supply Voltage" parameterTypeRef="VoltageType"/>
-                <xtce:Parameter name="RS485Voltage" shortDescription="RS485 Supply Voltage" parameterTypeRef="VoltageType"/>
-                <xtce:Parameter name="MCUVoltage" shortDescription="MCU Supply Voltage" parameterTypeRef="VoltageType"/>
-                <xtce:Parameter name="ProtectionVoltage" shortDescription="Protection Supply Voltage" parameterTypeRef="VoltageType"/>
-                <xtce:Parameter name="SupplyVoltage" shortDescription="3V3 Supply Voltage" parameterTypeRef="VoltageType"/>
-                <xtce:Parameter name="ADCreading" parameterTypeRef="VoltageType"/>
-                <xtce:Parameter name="Data" parameterTypeRef="byteArray"/>
+                <xtce:Parameter name="INAStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="TransmitINAStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="AmplifierINAStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="PhasingTMPStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="AmplifierTMPStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="Voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="Current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="Temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="TransmitVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="TransmitCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="AmplifierVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="AmplifierCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="PhasingTemperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="AmplifierTemperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
             </xtce:ParameterSet>
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="COMMSHousekeepingContainer" shortDescription="COMMS Housekeeping container">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
-                        <xtce:ParameterRefEntry parameterRef="padding"/>
-                        <xtce:ParameterRefEntry parameterRef="ADC9Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADC8Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADC7Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADC6Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADC5Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADC4Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADC3Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADC2Status"/>
-                        <xtce:ParameterRefEntry parameterRef="ADC1Status"/>
+                        <xtce:ParameterRefEntry parameterRef="INAStatus"/>
                         <xtce:ParameterRefEntry parameterRef="TMPStatus"/>
-                        <xtce:ParameterRefEntry parameterRef="TCXOTemperature"/>
-                        <xtce:ParameterRefEntry parameterRef="RXVoltage"/>
-                        <xtce:ParameterRefEntry parameterRef="TXVoltage"/>
-                        <xtce:ParameterRefEntry parameterRef="TCXOVoltage"/>
-                        <xtce:ParameterRefEntry parameterRef="RS485Voltage"/>
-                        <xtce:ParameterRefEntry parameterRef="MCUVoltage"/>
-                        <xtce:ParameterRefEntry parameterRef="ProtectionVoltage"/>
-                        <xtce:ParameterRefEntry parameterRef="SupplyVoltage"/>
-                        <xtce:ParameterRefEntry parameterRef="SupplyCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="TransmitINAStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="AmplifierINAStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="PhasingTMPStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="AmplifierTMPStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="Voltage"/>
+                        <xtce:ParameterRefEntry parameterRef="Current"/>
+                        <xtce:ParameterRefEntry parameterRef="Temperature"/>
+                        <xtce:ParameterRefEntry parameterRef="TransmitVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="TransmitCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="AmplifierVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="AmplifierCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="PhasingTemperature"/>
+                        <xtce:ParameterRefEntry parameterRef="AmplifierTemperature"/>
                     </xtce:EntryList>
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="COMMSHousekeepingReply" shortDescription="COMMS Housekeeping frame">
@@ -1229,29 +1219,6 @@
                         <xtce:RestrictionCriteria>
                             <xtce:ComparisonList>
                                 <xtce:Comparison parameterRef="Source" value="COMMS"/>
-                            </xtce:ComparisonList>
-                        </xtce:RestrictionCriteria>
-                    </xtce:BaseContainer>
-                </xtce:SequenceContainer>
-                <xtce:SequenceContainer name="RXData" shortDescription="COMMS RX data">
-                    <xtce:EntryList>
-                        <xtce:ArrayParameterRefEntry parameterRef="Data">
-                            <xtce:DimensionList>
-                                <xtce:Size>
-                                    <xtce:DynamicValue>
-                                        <xtce:ParameterInstanceRef parameterRef="/Delfi-PQ/Size" useCalibratedValue="true"/>
-                                        <xtce:LinearAdjustment intercept="-4" slope="1"/>
-                                    </xtce:DynamicValue>
-                                </xtce:Size>
-                            </xtce:DimensionList>
-                        </xtce:ArrayParameterRefEntry>
-                    </xtce:EntryList>
-                    <xtce:BaseContainer containerRef="/Delfi-PQ/PQ9">
-                        <xtce:RestrictionCriteria>
-                            <xtce:ComparisonList>
-                                <xtce:Comparison parameterRef="Source" value="COMMS"/>
-                                <xtce:Comparison parameterRef="Service" value="RX"/>
-                                <xtce:Comparison parameterRef="Request" value="Reply"/>
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
