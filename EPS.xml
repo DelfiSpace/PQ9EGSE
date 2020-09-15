@@ -90,6 +90,12 @@
                 <xtce:UnitSet/>
                 <xtce:IntegerDataEncoding sizeInBits="32"/>
             </xtce:IntegerParameterType>
+            <xtce:IntegerParameterType name="RSSI">
+                <xtce:UnitSet>
+                    <xtce:Unit>dBm</xtce:Unit>
+                </xtce:UnitSet>
+                <xtce:IntegerDataEncoding encoding="twosComplement" sizeInBits="16"/>
+            </xtce:IntegerParameterType>
             <xtce:FloatParameterType name="INAvoltage">
                 <xtce:UnitSet>
                     <xtce:Unit>V</xtce:Unit>
@@ -987,25 +993,27 @@
     <xtce:SpaceSystem name="OBC">
         <xtce:TelemetryMetaData>
             <xtce:ParameterSet>
-                <xtce:Parameter name="OBCCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
-                <xtce:Parameter name="OBCVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
-                <xtce:Parameter name="OBC_TMP_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
-                <xtce:Parameter name="OBC_INA_Status" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="Current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="Voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="Temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="TMPStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="INAStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
             </xtce:ParameterSet>
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="OBCHousekeepingContainer" shortDescription="OBC Housekeeping container">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
+                        <xtce:ParameterRefEntry parameterRef="INAStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="TMPStatus"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
                         <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
-                        <xtce:ParameterRefEntry parameterRef="OBC_INA_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="OBC_TMP_Status"/>
-                        <xtce:ParameterRefEntry parameterRef="OBCCurrent"/>
-                        <xtce:ParameterRefEntry parameterRef="OBCVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="Voltage"/>
+                        <xtce:ParameterRefEntry parameterRef="Current"/>
+                        <xtce:ParameterRefEntry parameterRef="Temperature"/>
                     </xtce:EntryList>
                 </xtce:SequenceContainer>
                 <xtce:SequenceContainer name="OBCHousekeepingReply" shortDescription="OBC Housekeeping frame">
@@ -1181,6 +1189,7 @@
                 <xtce:Parameter name="Voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="Current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="Temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="ReceiverRSSI" parameterTypeRef="/Delfi-PQ/RSSI"/>
                 <xtce:Parameter name="TransmitVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="TransmitCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="AmplifierVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
@@ -1203,6 +1212,7 @@
                         <xtce:ParameterRefEntry parameterRef="Voltage"/>
                         <xtce:ParameterRefEntry parameterRef="Current"/>
                         <xtce:ParameterRefEntry parameterRef="Temperature"/>
+                        <xtce:ParameterRefEntry parameterRef="ReceiverRSSI"/>
                         <xtce:ParameterRefEntry parameterRef="TransmitVoltage"/>
                         <xtce:ParameterRefEntry parameterRef="TransmitCurrent"/>
                         <xtce:ParameterRefEntry parameterRef="AmplifierVoltage"/>
