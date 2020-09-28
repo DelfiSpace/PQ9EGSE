@@ -39,6 +39,7 @@
                     <xtce:Enumeration label="SoftwareUpdate" value="18"/>
                     <xtce:Enumeration label="Reset" value="19"/>
                     <xtce:Enumeration label="Testing" value="0"/>
+                    <xtce:Enumeration label="StateMachine" value="41"/>
                     <xtce:Enumeration label="Propulsion" value="23"/>
                     <xtce:Enumeration label="Burn" value="99"/>
                 </xtce:EnumerationList>
@@ -429,6 +430,7 @@
                     <xtce:Enumeration label="Ping" value="17"/>
                     <xtce:Enumeration label="SoftwareUpdate" value="18"/>
                     <xtce:Enumeration label="Testing" value="0"/>
+                    <xtce:Enumeration label="StateMachine" value="41"/>
                     <xtce:Enumeration label="Propulsion" value="23"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
@@ -1030,6 +1032,27 @@
                 </xtce:SequenceContainer>
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
+        <xtce:CommandMetaData>
+            <xtce:MetaCommandSet>
+                <xtce:MetaCommand name="resetOBC" shortDescription="RESET OBC">
+                    <xtce:LongDescription>Reset OBC for deployment</xtce:LongDescription>
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="OBC"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="3"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="EGSE"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="StateMachine"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                    <xtce:CommandContainer name="resetOBC">
+                        <xtce:EntryList>
+                            <xtce:FixedValueEntry binaryValue="05" sizeInBits="8"/>
+                        </xtce:EntryList>
+                    </xtce:CommandContainer>
+                </xtce:MetaCommand>
+            </xtce:MetaCommandSet>
+        </xtce:CommandMetaData>
     </xtce:SpaceSystem>
 	
     <xtce:SpaceSystem name="ADCS">
