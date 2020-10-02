@@ -26,6 +26,7 @@
                     <xtce:Enumeration label="PROP" value="6"/>
                     <xtce:Enumeration label="DEBUG" value="7"/>
                     <xtce:Enumeration label="EGSE" value="8"/>
+                    <xtce:Enumeration label="LOBE" value="9"/>
                     <xtce:Enumeration label="HPI" value="100"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedParameterType>
@@ -415,6 +416,7 @@
                     <xtce:Enumeration label="PROP" value="6"/>
                     <xtce:Enumeration label="DEBUG" value="7"/>
                     <xtce:Enumeration label="EGSE" value="8"/>
+                    <xtce:Enumeration label="LOBE" value="9"/>
                     <xtce:Enumeration label="HPI" value="100"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
@@ -1277,7 +1279,103 @@
             </xtce:MetaCommandSet>
         </xtce:CommandMetaData>
     </xtce:SpaceSystem>
-	
+
+            <xtce:SpaceSystem name="LOBE">
+        <xtce:TelemetryMetaData>
+            <xtce:ParameterTypeSet>
+                <xtce:IntegerParameterType name="UInt6">
+                    <xtce:UnitSet/>
+                    <xtce:IntegerDataEncoding sizeInBits="6"/>
+                </xtce:IntegerParameterType>
+                <xtce:FloatParameterType name="CurrentType">
+                    <xtce:UnitSet>
+                        <xtce:Unit>mA</xtce:Unit>
+                    </xtce:UnitSet>
+                    <xtce:IntegerDataEncoding sizeInBits="16">
+                        <xtce:DefaultCalibrator>
+                            <xtce:MathOperationCalibrator>
+                                <xtce:ThisParameterOperand/>
+                                <xtce:ValueOperand>0.00152587890625</xtce:ValueOperand>
+                                <xtce:Operator>*</xtce:Operator>
+                            </xtce:MathOperationCalibrator>
+                        </xtce:DefaultCalibrator>
+                    </xtce:IntegerDataEncoding>
+                </xtce:FloatParameterType>
+                <xtce:FloatParameterType name="VoltageType">
+                    <xtce:UnitSet>
+                        <xtce:Unit>V</xtce:Unit>
+                    </xtce:UnitSet>
+                    <xtce:IntegerDataEncoding sizeInBits="16">
+                        <xtce:DefaultCalibrator>
+                            <xtce:MathOperationCalibrator>
+                                <xtce:ThisParameterOperand/>
+                                <xtce:ValueOperand>0.00030517578125</xtce:ValueOperand>
+                                <xtce:Operator>*</xtce:Operator>
+                            </xtce:MathOperationCalibrator>
+                        </xtce:DefaultCalibrator>
+                    </xtce:IntegerDataEncoding>
+                </xtce:FloatParameterType>
+                <xtce:ArrayParameterType name="byteArray" arrayTypeRef="/Delfi-PQ/byte" numberOfDimensions="1"/>
+            </xtce:ParameterTypeSet>
+            <xtce:ParameterSet>
+                <xtce:Parameter name="TMPStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="INAStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="TransmitINAStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="AmplifierINAStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="PhasingTMPStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="AmplifierTMPStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
+                <xtce:Parameter name="Voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="Current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="Temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="ReceiverRSSI" parameterTypeRef="/Delfi-PQ/RSSI"/>
+                <xtce:Parameter name="TransmitVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="TransmitCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="AmplifierVoltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
+                <xtce:Parameter name="AmplifierCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+                <xtce:Parameter name="PhasingTemperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+                <xtce:Parameter name="AmplifierTemperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
+            </xtce:ParameterSet>
+            <xtce:ContainerSet>
+                <xtce:SequenceContainer name="LOBEHousekeepingContainer" shortDescription="LOBE Housekeeping container">
+                    <xtce:EntryList>
+                        <xtce:ContainerRefEntry containerRef="/Delfi-PQ/HousekeepingHeader"/>
+                        <xtce:ParameterRefEntry parameterRef="INAStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="TMPStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="TransmitINAStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="AmplifierINAStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="PhasingTMPStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="AmplifierTMPStatus"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="Voltage"/>
+                        <xtce:ParameterRefEntry parameterRef="Current"/>
+                        <xtce:ParameterRefEntry parameterRef="Temperature"/>
+                        <xtce:ParameterRefEntry parameterRef="ReceiverRSSI"/>
+                        <xtce:ParameterRefEntry parameterRef="TransmitVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="TransmitCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="AmplifierVoltage"/>
+                        <xtce:ParameterRefEntry parameterRef="AmplifierCurrent"/>
+                        <xtce:ParameterRefEntry parameterRef="PhasingTemperature"/>
+                        <xtce:ParameterRefEntry parameterRef="AmplifierTemperature"/>
+                    </xtce:EntryList>
+                </xtce:SequenceContainer>
+                <xtce:SequenceContainer name="LOBEHousekeepingReply" shortDescription="LOBE Housekeeping frame">
+                    <xtce:EntryList>
+                        <xtce:ContainerRefEntry containerRef="LOBEHousekeepingContainer"/>                        
+                    </xtce:EntryList>
+                    <xtce:BaseContainer containerRef="/Delfi-PQ/HousekeepingReply">
+                        <xtce:RestrictionCriteria>
+                            <xtce:ComparisonList>
+                                <xtce:Comparison parameterRef="Source" value="LOBE"/>
+                            </xtce:ComparisonList>
+                        </xtce:RestrictionCriteria>
+                    </xtce:BaseContainer>
+                </xtce:SequenceContainer>
+            </xtce:ContainerSet>
+        </xtce:TelemetryMetaData>
+       
+    </xtce:SpaceSystem>
+    	
     <xtce:SpaceSystem name="PROP">
         <xtce:LongDescription>PROP data frames description.</xtce:LongDescription>
         <xtce:TelemetryMetaData>
