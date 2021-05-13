@@ -16,6 +16,7 @@
  */
 package org.delfispace.CommandWebServer;
 
+import jakarta.servlet.Servlet;
 import java.net.URL;
 import org.delfispace.pq9debugger.Subscriber;
 import org.delfispace.pq9debugger.cmdMultiPublisher;
@@ -25,6 +26,9 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.websocket.server.JettyWebSocketServlet;
+import org.eclipse.jetty.websocket.server.JettyWebSocketServletFactory;
+import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
 
 /**
  *
@@ -52,9 +56,17 @@ public class CommandWebServer
         ServletHolder holderHello = context.addServlet(WebpageServlet.class,"/");
         holderHello.setInitOrder(0);
 
-        // Add a websocket to a specific path spec
-        ServletHolder holderEvents = new ServletHolder("ws-events", CommandWebSocketServlet.class);
-        context.addServlet(holderEvents, "/wss/*");
+        // Add a websocket to a specific path spec        
+        Servlet websocketServlet = new JettyWebSocketServlet() 
+        {
+            @Override
+            protected void configure(JettyWebSocketServletFactory factory) 
+            {
+                factory.addMapping("/", (req, res) -> new CommandWebSocket());
+            }
+        };
+        context.addServlet(new ServletHolder(websocketServlet), "/wss/*");
+        JettyWebSocketServletContainerInitializer.configure(context, null);
 
         ServletHolder holderDef = new ServletHolder("default",DefaultServlet.class);
         holderDef.setInitParameter("dirAllowed","false");

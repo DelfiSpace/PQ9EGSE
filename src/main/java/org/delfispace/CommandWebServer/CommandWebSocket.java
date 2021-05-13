@@ -17,6 +17,7 @@
 package org.delfispace.CommandWebServer;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.delfispace.pq9debugger.HeaderTab;
@@ -65,8 +66,8 @@ public class CommandWebSocket extends WebSocketAdapter
     {
         super.onWebSocketConnect(sess);
         // make sure a keep-alive timeout is enabled
-        sess.setIdleTimeout(IDLE_TIMEOUT);
-        endpoint = sess.getRemote().getInetSocketAddress().toString();
+        sess.setIdleTimeout(Duration.ofMillis(IDLE_TIMEOUT));
+        endpoint = sess.getRemote().getRemoteAddress().toString();
         Logger.getLogger(CommandWebSocket.class.getName()).log(Level.FINEST, 
                 "Websocket connected from {0}", endpoint);
         
