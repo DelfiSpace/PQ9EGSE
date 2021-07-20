@@ -1162,9 +1162,6 @@
             </xtce:ContainerSet>
         </xtce:TelemetryMetaData>
         
-        <xtce:CommandMetaData>
-        
-        </xtce:CommandMetaData>
     </xtce:SpaceSystem>
 	
     <xtce:SpaceSystem name="COMMS">
