@@ -436,6 +436,7 @@
                     <xtce:Enumeration label="StateMachine" value="41"/>
                     <xtce:Enumeration label="Propulsion" value="23"/>
                     <xtce:Enumeration label="Radio" value="25"/>
+                    <xtce:Enumeration label="Burn" value="99"/>
                 </xtce:EnumerationList>
             </xtce:EnumeratedArgumentType>
             <xtce:EnumeratedArgumentType name="RequestType">
@@ -1156,13 +1157,47 @@
 	
     <xtce:SpaceSystem name="ADB">
         <xtce:TelemetryMetaData>
+        	<xtce:ParameterTypeSet>
+        		<xtce:EnumeratedParameterType name="DeploymentStatus">
+                	<xtce:UnitSet/>
+                	<xtce:IntegerDataEncoding sizeInBits="1" encoding="unsigned"/>
+                	<xtce:EnumerationList>
+                    	<xtce:Enumeration label="Deployed" value="1"/>
+                    	<xtce:Enumeration label="Stowed" value="0"/>
+                	</xtce:EnumerationList>
+            	</xtce:EnumeratedParameterType>
+            	<xtce:EnumeratedParameterType name="BurningStatus">
+                	<xtce:UnitSet/>
+                	<xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                	<xtce:EnumerationList>
+                    	<xtce:Enumeration label="Burning" value="1"/>
+                    	<xtce:Enumeration label="Idle" value="0"/>
+                	</xtce:EnumerationList>
+            	</xtce:EnumeratedParameterType>
+            	<xtce:IntegerParameterType name="BurnTimeType">
+                <xtce:UnitSet>
+                    <xtce:Unit>s</xtce:Unit>
+                </xtce:UnitSet>
+                <xtce:IntegerDataEncoding sizeInBits="16"/>
+            </xtce:IntegerParameterType>
+          	</xtce:ParameterTypeSet>  
+            
             <xtce:ParameterSet>
                 <xtce:Parameter name="Current" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
                 <xtce:Parameter name="Voltage" parameterTypeRef="/Delfi-PQ/INAvoltage"/>
                 <xtce:Parameter name="TMPStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="INAStatus" parameterTypeRef="/Delfi-PQ/sensorBitStatus"/>
                 <xtce:Parameter name="Temperature" parameterTypeRef="/Delfi-PQ/Temperature"/>
-
+                <xtce:Parameter name="BurnCommand" parameterTypeRef="/Delfi-PQ/byte"/>                
+				<xtce:Parameter name="Antenna1Status" parameterTypeRef="DeploymentStatus"/>
+				<xtce:Parameter name="Antenna2Status" parameterTypeRef="DeploymentStatus"/>
+				<xtce:Parameter name="Antenna3Status" parameterTypeRef="DeploymentStatus"/>
+				<xtce:Parameter name="Antenna4Status" parameterTypeRef="DeploymentStatus"/>
+				<xtce:Parameter name="Burning" parameterTypeRef="BurningStatus"/>
+				<xtce:Parameter name="Antenna" parameterTypeRef="/Delfi-PQ/byte"/>
+				<xtce:Parameter name="BurnTime" parameterTypeRef="BurnTimeType"/>
+				<xtce:Parameter name="BurnCurrent" parameterTypeRef="/Delfi-PQ/INAcurrent"/>
+				
             </xtce:ParameterSet>
             <xtce:ContainerSet>
                 <xtce:SequenceContainer name="ADBHousekeepingContainer" shortDescription="ADB Housekeeping container">
@@ -1181,6 +1216,7 @@
                         <xtce:ParameterRefEntry parameterRef="Temperature"/>
                     </xtce:EntryList>
                 </xtce:SequenceContainer>
+                
                 <xtce:SequenceContainer name="ADBHousekeepingReply" shortDescription="ADB Housekeeping frame">
                     <xtce:EntryList>
                         <xtce:ContainerRefEntry containerRef="ADBHousekeepingContainer"/>                        
@@ -1192,11 +1228,192 @@
                             </xtce:ComparisonList>
                         </xtce:RestrictionCriteria>
                     </xtce:BaseContainer>
+                </xtce:SequenceContainer>                 
+                
+                 <xtce:SequenceContainer name="ADBDBurnReply" shortDescription="ADB Antenna Deployment status" abstract="true">
+                	<xtce:LongDescription>ADB Burn reply</xtce:LongDescription>
+                    <xtce:EntryList>
+                        <xtce:ParameterRefEntry parameterRef="BurnCommand"/>                    
+                    </xtce:EntryList>
+                    <xtce:BaseContainer containerRef="/Delfi-PQ/PQ9">
+                        <xtce:RestrictionCriteria>
+                            <xtce:ComparisonList>
+                                <xtce:Comparison parameterRef="Source" value="ADB"/>
+                                <xtce:Comparison parameterRef="Service" value="Burn"/>
+                            </xtce:ComparisonList>
+                        </xtce:RestrictionCriteria>
+                    </xtce:BaseContainer>
+                </xtce:SequenceContainer>  
+                
+                <xtce:SequenceContainer name="ADBDeploymentStatusReply" shortDescription="ADB Antenna Deployment status">
+                	<xtce:LongDescription>Antenna Deployment Status reply</xtce:LongDescription>
+                    <xtce:EntryList>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="/Delfi-PQ/SingleBitPadding"/>
+                        <xtce:ParameterRefEntry parameterRef="Antenna1Status"/>                      
+                        <xtce:ParameterRefEntry parameterRef="Antenna2Status"/>                      
+                        <xtce:ParameterRefEntry parameterRef="Antenna3Status"/>                      
+                        <xtce:ParameterRefEntry parameterRef="Antenna4Status"/>                      
+                    </xtce:EntryList>
+                    <xtce:BaseContainer containerRef="ADBDBurnReply">
+                        <xtce:RestrictionCriteria>
+                            <xtce:ComparisonList>
+                                <xtce:Comparison parameterRef="Source" value="ADB"/>
+                                <xtce:Comparison parameterRef="Service" value="Burn"/>
+                                <xtce:Comparison parameterRef="BurnCommand" value="0"/>
+                            </xtce:ComparisonList>
+                        </xtce:RestrictionCriteria>
+                    </xtce:BaseContainer>
                 </xtce:SequenceContainer>            
 
+                <xtce:SequenceContainer name="ADBBurnStatusReply" shortDescription="ADB Antenna Burn status">
+                	<xtce:LongDescription>Antenna Burn Status reply</xtce:LongDescription>
+                    <xtce:EntryList>
+                        <xtce:ParameterRefEntry parameterRef="Burning"/>                     
+                    </xtce:EntryList>
+                    <xtce:BaseContainer containerRef="ADBDBurnReply">
+                        <xtce:RestrictionCriteria>
+                            <xtce:ComparisonList>
+                                <xtce:Comparison parameterRef="Source" value="ADB"/>
+                                <xtce:Comparison parameterRef="Service" value="Burn"/>
+                                <xtce:Comparison parameterRef="BurnCommand" value="1"/>
+                            </xtce:ComparisonList>
+                        </xtce:RestrictionCriteria>
+                    </xtce:BaseContainer>
+                </xtce:SequenceContainer>
+                
+                <xtce:SequenceContainer name="ADBBurnTimeReply" shortDescription="ADB Antenna Burn time">
+                	<xtce:LongDescription>Antenna Burn Time reply</xtce:LongDescription>
+                    <xtce:EntryList>
+                        <xtce:ParameterRefEntry parameterRef="Antenna"/>
+                        <xtce:ParameterRefEntry parameterRef="BurnTime"/>                     
+                    </xtce:EntryList>
+                    <xtce:BaseContainer containerRef="ADBDBurnReply">
+                        <xtce:RestrictionCriteria>
+                            <xtce:ComparisonList>
+                                <xtce:Comparison parameterRef="Source" value="ADB"/>
+                                <xtce:Comparison parameterRef="Service" value="Burn"/>
+                                <xtce:Comparison parameterRef="BurnCommand" value="3"/>
+                            </xtce:ComparisonList>
+                        </xtce:RestrictionCriteria>
+                    </xtce:BaseContainer>
+                </xtce:SequenceContainer>
+                
+                <xtce:SequenceContainer name="ADBBurnCurrentReply" shortDescription="ADB Antenna Burn Current">
+                	<xtce:LongDescription>Antenna Burn Time reply</xtce:LongDescription>
+                    <xtce:EntryList>
+                        <xtce:ParameterRefEntry parameterRef="Antenna"/>
+                        <xtce:ParameterRefEntry parameterRef="BurnCurrent"/>                     
+                    </xtce:EntryList>
+                    <xtce:BaseContainer containerRef="ADBDBurnReply">
+                        <xtce:RestrictionCriteria>
+                            <xtce:ComparisonList>
+                                <xtce:Comparison parameterRef="Source" value="ADB"/>
+                                <xtce:Comparison parameterRef="Service" value="Burn"/>
+                                <xtce:Comparison parameterRef="BurnCommand" value="6"/>
+                            </xtce:ComparisonList>
+                        </xtce:RestrictionCriteria>
+                    </xtce:BaseContainer>
+                </xtce:SequenceContainer>
+                
             </xtce:ContainerSet>
+            
         </xtce:TelemetryMetaData>
-        
+        <xtce:CommandMetaData>
+        	<xtce:ArgumentTypeSet>
+                <xtce:EnumeratedArgumentType name="AntennaType">
+                    <xtce:LongDescription>ADB Antenna</xtce:LongDescription>
+                    <xtce:UnitSet/>
+                    <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+                    <xtce:EnumerationList>
+                        <xtce:Enumeration label="1" value="1"/>
+                        <xtce:Enumeration label="2" value="2"/>
+                        <xtce:Enumeration label="3" value="3"/>
+                        <xtce:Enumeration label="4" value="4"/>
+                    </xtce:EnumerationList>
+                </xtce:EnumeratedArgumentType>
+            </xtce:ArgumentTypeSet>
+            <xtce:MetaCommandSet>
+                <xtce:MetaCommand name="CheckDeploymentStatus" shortDescription="Check antenna deployment status">
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="3"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="EGSE"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="Burn"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                    <xtce:CommandContainer name="CheckDeploymentStatus">
+                        <xtce:EntryList>
+                            <xtce:FixedValueEntry binaryValue="00" sizeInBits="8"/><!-- BurnService: isDeployed -->
+                        </xtce:EntryList>
+                    </xtce:CommandContainer>
+                </xtce:MetaCommand>
+                
+                <xtce:MetaCommand name="CheckBurningStatus" shortDescription="Check antenna burning status">
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="3"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="EGSE"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="Burn"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                    <xtce:CommandContainer name="CheckBurningStatus">
+                        <xtce:EntryList>
+                            <xtce:FixedValueEntry binaryValue="01" sizeInBits="8"/><!-- BurnService: isBurning -->
+                        </xtce:EntryList>
+                    </xtce:CommandContainer>
+                </xtce:MetaCommand>
+                
+                <xtce:MetaCommand name="CheckBurnTime" shortDescription="Check antennna burn time">
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="3"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="EGSE"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="Burn"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                    <xtce:ArgumentList>
+                        <xtce:Argument name="Antenna" argumentTypeRef="AntennaType"/>
+                    </xtce:ArgumentList>
+                    <xtce:CommandContainer name="CheckBurnTime">
+                        <xtce:EntryList>
+                        	<xtce:FixedValueEntry binaryValue="03" sizeInBits="8"/><!-- BurnService: getBurnTime -->
+                        	<xtce:ArgumentRefEntry argumentRef="Antenna"/>
+                        </xtce:EntryList>
+                    </xtce:CommandContainer>
+                </xtce:MetaCommand>
+                
+                <xtce:MetaCommand name="CheckBurnCurrent" shortDescription="Check Antennna Burn current">
+                    <xtce:BaseMetaCommand metaCommandRef="/Delfi-PQ/PQ9">
+                        <xtce:ArgumentAssignmentList>
+                            <xtce:ArgumentAssignment argumentName="Destination" argumentValue="ADB"/>
+                            <xtce:ArgumentAssignment argumentName="Size" argumentValue="3"/>
+                            <xtce:ArgumentAssignment argumentName="Source" argumentValue="EGSE"/>
+                            <xtce:ArgumentAssignment argumentName="Service" argumentValue="Burn"/>
+                            <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
+                        </xtce:ArgumentAssignmentList>
+                    </xtce:BaseMetaCommand>
+                    <xtce:ArgumentList>
+                        <xtce:Argument name="Antenna" argumentTypeRef="AntennaType"/>
+                    </xtce:ArgumentList>
+                    <xtce:CommandContainer name="CheckBurnTime">
+                        <xtce:EntryList>
+                        	<xtce:FixedValueEntry binaryValue="06" sizeInBits="8"/><!-- BurnService: getBurnCurrent -->
+                        	<xtce:ArgumentRefEntry argumentRef="Antenna"/>
+                        </xtce:EntryList>
+                    </xtce:CommandContainer>
+                </xtce:MetaCommand>
+                
+            </xtce:MetaCommandSet>
+        </xtce:CommandMetaData>
     </xtce:SpaceSystem>
 	
     <xtce:SpaceSystem name="COMMS">
@@ -1320,7 +1537,7 @@
                             <xtce:ArgumentAssignment argumentName="Request" argumentValue="Request"/>
                         </xtce:ArgumentAssignmentList>
                     </xtce:BaseMetaCommand>
-                    <xtce:CommandContainer name="PingRadio">
+                    <xtce:CommandContainer name="getRxMessages">
                         <xtce:EntryList>
                             <xtce:FixedValueEntry binaryValue="03" sizeInBits="8"/>
                         </xtce:EntryList>
